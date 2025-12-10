@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    public Weapon passiveWeapon;
     [Header("Movement")]
     public float moveSpeed = 5.0f;
     public float turnSpeed = 10.0f;
