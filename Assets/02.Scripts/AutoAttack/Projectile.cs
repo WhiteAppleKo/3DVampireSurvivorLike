@@ -68,12 +68,7 @@ public class Projectile : MonoBehaviour
     public void SetTarget(GameObject target)
     {
         m_ProjectileTarget = target;
-        Fire();
-    }
-
-    protected virtual void Fire()
-    {
-        
+        gameObject.transform.LookAt(target.transform);
     }
 
     /// <summary>

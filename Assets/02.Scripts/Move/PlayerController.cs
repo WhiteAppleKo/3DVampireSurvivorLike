@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         m_InputActions = new InputSystem_Actions();
+        GetComponent<AutoAttack>().GameStart();
     }
 
     private void OnEnable()

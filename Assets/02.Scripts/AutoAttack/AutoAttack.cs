@@ -6,21 +6,28 @@ using UnityEngine;
 
 public class AutoAttack : MonoBehaviour
 {
+    public Weapon[] weapon;
+    
     private PlayerController m_PlayerController;
-    private Weapon[] m_Weapon;
     private int m_WeaponCount = 0;
 
     public void GameStart()
     {
-        m_Weapon = new Weapon[5];
+        weapon = new Weapon[5];
         m_PlayerController = GetComponentInParent<PlayerController>();
         AddWeapon(m_PlayerController.passiveWeapon);
     }
 
     public void AddWeapon(Weapon newWeapon)
     {
-        m_Weapon[m_WeaponCount] = newWeapon;
-        StartCoroutine(co_AutoAttack(m_Weapon[m_WeaponCount]));
+        if (m_WeaponCount > 5)
+        {
+            Debug.Log("더 이상 무기를 추가할 수 없습니다.");
+            return;
+        }
+        weapon[m_WeaponCount] = newWeapon;
+        newWeapon.WeaponSettingLogic();
+        StartCoroutine(co_AutoAttack(weapon[m_WeaponCount]));
         m_WeaponCount++;
     }
 
@@ -29,7 +36,7 @@ public class AutoAttack : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(weapon.attackDelay);
-            weapon.Attack();
+            weapon.AttackLogic();
         }
     }
 }
