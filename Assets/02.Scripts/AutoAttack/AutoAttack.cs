@@ -8,14 +8,15 @@ public class AutoAttack : MonoBehaviour
 {
     public Weapon[] weapon;
     
-    private PlayerController m_PlayerController;
     private int m_WeaponCount = 0;
 
     public void GameStart()
     {
         weapon = new Weapon[5];
-        m_PlayerController = GetComponentInParent<PlayerController>();
-        AddWeapon(m_PlayerController.passiveWeapon);
+        foreach(Weapon weaponInChildren in GetComponentsInChildren<Weapon>())
+        {
+            AddWeapon(weaponInChildren);
+        }
     }
 
     public void AddWeapon(Weapon newWeapon)

@@ -1,10 +1,10 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 /// <summary>
 /// 투사체의 이동과 화면 이탈 시 풀 반환 로직을 처리합니다.
 /// </summary>
-[RequireComponent(typeof(Renderer))]
 public class Projectile : MonoBehaviour
 {
     public ProjectileWeapon projectilePoolManager;
@@ -14,21 +14,28 @@ public class Projectile : MonoBehaviour
     [Tooltip("화면 밖으로 나간 후 풀로 돌아가기까지의 대기 시간")]
     public float returnToPoolDelay = 2f;
 
-    private Renderer m_Rend;
-    private bool m_IsVisible = false;
     private Coroutine m_ReturnCoroutine;
     private GameObject m_ProjectileTarget;
 
+    // Game 뷰의 메인 카메라를 참조하기 위한 변수
+    private Camera m_MainCamera;
+    // 투사체가 화면 안에 있었는지 상태를 추적하는 플래그
+    private bool m_WasInScreen;
+    private Weapon m_Weapon;
+    private Controller m_Controller;
+    private int m_Damage;
+
     void Awake()
     {
-        // 렌더러 컴포넌트를 미리 캐싱
-        m_Rend = GetComponent<Renderer>();
+        // 메인 카메라를 찾아서 캐싱합니다.
+        // Camera.main은 성능 부하가 있을 수 있으므로 Awake에서 한 번만 호출합니다.
+        m_MainCamera = Camera.main;
     }
 
     void OnEnable()
     {
-        // 오브젝트가 활성화될 때 상태 초기화
-        m_IsVisible = true; 
+        // 오브젝트가 활성화될 때 화면 안에 있는 것으로 상태 초기화
+        m_WasInScreen = true; 
         
         // 이전에 실행되던 반환 코루틴이 있다면 중지
         if (m_ReturnCoroutine != null)
@@ -40,29 +47,32 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
-        // 이동 로직 각각 무기에 맞게 수정
+        // 이동 로직
         transform.Translate(Vector3.forward * (speed * Time.deltaTime));
 
-        // 화면에 보이다가 안보이게 되는 시점을 감지
-        if (m_IsVisible && !m_Rend.isVisible)
+        // 이전에 화면 안에 있었던 경우에만 화면 밖으로 나갔는지 검사
+        if (m_WasInScreen)
         {
-            m_IsVisible = false;
-            // 화면 밖으로 나갔으므로, 지연 시간 후 풀로 돌아가는 코루틴 시작
-            m_ReturnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
-            Debug.Log("투사체가 화면 밖으로 나갔습니다. 풀 반환 절차를 시작합니다.");
-        }
-        // 화면에 안보이다가 다시 보이게 되는 경우 (예: 화면 가장자리를 스쳐 지나갈 때)
-        else if (!m_IsVisible && m_Rend.isVisible)
-        {
-            m_IsVisible = true;
-            // 풀으로 돌아가는 코루틴을 중지
-            if (m_ReturnCoroutine != null)
+            // 월드 좌표를 메인 카메라의 뷰포트 좌표로 변환
+            Vector3 viewportPos = m_MainCamera.WorldToViewportPoint(transform.position);
+
+            // 뷰포트 좌표가 x,y축 모두 0과 1사이가 아니라면 화면 밖으로 나간 것
+            // 약간의 여유(margin)를 두어 완전히 사라졌을 때를 감지할 수 있습니다.
+            if (viewportPos.x < -0.1f || viewportPos.x > 1.1f || viewportPos.y < -0.1f || viewportPos.y > 1.1f)
             {
-                StopCoroutine(m_ReturnCoroutine);
-                m_ReturnCoroutine = null;
-                Debug.Log("투사체가 다시 화면에 나타났습니다. 풀 반환을 취소합니다.");
+                m_WasInScreen = false;
+                // 화면 밖으로 나갔으므로, 지연 시간 후 풀로 돌아가는 코루틴 시작
+                m_ReturnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
+                Debug.Log("투사체가 화면 밖으로 나갔습니다. 풀 반환 절차를 시작합니다.");
             }
         }
+    }
+
+    public void ProjectileSetting(Controller playerController, ProjectileWeapon projectileWepon, int damage)
+    {
+        m_Controller = playerController;
+        m_Weapon = projectileWepon;
+        m_Damage = damage;
     }
 
     public void SetTarget(GameObject target)
@@ -80,5 +90,21 @@ public class Projectile : MonoBehaviour
         
         Debug.Log("시간이 다 되어 투사체를 풀로 반환합니다.");
         gameObject.SetActive(false); // 오브젝트 비활성화
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        var enemy = other.GetComponent<EnemyController>();
+        if (enemy != null)
+        {
+            var m_DamageEvent = new BattleManager.DamageEventStruct
+            {
+                damageAmount = m_Damage,
+                senderWeapon = m_Weapon,
+                sender = m_Controller,
+                receiver = enemy
+            };
+            BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
+        }
     }
 }

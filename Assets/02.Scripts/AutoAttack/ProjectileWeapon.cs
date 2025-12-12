@@ -17,21 +17,24 @@ public class ProjectileWeapon : Weapon
     public int poolSize = 20;
     public int projectileCount = 1;
     public float findTargetRange = 5.0f;
+    public int projectileDamage = 10;
     
 
     // 생성된 투사체들을 저장하는 리스트
     private List<GameObject> m_PooledProjectiles;
     private Collider[] m_FindTargetResults = new Collider[50];
     private GameObject m_CurrentTarget;
+    private Controller m_Controller;
     
     public override void WeaponSettingLogic()
     {
+        m_Controller = GetComponentInParent<Controller>();
         m_PooledProjectiles = new List<GameObject>();
         for (int i = 0; i < poolSize; i++)
         {
             // 투사체를 생성하고 비활성화 상태로 둔 뒤 리스트에 추가
             GameObject obj = Instantiate(projectilePrefab);
-            obj.GetComponent<Projectile>().projectilePoolManager = this;
+            obj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, projectileDamage);
             obj.SetActive(false);
             m_PooledProjectiles.Add(obj);
         }

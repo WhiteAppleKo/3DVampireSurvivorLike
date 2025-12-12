@@ -1,13 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : Controller
 {
-    public Weapon passiveWeapon;
-    [Header("Movement")]
-    public float moveSpeed = 5.0f;
-    public float turnSpeed = 10.0f;
-    
     [Header("Mouse Movement")]
     public LayerMask groundLayerMask;
     public float stopDistance = 0.5f;
@@ -19,7 +14,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         m_InputActions = new InputSystem_Actions();
-        GetComponent<AutoAttack>().GameStart();
+        autoAttacker.GameStart();
     }
 
     private void OnEnable()
