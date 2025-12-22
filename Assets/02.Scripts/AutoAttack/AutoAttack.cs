@@ -27,7 +27,6 @@ public class AutoAttack : MonoBehaviour
             return;
         }
         weapon[m_WeaponCount] = newWeapon;
-        newWeapon.WeaponSettingLogic();
         StartCoroutine(co_AutoAttack(weapon[m_WeaponCount]));
         m_WeaponCount++;
     }
@@ -36,7 +35,7 @@ public class AutoAttack : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(weapon.attackDelay);
+            yield return new WaitForSeconds(weapon.finalStats.attackDelay);
             weapon.AttackLogic();
         }
     }

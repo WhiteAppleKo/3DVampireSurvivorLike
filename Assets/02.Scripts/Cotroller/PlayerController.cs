@@ -14,6 +14,10 @@ public class PlayerController : Controller
     private void Awake()
     {
         m_InputActions = new InputSystem_Actions();
+    }
+
+    private void Start()
+    {
         autoAttacker.GameStart();
     }
 

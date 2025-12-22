@@ -23,7 +23,6 @@ public class Projectile : MonoBehaviour
     private bool m_WasInScreen;
     private Weapon m_Weapon;
     private Controller m_Controller;
-    private int m_Damage;
 
     void Awake()
     {
@@ -68,11 +67,10 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void ProjectileSetting(Controller playerController, ProjectileWeapon projectileWepon, int damage)
+    public void ProjectileSetting(Controller playerController, Weapon projectileWepon)
     {
         m_Controller = playerController;
         m_Weapon = projectileWepon;
-        m_Damage = damage;
     }
 
     public void SetTarget(GameObject target)
@@ -99,7 +97,8 @@ public class Projectile : MonoBehaviour
         {
             var m_DamageEvent = new BattleManager.DamageEventStruct
             {
-                damageAmount = m_Damage,
+                // 풀링 시 저장된 데미지 대신, 발사 시점의 최종 데미지를 실시간으로 가져옵니다.
+                damageAmount = m_Weapon.finalStats.damage,
                 senderWeapon = m_Weapon,
                 sender = m_Controller,
                 receiver = enemy

@@ -541,7 +541,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3944829340622873349, guid: 6b54aa8709de50a4d9f2df22c2344d54, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4691922618127130736, guid: 6b54aa8709de50a4d9f2df22c2344d54, type: 3}
       propertyPath: m_LocalPosition.x
@@ -582,6 +582,10 @@ PrefabInstance:
     - target: {fileID: 4691922618127130736, guid: 6b54aa8709de50a4d9f2df22c2344d54, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7467839242206841475, guid: 6b54aa8709de50a4d9f2df22c2344d54, type: 3}
+      propertyPath: damage
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7467839242206841475, guid: 6b54aa8709de50a4d9f2df22c2344d54, type: 3}
       propertyPath: projectileDamage
@@ -2160,10 +2164,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94dc7e2dd6576348be4169d34db1bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AoEWeapon
-  weaponType: 1
-  attackDelay: 1
-  damage: 10
-  areaOfEffectRadius: 5
+  baseStats:
+    attackDelay: 1
+    damage: 10
 --- !u!54 &1871677769
 Rigidbody:
   m_ObjectHideFlags: 0
