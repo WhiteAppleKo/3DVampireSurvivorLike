@@ -8,6 +8,7 @@ public class AutoAttack : MonoBehaviour
 {
     public Weapon[] weapon;
     
+    private List<IAugment> m_GlobalAugments = new List<IAugment>();
     private int m_WeaponCount = 0;
 
     public void GameStart()
@@ -16,6 +17,32 @@ public class AutoAttack : MonoBehaviour
         foreach(Weapon weaponInChildren in GetComponentsInChildren<Weapon>())
         {
             AddWeapon(weaponInChildren);
+        }
+    }
+    
+    /// <summary>
+    /// 무기에 새로운 증강을 추가합니다.
+    /// </summary>
+    public void AddAugment(IAugment augment)
+    {
+        m_GlobalAugments.Add(augment);
+        RecalculateGlobalStats();
+    }
+
+    /// <summary>
+    /// 무기에서 증강을 제거합니다.
+    /// </summary>
+    public void RemoveAugment(IAugment augment)
+    {
+        m_GlobalAugments.Remove(augment);
+        RecalculateGlobalStats();
+    }
+    
+    private void RecalculateGlobalStats()
+    {
+        for (int i = 0; i < m_WeaponCount; i++)
+        {
+            weapon[i].SetGlobalAugments(m_GlobalAugments);
         }
     }
 
@@ -27,6 +54,7 @@ public class AutoAttack : MonoBehaviour
             return;
         }
         weapon[m_WeaponCount] = newWeapon;
+        newWeapon.SetGlobalAugments(m_GlobalAugments);
         StartCoroutine(co_AutoAttack(weapon[m_WeaponCount]));
         m_WeaponCount++;
     }

@@ -13,4 +13,6 @@ public interface IAugment
     /// </summary>
     /// <param name="weapon">공격을 실행한 무기</param>
     void OnAttack(Weapon weapon);
+
+    void EnemyDead(Weapon weapon);
 }

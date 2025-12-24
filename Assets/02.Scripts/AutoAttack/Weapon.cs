@@ -25,12 +25,19 @@ public abstract class Weapon : MonoBehaviour
     public WeaponBaseStats finalStats { get; private set; }
 
     private List<IAugment> m_Augments = new List<IAugment>();
+    private List<IAugment> m_GlobalAugments;
 
     private void Awake()
     {
         // finalStats를 baseStats의 복사본으로 초기화합니다.
         WeaponSettingLogic();
         finalStats = new WeaponBaseStats(baseStats);
+    }
+
+    public void SetGlobalAugments(List<IAugment> globalAugments)
+    {
+        m_GlobalAugments = globalAugments;
+        RecalculateStats();
     }
 
     /// <summary>
@@ -50,6 +57,7 @@ public abstract class Weapon : MonoBehaviour
         m_Augments.Remove(augment);
         RecalculateStats();
     }
+    
 
     /// <summary>
     /// 기본 스탯부터 시작하여 모든 증강을 적용해 최종 스탯을 다시 계산합니다.
@@ -64,6 +72,12 @@ public abstract class Weapon : MonoBehaviour
         {
             augment.ModifyStats(finalStats);
         }
+
+        foreach (var globalAugment in m_GlobalAugments)
+        {
+            globalAugment.ModifyStats(finalStats);
+        }
+        Debug.Log(finalStats.damage);
     }
     
     // 각 무기 타입에 맞는 초기화 로직
@@ -72,6 +86,10 @@ public abstract class Weapon : MonoBehaviour
     // 실제 공격 로직
     public virtual void AttackLogic()
     {
+        foreach (var augment in m_GlobalAugments)
+        {
+            augment.OnAttack(this);
+        }
         // 모든 증강의 OnAttack 효과 호출
         foreach (var augment in m_Augments)
         {

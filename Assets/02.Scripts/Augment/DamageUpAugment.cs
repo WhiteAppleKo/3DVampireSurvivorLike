@@ -16,4 +16,9 @@ public class DamageUpAugment : ScriptableObject, IAugment
     {
         // 이 증강은 공격 시 특별한 효과가 없습니다.
     }
+
+    public void EnemyDead(Weapon weapon)
+    {
+        // 이 증강은 적이 죽었을 때 특별한 효과가 없습니다.
+    }
 }

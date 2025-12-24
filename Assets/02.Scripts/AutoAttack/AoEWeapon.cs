@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-using System;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Serialization;
-
 // 이 컴포넌트는 SphereCollider를 필요로 합니다.
 [RequireComponent(typeof(SphereCollider))]
 public class AoEWeapon : Weapon
