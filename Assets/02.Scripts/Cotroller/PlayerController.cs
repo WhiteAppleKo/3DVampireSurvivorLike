@@ -13,22 +13,26 @@ public class PlayerController : Controller
 
     private void Awake()
     {
+        base.Awake();
         m_InputActions = new InputSystem_Actions();
     }
 
     private void Start()
     {
         autoAttacker.GameStart();
+        UIManager.Instance.GameStart();
     }
 
-    private void OnEnable()
+    protected virtual void OnEnable()
     {
+        base.OnEnable();
         m_InputActions.Player.Enable();
         m_InputActions.UI.Enable();
     }
 
-    private void OnDisable()
+    protected virtual void OnDisable()
     {
+        base.OnDisable();
         m_InputActions.Player.Disable();
         m_InputActions.UI.Disable();
     }

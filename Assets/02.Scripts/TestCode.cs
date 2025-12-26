@@ -3,9 +3,8 @@ using UnityEngine;
 
 public class TestCode : MonoBehaviour
 {
-    public AutoAttack test;
-    
-    public ScriptableObject augment;
+    public PlayerController test;
+    private Weapon nulls;
     private InputSystem_Actions m_InputActions;
 
     private void Awake()
@@ -27,12 +26,13 @@ public class TestCode : MonoBehaviour
     {
         if (m_InputActions.Player.O.WasReleasedThisFrame())
         {
-            test.AddAugment(augment as IAugment);
+            var m_DamageEvent = new BattleManager.DamageEventStruct(10, nulls, test, test);
+            BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
         }
 
         if (m_InputActions.Player.P.WasReleasedThisFrame())
         {
-            test.RemoveAugment(augment as IAugment);
+            
         }
     }
 }

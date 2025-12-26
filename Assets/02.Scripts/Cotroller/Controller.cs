@@ -36,7 +36,9 @@ public class Controller : MonoBehaviour
     
     protected virtual void OnDamageReceived(BattleManager.DamageEventStruct damageEvent)
     {
+        
         if (damageEvent.receiver != this) return;
+        Debug.Log($"데미지 받음 {gameObject.name}");
         hp.Decrease(damageEvent.damageAmount);
     }
     
