@@ -6,7 +6,6 @@ public class PlayerHPInLine : MonoBehaviour
 {
     [GradientUsage(true)]
     public Gradient colorGradient;
-    public UIManager uiManager;
     
     private Disc m_HpDisc;
     private float m_Hp;
@@ -17,18 +16,27 @@ public class PlayerHPInLine : MonoBehaviour
 
     private void OnEnable()
     {
-        uiManager.onPlayerHpChangeEvent += ChangeHpValue;
+        UIManager.Instance.onPlayerHpChangeEvent += ChangeHpValue;
     }
     
     private void OnDisable()
     {
-        uiManager.onPlayerHpChangeEvent -= ChangeHpValue;
+        if (UIManager.isApplicationQuitting)
+        {
+            return;
+        }
+        if (!UIManager.HasInstance)
+        {
+            return;
+        }
+        UIManager.Instance.onPlayerHpChangeEvent -= ChangeHpValue;
     }
 
     public void ChangeHpValue(float ratio)
     {
         m_Hp = ratio;
         m_HpDisc.Radius = m_Hp;
+        m_HpDisc.AngRadiansEnd = ratio * Mathf.PI * 2f;
         m_HpDisc.Color = colorGradient.Evaluate(m_Hp);
     }
 }

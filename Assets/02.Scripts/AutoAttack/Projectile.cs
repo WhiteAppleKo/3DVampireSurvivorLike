@@ -98,7 +98,7 @@ public class Projectile : MonoBehaviour
             var m_DamageEvent = new BattleManager.DamageEventStruct
             {
                 // 풀링 시 저장된 데미지 대신, 발사 시점의 최종 데미지를 실시간으로 가져옵니다.
-                damageAmount = m_Weapon.finalStats.damage,
+                damageAmount = m_Weapon.FinalStats.damage,
                 senderWeapon = m_Weapon,
                 sender = m_Controller,
                 receiver = enemy

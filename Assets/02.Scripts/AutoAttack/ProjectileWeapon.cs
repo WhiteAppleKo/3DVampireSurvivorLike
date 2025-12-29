@@ -22,7 +22,7 @@ public class ProjectileWeapon : Weapon
     
     [Tooltip("미리 생성해 둘 투사체 개수")]
     public int poolSize = 20;
-
+    
     // 생성된 투사체들을 저장하는 리스트
     private List<GameObject> m_PooledProjectiles;
     private Collider[] m_FindTargetResults = new Collider[50];
@@ -84,7 +84,7 @@ public class ProjectileWeapon : Weapon
     {
         m_CurrentTarget = target;
         // 증강으로 변경된 최종 투사체 수(finalStats.projectileCount)를 사용합니다.
-        for (int i = 0; i < finalStats.projectileWeaponStats.projectileCount; i++)
+        for (int i = 0; i < FinalStats.projectileWeaponStats.projectileCount; i++)
         {
             GameObject obj = GetProjectile();
             obj.SetActive(true);
@@ -96,7 +96,7 @@ public class ProjectileWeapon : Weapon
     private GameObject FindTarget()
     {
         // 증강으로 변경된 최종 타겟 탐지 범위(finalStats.findTargetRange)를 사용합니다.
-        int size = Physics.OverlapSphereNonAlloc(transform.position, finalStats.projectileWeaponStats.findTargetRange, m_FindTargetResults, targetLayer);
+        int size = Physics.OverlapSphereNonAlloc(transform.position, FinalStats.projectileWeaponStats.findTargetRange, m_FindTargetResults, targetLayer);
 
         // 감지된 타겟이 없으면 null을 반환합니다.
         if (size == 0)

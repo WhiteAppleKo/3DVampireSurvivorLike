@@ -1,18 +1,18 @@
+using System;
 using UnityEngine;
 
 public class Controller : MonoBehaviour
 {
-    public AutoAttack autoAttacker;
-    public ClampInt hp;
-    public int maxHp = 100;
+    [SerializeField]
+    public BaseStats baseStats = new BaseStats();
     
-    [Header("Movement")]
-    public float moveSpeed = 5.0f;
-    public float turnSpeed = 10.0f;
+    public AutoAttack autoAttacker;
+    public BaseStats FinalStats { get; private set; }
 
     protected virtual void Awake()
     {
-        hp = new ClampInt(0, maxHp, maxHp);
+        baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp);
+        FinalStats = new BaseStats(baseStats);
     }
 
     protected virtual void OnEnable()
@@ -22,7 +22,7 @@ public class Controller : MonoBehaviour
             BattleManager.Instance.onDamageEvent += OnDamageReceived;
         }
 
-        hp.Events.onMinReached += Die;
+        FinalStats.hp.Events.onMinReached += Die;
     }
 
     protected virtual void OnDisable()
@@ -31,7 +31,7 @@ public class Controller : MonoBehaviour
         {
             BattleManager.Instance.onDamageEvent -= OnDamageReceived;
         }
-        hp.Events.onMinReached -= Die;
+        FinalStats.hp.Events.onMinReached -= Die;
     }
     
     protected virtual void OnDamageReceived(BattleManager.DamageEventStruct damageEvent)
@@ -39,7 +39,7 @@ public class Controller : MonoBehaviour
         
         if (damageEvent.receiver != this) return;
         Debug.Log($"데미지 받음 {gameObject.name}");
-        hp.Decrease(damageEvent.damageAmount);
+        FinalStats.hp.Decrease(damageEvent.damageAmount);
     }
     
     protected virtual void Die(int prev, int current)

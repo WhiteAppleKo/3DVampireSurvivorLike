@@ -63,7 +63,7 @@ public class AutoAttack : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(weapon.finalStats.attackDelay);
+            yield return new WaitForSeconds(weapon.FinalStats.attackDelay);
             weapon.AttackLogic();
         }
     }

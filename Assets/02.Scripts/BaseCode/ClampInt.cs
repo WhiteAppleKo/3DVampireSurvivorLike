@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ClampInt : ClampValue<int>

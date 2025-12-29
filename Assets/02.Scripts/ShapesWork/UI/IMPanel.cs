@@ -6,6 +6,7 @@ namespace Shapes {
 
 		[Range( 0, 1 )]
 		public float fillAmount = 1;
+		[GradientUsage( true )]
 		public Gradient colorGradient;
 		public string title = "Title";
 
@@ -23,6 +24,7 @@ namespace Shapes {
 
 			// Draw white border:
 			Draw.RectangleBorder( rect, 4f, 8f, Color.white );
+			
 
 			// Draw the title
 			Draw.FontSize = 240;

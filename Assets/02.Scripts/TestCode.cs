@@ -4,7 +4,6 @@ using UnityEngine;
 public class TestCode : MonoBehaviour
 {
     public PlayerController test;
-    private Weapon nulls;
     private InputSystem_Actions m_InputActions;
 
     private void Awake()
@@ -26,8 +25,7 @@ public class TestCode : MonoBehaviour
     {
         if (m_InputActions.Player.O.WasReleasedThisFrame())
         {
-            var m_DamageEvent = new BattleManager.DamageEventStruct(10, nulls, test, test);
-            BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
+            BattleManager.Instance.BroadcastExpEvent(10);
         }
 
         if (m_InputActions.Player.P.WasReleasedThisFrame())

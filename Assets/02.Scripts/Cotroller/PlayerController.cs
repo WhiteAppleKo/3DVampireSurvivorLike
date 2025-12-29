@@ -14,6 +14,8 @@ public class PlayerController : Controller
     private void Awake()
     {
         base.Awake();
+        baseStats.playerStats = new PlayerStats();
+        baseStats.playerStats.exp = new ClampInt(0, 100, 0);
         m_InputActions = new InputSystem_Actions();
     }
 
@@ -86,10 +88,10 @@ public class PlayerController : Controller
         // 이동 및 회전 적용
         if (m_Movement.sqrMagnitude > 0.01f)
         {
-            transform.Translate(m_Movement.normalized * (moveSpeed * Time.deltaTime), Space.World);
+            transform.Translate(m_Movement.normalized * (FinalStats.moveSpeed * Time.deltaTime), Space.World);
         
             Quaternion targetRotation = Quaternion.LookRotation(m_Movement);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, FinalStats.turnSpeed * Time.deltaTime);
         }
     }
 }

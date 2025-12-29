@@ -12,13 +12,15 @@ public class SingletoneBase<T> : MonoBehaviour where T : MonoBehaviour
     private static T m_Instance;
 
     private static readonly object M_LOCK = new object();
-    private static bool m_IsApplicationQuitting = false;
+    public static bool isApplicationQuitting = false;
+    public static bool HasInstance => m_Instance != null;
+
     // 외부에서 싱글톤 인스턴스에 접근하기 위한 프로퍼티
     public static T Instance
     {
         get
         {
-            if (m_IsApplicationQuitting == true)
+            if (isApplicationQuitting == true)
             {
                 return null;
             }
@@ -72,7 +74,7 @@ public class SingletoneBase<T> : MonoBehaviour where T : MonoBehaviour
 
     protected virtual void OnApplicationQuit()
     {
-        m_IsApplicationQuitting = true;
+        isApplicationQuitting = true;
     }
 
     // Unity 라이프사이클 메서드: 오브젝트가 파괴될 때 호출됩니다.

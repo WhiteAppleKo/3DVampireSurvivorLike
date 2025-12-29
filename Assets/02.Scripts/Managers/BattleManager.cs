@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BattleManager : SingletoneBase<BattleManager>
 {
+    //private PlayerController m_Player;
+    public PlayerController player;
     public struct DamageEventStruct
     {
         public int damageAmount;
@@ -25,16 +27,17 @@ public class BattleManager : SingletoneBase<BattleManager>
     protected override void Awake()
     {
         base.Awake();
-        Debug.Log("BattleManager 싱글톤 생성");
+       // m_Player = FindObjectOfType<PlayerController>();
     }
     
     
     public void BroadcastDamageEvent(DamageEventStruct damageEvent)
     {
-        Debug.Log("BattleManager 데미지 이벤트");
-        Debug.Log($"{damageEvent.damageAmount} 데미지 발생");
-        Debug.Log($"발신자: {damageEvent.sender.gameObject.name}");
-        Debug.Log($"수신자: {damageEvent.receiver.gameObject.name}");
         onDamageEvent?.Invoke(damageEvent);
+    }
+    
+    public void BroadcastExpEvent(int expAmount)
+    {
+        player.baseStats.playerStats.AddExp(expAmount);
     }
 }
