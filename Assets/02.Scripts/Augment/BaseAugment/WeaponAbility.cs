@@ -7,13 +7,13 @@ public class WeaponAbility : BaseAbility
     public enum e_WeaponStatType
     {
         AttackDelay,
-        DamageIncrease,
+        Damage,
     }
         
     public e_WeaponStatType targetStatType;
     public float amount;
     
-    public override void Apply(Controller player)
+    public virtual void Apply(WeaponBaseStats player)
     {
         
     }

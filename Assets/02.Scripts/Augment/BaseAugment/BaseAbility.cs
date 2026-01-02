@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace _02.Scripts.Managers.Choice
@@ -8,8 +9,8 @@ namespace _02.Scripts.Managers.Choice
         public string abilityName;
         [TextArea] public string description;
         public Sprite icon;
-        
-
-        public abstract void Apply(Controller player);
+        public int iconNumber;
+        public string abilityType;
+        public string valueType;
     }
 }

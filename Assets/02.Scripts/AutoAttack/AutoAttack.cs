@@ -8,7 +8,7 @@ public class AutoAttack : MonoBehaviour
 {
     public Weapon[] weapon;
     
-    private List<IWeaponAugment> m_GlobalAugments = new List<IWeaponAugment>();
+    private List<WeaponAbility> m_GlobalAugments = new List<WeaponAbility>();
     private int m_WeaponCount = 0;
 
     public void GameStart()
@@ -23,7 +23,7 @@ public class AutoAttack : MonoBehaviour
     /// <summary>
     /// 무기에 새로운 증강을 추가합니다.
     /// </summary>
-    public void AddAugment(IWeaponAugment augment)
+    public void AddAugment(WeaponAbility augment)
     {
         m_GlobalAugments.Add(augment);
         RecalculateGlobalStats();
@@ -32,7 +32,7 @@ public class AutoAttack : MonoBehaviour
     /// <summary>
     /// 무기에서 증강을 제거합니다.
     /// </summary>
-    public void RemoveAugment(IWeaponAugment augment)
+    public void RemoveAugment(WeaponAbility augment)
     {
         m_GlobalAugments.Remove(augment);
         RecalculateGlobalStats();

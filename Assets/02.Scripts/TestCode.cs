@@ -1,4 +1,6 @@
 using System;
+using _02.Scripts.Augment.BaseAugment;
+using _02.Scripts.Managers.Choice;
 using UnityEngine;
 
 public class TestCode : MonoBehaviour
@@ -26,8 +28,8 @@ public class TestCode : MonoBehaviour
     {
         if (m_InputActions.Player.O.WasReleasedThisFrame())
         {
-            var stat = statAugment as IStatAugment;
-            stat.ModifyStats(playerController.FinalStats);
+            var stat = statAugment as StatAbility;
+            stat.Apply(playerController.FinalStats);
         }
 
         if (m_InputActions.Player.P.WasReleasedThisFrame())

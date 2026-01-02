@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using _02.Scripts.Augment.BaseAugment;
+using _02.Scripts.Managers.Choice;
 using UnityEngine;
 
 public class Controller : MonoBehaviour
@@ -48,11 +50,11 @@ public class Controller : MonoBehaviour
     }
 
     #region 증강
-    private List<IStatAugment> m_Augments = new List<IStatAugment>();
+    private List<StatAbility> m_Augments = new List<StatAbility>();
     /// <summary>
     /// 새로운 증강을 추가합니다.
     /// </summary>
-    public void AddAugment(IStatAugment augment)
+    public void AddAugment(StatAbility augment)
     {
         m_Augments.Add(augment);
         RecalculateStats();
@@ -61,7 +63,7 @@ public class Controller : MonoBehaviour
     /// <summary>
     /// 증강을 제거합니다.
     /// </summary>
-    public void RemoveAugment(IStatAugment augment)
+    public void RemoveAugment(StatAbility augment)
     {
         m_Augments.Remove(augment);
         RecalculateStats();
@@ -79,7 +81,7 @@ public class Controller : MonoBehaviour
         // 2. 모든 증강의 스탯 수정치를 순서대로 적용
         foreach (var augment in m_Augments)
         {
-            augment.ModifyStats(FinalStats);
+            augment.Apply(FinalStats);
         }
     }
     #endregion

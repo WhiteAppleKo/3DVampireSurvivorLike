@@ -23,12 +23,12 @@ using UnityEngine.Rendering.Universal;
     public float outlineAddThickness = 0.02f; // 메인 선보다 얼마나 더 두껍게 할지
     [ColorUsage(true, true)]
     public Color outlineColor = Color.black;  // 테두리 색상
-
+    public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingTransparents;
     public override void DrawShapes(Camera cam)
     {
         if (player == null) return;
 
-        using (Draw.Command(cam, RenderPassEvent.BeforeRenderingTransparents))
+        using (Draw.Command(cam, renderPassEvent))
         {
             Draw.ZTest = CompareFunction.LessEqual;
             Draw.LineGeometry = LineGeometry.Flat2D;

@@ -15,8 +15,8 @@ public abstract class Weapon : MonoBehaviour
     // 증강이 적용된 최종 스탯입니다.
     public WeaponBaseStats FinalStats { get; private set; }
 
-    private List<IWeaponAugment> m_Augments = new List<IWeaponAugment>();
-    private List<IWeaponAugment> m_GlobalAugments;
+    private List<WeaponAbility> m_Augments = new List<WeaponAbility>();
+    private List<WeaponAbility> m_GlobalAugments;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public abstract class Weapon : MonoBehaviour
         FinalStats = new WeaponBaseStats(baseStats);
     }
 
-    public void SetGlobalAugments(List<IWeaponAugment> globalAugments)
+    public void SetGlobalAugments(List<WeaponAbility> globalAugments)
     {
         m_GlobalAugments = globalAugments;
         RecalculateStats();
@@ -34,7 +34,7 @@ public abstract class Weapon : MonoBehaviour
     /// <summary>
     /// 무기에 새로운 증강을 추가합니다.
     /// </summary>
-    public void AddAugment(IWeaponAugment augment)
+    public void AddAugment(WeaponAbility augment)
     {
         m_Augments.Add(augment);
         RecalculateStats();
@@ -43,7 +43,7 @@ public abstract class Weapon : MonoBehaviour
     /// <summary>
     /// 무기에서 증강을 제거합니다.
     /// </summary>
-    public void RemoveAugment(IWeaponAugment augment)
+    public void RemoveAugment(WeaponAbility augment)
     {
         m_Augments.Remove(augment);
         RecalculateStats();
@@ -61,12 +61,12 @@ public abstract class Weapon : MonoBehaviour
         // 2. 모든 증강의 스탯 수정치를 순서대로 적용
         foreach (var augment in m_Augments)
         {
-            augment.ModifyStats(FinalStats);
+            augment.Apply(FinalStats);
         }
 
         foreach (var globalAugment in m_GlobalAugments)
         {
-            globalAugment.ModifyStats(FinalStats);
+            globalAugment.Apply(FinalStats);
         }
         Debug.Log(FinalStats.damage);
     }
