@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New ProjectileCountUpAugment", menuName = "Augments/Projectile Count Up Augment")]
-public class ProjectileCountUpAugment : ScriptableObject, IAugment
+public class ProjectileCountUpAugment : ScriptableObject, IWeaponAugment
 {
     [Tooltip("증가시킬 투사체 개수")]
     public int projectileIncrease = 1;

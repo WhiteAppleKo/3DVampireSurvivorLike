@@ -15,8 +15,8 @@ public abstract class Weapon : MonoBehaviour
     // 증강이 적용된 최종 스탯입니다.
     public WeaponBaseStats FinalStats { get; private set; }
 
-    private List<IAugment> m_Augments = new List<IAugment>();
-    private List<IAugment> m_GlobalAugments;
+    private List<IWeaponAugment> m_Augments = new List<IWeaponAugment>();
+    private List<IWeaponAugment> m_GlobalAugments;
 
     private void Awake()
     {
@@ -25,7 +25,7 @@ public abstract class Weapon : MonoBehaviour
         FinalStats = new WeaponBaseStats(baseStats);
     }
 
-    public void SetGlobalAugments(List<IAugment> globalAugments)
+    public void SetGlobalAugments(List<IWeaponAugment> globalAugments)
     {
         m_GlobalAugments = globalAugments;
         RecalculateStats();
@@ -34,7 +34,7 @@ public abstract class Weapon : MonoBehaviour
     /// <summary>
     /// 무기에 새로운 증강을 추가합니다.
     /// </summary>
-    public void AddAugment(IAugment augment)
+    public void AddAugment(IWeaponAugment augment)
     {
         m_Augments.Add(augment);
         RecalculateStats();
@@ -43,7 +43,7 @@ public abstract class Weapon : MonoBehaviour
     /// <summary>
     /// 무기에서 증강을 제거합니다.
     /// </summary>
-    public void RemoveAugment(IAugment augment)
+    public void RemoveAugment(IWeaponAugment augment)
     {
         m_Augments.Remove(augment);
         RecalculateStats();
@@ -79,12 +79,12 @@ public abstract class Weapon : MonoBehaviour
     {
         foreach (var augment in m_GlobalAugments)
         {
-            augment.OnAttack(this);
+            
         }
         // 모든 증강의 OnAttack 효과 호출
         foreach (var augment in m_Augments)
         {
-            augment.OnAttack(this);
+            
         }
     }
 }

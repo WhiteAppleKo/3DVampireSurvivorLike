@@ -23,6 +23,7 @@ public class Projectile : MonoBehaviour
     private bool m_WasInScreen;
     private Weapon m_Weapon;
     private Controller m_Controller;
+    [SerializeField] private LayerMask m_TargetLayer;
 
     void Awake()
     {
@@ -67,10 +68,11 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    public void ProjectileSetting(Controller playerController, Weapon projectileWepon)
+    public void ProjectileSetting(Controller playerController, Weapon projectileWepon, LayerMask targetLayer)
     {
         m_Controller = playerController;
         m_Weapon = projectileWepon;
+        m_TargetLayer = targetLayer;
     }
 
     public void SetTarget(GameObject target)
@@ -92,18 +94,21 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        var enemy = other.GetComponent<EnemyController>();
-        if (enemy != null)
+        if((m_TargetLayer.value & (1 << other.gameObject.layer)) != 0)
         {
-            var m_DamageEvent = new BattleManager.DamageEventStruct
+            var enemy = other.GetComponent<Controller>();
+            if (enemy != null)
             {
-                // 풀링 시 저장된 데미지 대신, 발사 시점의 최종 데미지를 실시간으로 가져옵니다.
-                damageAmount = m_Weapon.FinalStats.damage,
-                senderWeapon = m_Weapon,
-                sender = m_Controller,
-                receiver = enemy
-            };
-            BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
+                var m_DamageEvent = new BattleManager.DamageEventStruct
+                {
+                    // 풀링 시 저장된 데미지 대신, 발사 시점의 최종 데미지를 실시간으로 가져옵니다.
+                    damageAmount = m_Weapon.FinalStats.damage,
+                    senderWeapon = m_Weapon,
+                    sender = m_Controller,
+                    receiver = enemy
+                };
+                BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
+            }
         }
     }
 }

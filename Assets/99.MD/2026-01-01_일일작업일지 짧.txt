@@ -1,0 +1,3 @@
+ClampInt Max 값을 수정하려고 new ClampInt했더니
+이전 ClampInt를 참조해서 동작 이상해짐
+ClampInt에 IncreaseMaxValue추가해서 해결

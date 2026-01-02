@@ -9,6 +9,11 @@ public class ClampInt : ClampValue<int>
     }
 
     public override float Ratio => (float)(Current - Min) / (Max - Min);
+
+    public void IncreaseMaxValue(int amount)
+    {
+        Max += amount;
+    }
     protected override int Add(int a, int b)
     {
         return a + b;

@@ -5,13 +5,6 @@ using UnityEngine;
 /// <summary>
 /// 투사체를 관리하는 오브젝트 풀링 클래스입니다.
 /// </summary>
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-/// <summary>
-/// 투사체를 관리하는 오브젝트 풀링 클래스입니다.
-/// </summary>
 public class ProjectileWeapon : Weapon
 {
     [Tooltip("타겟으로 지정할 레이어")]
@@ -39,7 +32,7 @@ public class ProjectileWeapon : Weapon
             // 투사체를 생성하고 비활성화 상태로 둔 뒤 리스트에 추가
             GameObject obj = Instantiate(projectilePrefab);
             // 데미지 값을 미리 설정하지 않고, Controller와 Weapon 참조만 전달합니다.
-            obj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this);
+            obj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, targetLayer);
             obj.SetActive(false);
             m_PooledProjectiles.Add(obj);
         }
@@ -75,7 +68,7 @@ public class ProjectileWeapon : Weapon
 
         // 만약 사용 가능한 투사체가 없다면, 새로 생성 (풀 크기를 동적으로 늘림)
         GameObject newObj = Instantiate(projectilePrefab);
-        newObj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this);
+        newObj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, targetLayer);
         m_PooledProjectiles.Add(newObj);
         return newObj;
     }

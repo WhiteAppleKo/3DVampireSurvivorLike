@@ -9,27 +9,27 @@ public class PlayerHPInLine : MonoBehaviour
     
     private Disc m_HpDisc;
     private float m_Hp;
-    private void Start()
+    private void Awake()
     {
         m_HpDisc = GetComponentInChildren<Disc>();
     }
 
     private void OnEnable()
     {
-        UIManager.Instance.onPlayerHpChangeEvent += ChangeHpValue;
+        SubscribeManager.Instance.onPlayerHpChangeEvent += ChangeHpValue;
     }
     
     private void OnDisable()
     {
-        if (UIManager.isApplicationQuitting)
+        if (SubscribeManager.isApplicationQuitting)
         {
             return;
         }
-        if (!UIManager.HasInstance)
+        if (!SubscribeManager.HasInstance)
         {
             return;
         }
-        UIManager.Instance.onPlayerHpChangeEvent -= ChangeHpValue;
+        SubscribeManager.Instance.onPlayerHpChangeEvent -= ChangeHpValue;
     }
 
     public void ChangeHpValue(float ratio)

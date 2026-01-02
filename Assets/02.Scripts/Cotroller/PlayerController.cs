@@ -11,28 +11,28 @@ public class PlayerController : Controller
     private Vector2 m_InputVector;
     private InputSystem_Actions m_InputActions;
 
-    private void Awake()
+    protected override void Awake()
     {
-        base.Awake();
         baseStats.playerStats = new PlayerStats();
         baseStats.playerStats.exp = new ClampInt(0, 100, 0);
+        base.Awake();
         m_InputActions = new InputSystem_Actions();
     }
 
     private void Start()
     {
         autoAttacker.GameStart();
-        UIManager.Instance.GameStart();
+        SubscribeManager.Instance.GameStart();
     }
 
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
         base.OnEnable();
         m_InputActions.Player.Enable();
         m_InputActions.UI.Enable();
     }
 
-    protected virtual void OnDisable()
+    protected override void OnDisable()
     {
         base.OnDisable();
         m_InputActions.Player.Disable();
@@ -90,8 +90,9 @@ public class PlayerController : Controller
         {
             transform.Translate(m_Movement.normalized * (FinalStats.moveSpeed * Time.deltaTime), Space.World);
         
-            Quaternion targetRotation = Quaternion.LookRotation(m_Movement);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, FinalStats.turnSpeed * Time.deltaTime);
+            //회전 로직 비활성화
+            /*Quaternion targetRotation = Quaternion.LookRotation(m_Movement);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, FinalStats.turnSpeed * Time.deltaTime);*/
         }
     }
 }

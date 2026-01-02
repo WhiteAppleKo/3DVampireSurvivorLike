@@ -13,22 +13,10 @@ namespace Shapes {
 
 		public void GameStart()
 		{
-			UIManager.Instance.onPlayerExpChangeEvent += ChangeExpValue;
+			SubscribeManager.Instance.onPlayerExpChangeEvent += ChangeExpValue;
 		}
 
-		        public override void OnDisable()
-		        {
-		            base.OnDisable();
-		            if (UIManager.isApplicationQuitting)
-		            {
-		                return;
-		            }
-		            if (!UIManager.HasInstance)
-		            {
-		                return;
-		            }
-		            UIManager.Instance.onPlayerExpChangeEvent -= ChangeExpValue;
-		        }		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
+		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
 			if( colorGradient == null )
 				return; // just in case it hasn't initialized
 
@@ -68,6 +56,20 @@ namespace Shapes {
 		private void ChangeExpValue(float ratio)
 		{
 			fillAmount = ratio;
+		}
+		
+		public override void OnDisable()
+		{
+			base.OnDisable();
+			if (SubscribeManager.isApplicationQuitting)
+			{
+				return;
+			}
+			if (!SubscribeManager.HasInstance)
+			{
+				return;
+			}
+			SubscribeManager.Instance.onPlayerExpChangeEvent -= ChangeExpValue;
 		}
 	}
 }

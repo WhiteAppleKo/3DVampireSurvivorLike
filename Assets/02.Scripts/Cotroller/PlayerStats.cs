@@ -5,14 +5,13 @@ using UnityEngine;
 public class PlayerStats
 {
     public int level = 1;
+    public int augmentationLevel = 1;
     public ClampInt exp;
-
-    private float m_ExpRatio;
+    public Action levelUpEvent;
     
-    public void AddExp(int amount)
-    {
-        exp.Increase(amount);
-    }
+    private float m_ExpRatio;
+
+    #region 생성자
     public PlayerStats(PlayerStats other)
     {
         this.level = other.level;
@@ -23,4 +22,24 @@ public class PlayerStats
     {
         
     }
+    #endregion
+    
+    #region 증강 관련
+    public void GetAugmentattionLevel()
+    {
+        augmentationLevel++;
+    }
+    #endregion
+    
+    #region 레벨 관련
+    public void AddExp(int amount)
+    {
+        exp.Increase(amount);
+    }
+    public void LevelUp()
+    {
+        level++;
+        levelUpEvent?.Invoke();
+    }
+    #endregion
 }

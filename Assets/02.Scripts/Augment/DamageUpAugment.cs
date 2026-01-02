@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New DamageUpAugment", menuName = "Augments/Damage Up Augment")]
-public class DamageUpAugment : ScriptableObject, IAugment
+public class DamageUpAugment : ScriptableObject, IWeaponAugment
 {
     [Tooltip("증가시킬 데미지 양")]
     public int damageIncrease = 20;
