@@ -9,18 +9,14 @@ namespace Shapes {
 		public float thickness = 8f;
 		[ColorUsage(true, true)]
 		public Color roundColor = Color.white;
-		public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
+		
 		// this is called automatically by the base class, in an existing Draw.Command context
 		public override void DrawCanvasShapes( ImCanvasContext ctx ) {
 			// The Rect input above is the full region of the UI,
 			// usually the region of the entire screen, in UI coordinates
 			
 			// Draw a rounded border around the whole screen:
-			using (Draw.Command(Camera.main, renderPassEvent))
-			{
-				Draw.RectangleBorder( ctx.canvasRect, thickness, cornerRadius, roundColor );
-			}
-
+			Draw.RectangleBorder( ctx.canvasRect, thickness, cornerRadius, roundColor );
 			// Draws all ImmediateModePanel child objects.
 			// in this case, they are health/stamina/magic bars:
 			base.DrawPanels();

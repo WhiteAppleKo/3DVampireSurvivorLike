@@ -12,8 +12,7 @@ namespace Shapes {
 		
 		[ColorUsage(true, true)]
 		public Color insideColor = Color.white;
-
-		public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
+		
 		public float amount;
 		
 		private Rect m_Rect;
@@ -25,13 +24,9 @@ namespace Shapes {
 
 			m_Rect = Inset(ctx.canvasRect, amount);
 
-			using (Draw.Command(Camera.main, renderPassEvent))
-			{
-				Draw.ZTest = UnityEngine.Rendering.CompareFunction.Always;
-				Draw.Rectangle(ctx.canvasRect, insideColor);
-				// Draw a rounded border around the whole screen:
-				Draw.RectangleBorder( m_Rect, thickness, cornerRadius, roundColor );
-			}
+			Draw.Rectangle(ctx.canvasRect, insideColor);
+			// Draw a rounded border around the whole screen:
+			Draw.RectangleBorder( m_Rect, thickness, cornerRadius, roundColor );
 			
 
 			// Draws all ImmediateModePanel child objects.

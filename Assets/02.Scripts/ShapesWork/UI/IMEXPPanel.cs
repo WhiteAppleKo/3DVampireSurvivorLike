@@ -19,7 +19,6 @@ namespace Shapes {
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
 			if( colorGradient == null )
 				return; // just in case it hasn't initialized
-
 			// Draw black background:
 			Draw.Rectangle( rect, 8f, Color.black );
 
