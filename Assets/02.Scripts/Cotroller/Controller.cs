@@ -56,6 +56,7 @@ public class Controller : MonoBehaviour
     /// </summary>
     public void AddAugment(StatAbility augment)
     {
+        Debug.LogWarning($"[Controller] ID: {this.GetInstanceID()} / AddAugment 호출됨. 증강: {augment?.abilityName}");
         m_Augments.Add(augment);
         RecalculateStats();
     }
@@ -83,6 +84,8 @@ public class Controller : MonoBehaviour
         {
             augment.Apply(FinalStats);
         }
+        Debug.Log($"player current hp : {FinalStats.hp.Current}");
+        Debug.Log($"player max hp : {FinalStats.hp.Max}");
     }
     #endregion
 }

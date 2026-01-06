@@ -43,7 +43,6 @@ public class ProjectileWeapon : Weapon
         // 베이스 클래스의 AttackLogic을 호출하여 증강의 OnAttack 효과를 발동시킵니다.
         base.AttackLogic();
         
-        Debug.Log($"이 컴포넌트의 클래스 이름은 '{this.GetType().Name}' 입니다.");
         m_CurrentTarget = FindTarget();
         if (m_CurrentTarget != null)
         {

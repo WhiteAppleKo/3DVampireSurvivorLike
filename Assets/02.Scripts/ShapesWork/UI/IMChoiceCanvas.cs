@@ -24,7 +24,7 @@ namespace Shapes {
 
 			m_Rect = Inset(ctx.canvasRect, amount);
 
-			Draw.Rectangle(ctx.canvasRect, insideColor);
+			//Draw.Rectangle(ctx.canvasRect, insideColor);
 			// Draw a rounded border around the whole screen:
 			Draw.RectangleBorder( m_Rect, thickness, cornerRadius, roundColor );
 			

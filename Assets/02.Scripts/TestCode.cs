@@ -5,9 +5,8 @@ using UnityEngine;
 
 public class TestCode : MonoBehaviour
 {
+    public Controller player;
     private InputSystem_Actions m_InputActions;
-    public ScriptableObject statAugment;
-    public PlayerController playerController;
 
     private void Awake()
     {
@@ -28,8 +27,7 @@ public class TestCode : MonoBehaviour
     {
         if (m_InputActions.Player.O.WasReleasedThisFrame())
         {
-            var stat = statAugment as StatAbility;
-            stat.Apply(playerController.FinalStats);
+            ExpManager.Instance.PlayerLevelUp();
         }
 
         if (m_InputActions.Player.P.WasReleasedThisFrame())

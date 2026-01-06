@@ -3,11 +3,11 @@ Ability ID 작성 규칙,,,,,,,
 시트 번호,시트 번호,타입,타입,값 타입,"정량, 정률",,
 ,,,0 : 스탯,0: Health,0:Fixed,,
 ,,,1: 스페셜 스탯,1:MaxHp,1:Perentage,,
-,,,2 : 장비 스탯,2:MoveSpeed,,,
-,,,3 : 스페셜 장비 스탯,,,,
+,,,,2:MoveSpeed,,,
+,,,,,,,
 ,,,,,,,
 ,,,,,,,
 ,,,,,,,
 Ability ID,Ability Name,Ability Type,IconNumber,Description,Value Type,Apply Type,Value 
 01000001,체력 회복,Stat,123123,체력 +# 회복,Health,Fixed,20
-01001101,최대 체력 증가,Stat,1231234,최대 체력 +# 증가,Health,Percentage,10
+01001101,최대 체력 증가,Stat,1231234,최대 체력 +# 증가,MaxHp,Percentage,10

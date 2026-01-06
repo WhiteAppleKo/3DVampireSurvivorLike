@@ -1,20 +1,3 @@
-%YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fbfa286bd132334dbe1aa60789ac69e, type: 3}
-  m_Name: EquipAbility
-  m_EditorClassIdentifier: Assembly-CSharp::WeaponAbility
-  abilityID: 
-  abilityName: 
-  description: 
-  icon: {fileID: 0}
-  targetStatType: 0
-  amount: 0
+version https://git-lfs.github.com/spec/v1
+oid sha256:c3db3854c8d139bbef2ddbf599ba44b3e4f4d6f279d6561ac3ce2c89559e38e3
+size 549

@@ -55,5 +55,10 @@ public class ExpManager : SingletoneBase<ExpManager>
     {
         playerController.FinalStats.playerStats.LevelUp();
         playerController.FinalStats.playerStats.exp.ResetToMin();
+        m_ChoiceManager.PopUpChoiceUI();
+        for (int i = 0; i < 3; i++)
+        {
+            m_ChoiceManager.SetChoices(i);
+        }
     }
 }
