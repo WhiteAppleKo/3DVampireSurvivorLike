@@ -9,11 +9,11 @@ public class Controller : MonoBehaviour
     [SerializeField]
     public BaseStats baseStats = new BaseStats();
     public AutoAttack autoAttacker;
-    public BaseStats FinalStats { get; private set; }
+    public BaseStats FinalStats { get; protected set; }
     
     protected virtual void Awake()
     {
-        baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp);
+        baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp / 2);
         FinalStats = new BaseStats(baseStats);
     }
 
@@ -33,7 +33,11 @@ public class Controller : MonoBehaviour
         {
             BattleManager.Instance.onDamageEvent -= OnDamageReceived;
         }
-        FinalStats.hp.Events.onMinReached -= Die;
+        
+        if (FinalStats != null && FinalStats.hp != null)
+        {
+            FinalStats.hp.Events.onMinReached -= Die;
+        }
     }
     
     protected virtual void OnDamageReceived(BattleManager.DamageEventStruct damageEvent)
@@ -48,44 +52,4 @@ public class Controller : MonoBehaviour
     {
         Debug.Log($"{gameObject.name} 사망");
     }
-
-    #region 증강
-    private List<StatAbility> m_Augments = new List<StatAbility>();
-    /// <summary>
-    /// 새로운 증강을 추가합니다.
-    /// </summary>
-    public void AddAugment(StatAbility augment)
-    {
-        Debug.LogWarning($"[Controller] ID: {this.GetInstanceID()} / AddAugment 호출됨. 증강: {augment?.abilityName}");
-        m_Augments.Add(augment);
-        RecalculateStats();
-    }
-
-    /// <summary>
-    /// 증강을 제거합니다.
-    /// </summary>
-    public void RemoveAugment(StatAbility augment)
-    {
-        m_Augments.Remove(augment);
-        RecalculateStats();
-    }
-    
-
-    /// <summary>
-    /// 기본 스탯부터 시작하여 모든 증강을 적용해 최종 스탯을 다시 계산합니다.
-    /// </summary>
-    protected void RecalculateStats()
-    {
-        // 1. 최종 스탯을 기본 스탯으로 초기화
-        FinalStats = new BaseStats(baseStats);
-        
-        // 2. 모든 증강의 스탯 수정치를 순서대로 적용
-        foreach (var augment in m_Augments)
-        {
-            augment.Apply(FinalStats);
-        }
-        Debug.Log($"player current hp : {FinalStats.hp.Current}");
-        Debug.Log($"player max hp : {FinalStats.hp.Max}");
-    }
-    #endregion
 }

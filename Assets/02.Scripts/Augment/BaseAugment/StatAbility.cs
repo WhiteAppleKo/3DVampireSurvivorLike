@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using _02.Scripts.Managers.Choice;
 using UnityEditor;
@@ -38,7 +39,7 @@ namespace _02.Scripts.Augment.BaseAugment
                     break;
             }
         }
-        public void SetSo(string id, string name, string typeOfAbility, int numberOfIcon, string descriptions, e_StatType statType, string valueTypes, string valueAmount)
+        public void SetSo(string id, string name, string typeOfAbility, int numberOfIcon, string descriptions, e_StatType statType, string valueTypes, string valueAmount, string istemporary)
         {
             abilityID = id;
             abilityName = name;
@@ -47,6 +48,17 @@ namespace _02.Scripts.Augment.BaseAugment
             description = descriptions;
             targetStatType = statType;
             valueType = valueTypes;
+
+            switch (istemporary)
+            {
+                case "TRUE":
+                    isTemporary = true;
+                    break;
+                case "FALSE":
+                    isTemporary = false;
+                    break;
+            }
+            
 
             switch (valueType)
             {

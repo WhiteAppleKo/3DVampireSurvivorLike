@@ -1,11 +1,12 @@
 using System;
 using _02.Scripts.Augment.BaseAugment;
+using _02.Scripts.Managers.Choice;
 using UnityEngine;
 
 public class ChoiceApplySystem : MonoBehaviour
 {
     public GameObject choicePanel;
-    public Controller player;
+    public PlayerController player;
     private ScrollItemScaler m_ScrollItemScaler;
     private void Start()
     {
@@ -22,12 +23,17 @@ public class ChoiceApplySystem : MonoBehaviour
         Debug.Log($"[ChoiceSystem] Player ID: {player.GetInstanceID()} 에게 능력 적용 시도");
 
         var ab = m_ScrollItemScaler.SelectedItem.GetComponent<BindImageText>().GetAbility();
-        choicePanel.SetActive(false);
+        CloseChoiceUI();
         string abilityType = ab.abilityType;
         switch (abilityType)
         {
             case "Stat":
                 Debug.Log($"[ChoiceSystem] AddAugment 호출 직전. 능력: {ab.abilityName}");
+                if (ab.isTemporary == true)
+                {
+                    (ab as StatAbility).Apply(player.FinalStats);
+                    break;
+                }
                 player.AddAugment((StatAbility)ab);
                 Debug.Log($"[ChoiceSystem] AddAugment 호출 완료. 타입: {abilityType}");
                 break;
@@ -42,6 +48,7 @@ public class ChoiceApplySystem : MonoBehaviour
 
     private void CloseChoiceUI()
     {
+        TimeScaleManager.Instance.SetTimeScale(1);
         choicePanel.SetActive(false);
     }
 }

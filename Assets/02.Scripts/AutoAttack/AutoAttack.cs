@@ -1,7 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 public class AutoAttack : MonoBehaviour
@@ -10,6 +11,7 @@ public class AutoAttack : MonoBehaviour
     
     private List<WeaponAbility> m_GlobalAugments = new List<WeaponAbility>();
     private int m_WeaponCount = 0;
+    private CancellationTokenSource m_Cts;
 
     public void GameStart()
     {
@@ -46,6 +48,45 @@ public class AutoAttack : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        if (m_Cts != null)
+        {
+            m_Cts.Cancel();
+            m_Cts.Dispose();
+        }
+        
+        m_Cts = new CancellationTokenSource();
+        StartAttack();
+        
+        /* 코루틴 코드
+        StopAllCoroutines();
+        StartAttack();*/
+    }
+
+    private void OnDisable()
+    {
+        if (m_Cts != null)
+        {
+            m_Cts.Cancel();
+            m_Cts.Dispose();
+            m_Cts = null;
+        }
+        // 코루틴 코드
+        /*StopAllCoroutines();*/
+    }
+
+    public void StartAttack()
+    {
+        for (int i = 0; i < m_WeaponCount; i++)
+        {
+            if (weapon[i] != null)
+            {
+                Async_AutoAttack(weapon[i], m_Cts.Token).Forget();
+            }
+        }
+    }
+
     public void AddWeapon(Weapon newWeapon)
     {
         if (m_WeaponCount > 5)
@@ -55,16 +96,37 @@ public class AutoAttack : MonoBehaviour
         }
         weapon[m_WeaponCount] = newWeapon;
         newWeapon.SetGlobalAugments(m_GlobalAugments);
-        StartCoroutine(co_AutoAttack(weapon[m_WeaponCount]));
+        
+        if (gameObject.activeInHierarchy && m_Cts != null)
+        {
+            Async_AutoAttack(newWeapon, m_Cts.Token).Forget();
+        }
+        
         m_WeaponCount++;
     }
 
-    private IEnumerator co_AutoAttack(Weapon weapon)
+    private async UniTaskVoid Async_AutoAttack(Weapon weapon, CancellationToken token)
+    {
+        //무한 루프
+        while (!token.IsCancellationRequested)
+        {
+            //딜레이 : TimeSpan 사용을 권장
+            //weapon.FinalStats.AttackDelay는 float (초 단위)
+            await UniTask.Delay(TimeSpan.FromSeconds(weapon.FinalStats.attackDelay), cancellationToken: token);
+
+            if (token.IsCancellationRequested)
+            {
+                break;
+            }
+            weapon.AttackLogic();
+        }
+    }
+    /*private IEnumerator co_AutoAttack(Weapon weapon)
     {
         while (true)
         {
             yield return new WaitForSeconds(weapon.FinalStats.attackDelay);
             weapon.AttackLogic();
         }
-    }
+    }*/
 }

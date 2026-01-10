@@ -1,3 +1,4 @@
+using System;
 using System.Net.Mime;
 using TMPro;
 using UnityEngine;
@@ -6,12 +7,31 @@ using UnityEngine.UI;
 namespace Shapes {
 
 	public class IMTimer : ImmediateModePanel {
-		
+		public static IMTimer Instance { get; private set; }
 		[ColorUsage( true, true )]
 		public Color color;
-		public string title = "Title";
+		public string timer = "timer";
 		public int fontSize = 240;
 		public TMP_FontAsset fontAsset;
+
+		public float ElapsedTime { get; private set; }
+
+		private void Awake()
+		{
+			if (Instance == null)
+			{
+				Instance = this;
+			}
+			else
+			{
+				Destroy(gameObject);
+			}
+		}
+
+		private void Update()
+		{
+			ElapsedTime += Time.deltaTime;
+		}
 
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
 			// Draw black background:
@@ -23,10 +43,11 @@ namespace Shapes {
 			
 
 			// Draw the title
+			timer = ElapsedTime.ToString("00.00");
 			Draw.FontSize = fontSize;
 			Vector2 center = new Vector2(0, 0);
 			Draw.Font = fontAsset;
-			Draw.Text( center, title, TextAlign.Center );
+			Draw.Text( center, timer, TextAlign.Center );
 		}
 	}
 }

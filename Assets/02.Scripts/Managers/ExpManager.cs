@@ -14,7 +14,7 @@ public class ExpManager : SingletoneBase<ExpManager>
         m_PooledExplosions = new List<GameObject>();
         for (int i = 0; i < 50; i++)
         {
-            GameObject obj = Instantiate(expPrefab);
+            GameObject obj = Instantiate(expPrefab, transform);
             m_PooledExplosions.Add(obj);
             obj.SetActive(false);
         }
@@ -54,7 +54,6 @@ public class ExpManager : SingletoneBase<ExpManager>
     public void PlayerLevelUp()
     {
         playerController.FinalStats.playerStats.LevelUp();
-        playerController.FinalStats.playerStats.exp.ResetToMin();
         m_ChoiceManager.PopUpChoiceUI();
         for (int i = 0; i < 3; i++)
         {

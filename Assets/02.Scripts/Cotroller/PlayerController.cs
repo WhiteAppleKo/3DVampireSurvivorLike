@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using _02.Scripts.Augment.BaseAugment;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -10,6 +12,7 @@ public class PlayerController : Controller
     private Vector3 m_Movement;
     private Vector2 m_InputVector;
     private InputSystem_Actions m_InputActions;
+
 
     protected override void Awake()
     {
@@ -95,4 +98,52 @@ public class PlayerController : Controller
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, FinalStats.turnSpeed * Time.deltaTime);*/
         }
     }
+    
+    #region 증강
+    private List<StatAbility> m_Augments = new List<StatAbility>();
+    /// <summary>
+    /// 새로운 증강을 추가합니다.
+    /// </summary>
+    public void AddAugment(StatAbility augment)
+    {
+        Debug.LogWarning($"[Controller] ID: {this.GetInstanceID()} / AddAugment 호출됨. 증강: {augment?.abilityName}");
+        m_Augments.Add(augment);
+        Debug.Log(m_Augments.Count);
+        RecalculateStats();
+    }
+
+    /// <summary>
+    /// 증강을 제거합니다.
+    /// </summary>
+    public void RemoveAugment(StatAbility augment)
+    {
+        m_Augments.Remove(augment);
+        RecalculateStats();
+    }
+    
+
+    /// <summary>
+    /// 기본 스탯부터 시작하여 모든 증강을 적용해 최종 스탯을 다시 계산합니다.
+    /// </summary>
+    protected void RecalculateStats()
+    {
+        // 1. 최종 스탯을 기본 스탯으로 초기화 (객체 재사용)
+        if (FinalStats == null)
+        {
+            FinalStats = new BaseStats(baseStats);
+        }
+        else
+        {
+            FinalStats.ResetTo(baseStats);
+        }
+        
+        // 2. 모든 증강의 스탯 수정치를 순서대로 적용
+        foreach (var augment in m_Augments)
+        {
+            augment.Apply(FinalStats);
+        }
+        Debug.Log($"player current hp : {FinalStats.hp.Current}");
+        Debug.Log($"player max hp : {FinalStats.hp.Max}");
+    }
+    #endregion
 }

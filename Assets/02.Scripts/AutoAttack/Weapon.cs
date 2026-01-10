@@ -53,7 +53,7 @@ public abstract class Weapon : MonoBehaviour
     /// <summary>
     /// 기본 스탯부터 시작하여 모든 증강을 적용해 최종 스탯을 다시 계산합니다.
     /// </summary>
-    private void RecalculateStats()
+    protected virtual void RecalculateStats()
     {
         // 1. 최종 스탯을 기본 스탯으로 초기화
         FinalStats = new WeaponBaseStats(baseStats);
@@ -68,7 +68,6 @@ public abstract class Weapon : MonoBehaviour
         {
             globalAugment.Apply(FinalStats);
         }
-        Debug.Log(FinalStats.damage);
     }
     
     // 각 무기 타입에 맞는 초기화 로직

@@ -7,8 +7,8 @@ using _02.Scripts.Augment.BaseAugment;
 public class AbilityImporter
 {
     // CSV 파일 경로 (본인의 경로에 맞게 수정하세요)
-    private static string m_CsvPath = "Assets/05.Datas/StatAbility.csv";
-    private static string m_SoPath = "Assets/05.Datas/AbilityDatabase.asset";
+    private static string m_CsvPath = "Assets/05.Datas/StatAbility/StatAbility.csv";
+    private static string m_SoPath = "Assets/05.Datas/StatAbility/AbilityDatabase.asset";
 
     [MenuItem("Tools/Import Abilities")]
     public static void ImportCSV()
@@ -70,7 +70,8 @@ public class AbilityImporter
                 data[4].Trim(),
                 statType,
                 data[6].Trim(),
-                data[7].Trim());
+                data[7].Trim(),
+                data[8].Trim());
             newAbility.name = $"{data[0].Trim()}_{data[1].Trim()}";
             AssetDatabase.AddObjectToAsset(newAbility, asset);
             asset.statAbilities.Add(newAbility);

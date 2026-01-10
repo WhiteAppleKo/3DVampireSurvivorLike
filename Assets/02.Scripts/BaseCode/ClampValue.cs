@@ -25,6 +25,13 @@ public abstract class ClampValue<T> where T : struct, IComparable<T>
     public void ResetToMin() => Set(Min);
     public void ResetToMax() => Set(Max);
     
+    public void UpdateValues(T min, T max, T current)
+    {
+        Min = min;
+        Max = max;
+        Set(current);
+    }
+    
     public void Increase(T amount)
     {
         T prev = Current;

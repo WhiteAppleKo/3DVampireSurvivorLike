@@ -48,6 +48,7 @@ public class ChoiceSystem : MonoBehaviour
 
     public void PopUpChoiceUI()
     {
+        TimeScaleManager.Instance.SetTimeScale(0);
         choicePanel.SetActive(true);
     }
 }

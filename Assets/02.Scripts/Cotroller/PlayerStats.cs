@@ -34,11 +34,22 @@ public class PlayerStats
     #region 레벨 관련
     public void AddExp(int amount)
     {
-        exp.Increase(amount);
+        if (exp.Max - exp.Current >= amount)
+        {
+            exp.Increase(amount);
+        }
+        else
+        {
+            int remain = amount - (exp.Max - exp.Current);
+            exp.Increase(amount);
+            exp.Increase(remain);
+        }
     }
     public void LevelUp()
     {
         level++;
+        exp.IncreaseMaxValue(10);
+        exp.ResetToMin();
         levelUpEvent?.Invoke();
     }
     #endregion
