@@ -46,7 +46,7 @@ public class MonsterImporter
             Debug.Log(prefabPath);
             GameObject monster = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
             // 데이터 개수가 부족한 줄은 스킵
-            if (data.Length < 2) continue;
+            if (data.Length < 8) continue;
             MonsterData newMonsterData = ScriptableObject.CreateInstance<MonsterData>();
             newMonsterData.SetSo(
                 data[0].Trim(), 

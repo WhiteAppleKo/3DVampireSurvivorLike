@@ -33,6 +33,11 @@ namespace Shapes {
 			ElapsedTime += Time.deltaTime;
 		}
 
+		public void ResetTimer()
+		{
+			ElapsedTime = 0;
+		}
+
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
 			// Draw black background:
 			Draw.Rectangle( rect, 8f, color );

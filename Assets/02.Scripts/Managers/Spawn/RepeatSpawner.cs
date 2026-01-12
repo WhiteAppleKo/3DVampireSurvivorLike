@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using _02.Scripts.Managers.Spawn;
+using _02.Scripts.Managers.Stage;
 using Shapes;
+using Unity.VisualScripting;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class RepeatSpawner : MonoBehaviour
 {
-    
-    public MonsterDatabase monsterDatabase;
     public float spawnDelay = 1.0f;
     public int poolSize = 10;
     public Controller player;
     
+    private StageData m_StageData;
     private int m_SpawnIndex = 0;
     private float m_ReadDatabaseDelay = 5.0f;
     private List<GameObject> m_EnemyList = new List<GameObject>();
@@ -22,18 +23,14 @@ public class RepeatSpawner : MonoBehaviour
 
     private CancellationTokenSource m_Cts;
 
-    private void Awake()
-    {
-        StartSpawning();
-    }
-
     private void OnDestroy()
     {
         StopSpawning();
     }
 
-    public void StartSpawning()
+    public void StartSpawning(StageData stageData)
     {
+        m_StageData = stageData;
         StopSpawning(); // 기존 작업이 있다면 취소
         m_Cts = new CancellationTokenSource();
         Async_LoadMonster(m_Cts.Token).Forget();
@@ -54,7 +51,7 @@ public class RepeatSpawner : MonoBehaviour
     private void SetEnemys()
     {
         float currentTime = IMTimer.Instance.ElapsedTime;
-        foreach (var data in monsterDatabase.monsterDatas)
+        foreach (var data in m_StageData.monsterList)
         {
             if (data.monsterSpawnMinTime <= currentTime && !m_EnemysDatas.Contains(data))
             {
