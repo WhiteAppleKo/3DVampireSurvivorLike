@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class TestCode : MonoBehaviour
 {
-    public Controller player;
     private InputSystem_Actions m_InputActions;
 
     private void Awake()
@@ -27,7 +26,7 @@ public class TestCode : MonoBehaviour
     {
         if (m_InputActions.Player.O.WasReleasedThisFrame())
         {
-            ExpManager.Instance.PlayerLevelUp();
+            SaveManager.Instance.SaveGame();
         }
 
         if (m_InputActions.Player.P.WasReleasedThisFrame())

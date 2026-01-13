@@ -18,6 +18,10 @@ public abstract class Weapon : MonoBehaviour
     private List<WeaponAbility> m_Augments = new List<WeaponAbility>();
     private List<WeaponAbility> m_GlobalAugments;
 
+    public List<WeaponAbility> GetWeaponLocalAugments()
+    {
+        return m_Augments;
+    }
     private void Awake()
     {
         // finalStats를 baseStats의 복사본으로 초기화합니다.

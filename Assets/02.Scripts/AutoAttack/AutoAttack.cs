@@ -121,6 +121,11 @@ public class AutoAttack : MonoBehaviour
             weapon.AttackLogic();
         }
     }
+
+    public List<WeaponAbility> GetWeaponGlobalAugments()
+    {
+        return m_GlobalAugments;
+    }
     /*private IEnumerator co_AutoAttack(Weapon weapon)
     {
         while (true)

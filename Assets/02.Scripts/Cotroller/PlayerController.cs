@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using _02.Scripts.Augment.BaseAugment;
+using _02.Scripts.Managers.Save;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerController : Controller
+public class PlayerController : Controller, ISaveable
 {
     [Header("Mouse Movement")]
     public LayerMask groundLayerMask;
@@ -26,6 +27,7 @@ public class PlayerController : Controller
     {
         autoAttacker.GameStart();
         SubscribeManager.Instance.GameStart();
+        ((ISaveable)this).RegistSavedata();
     }
 
     protected override void OnEnable()
@@ -144,6 +146,11 @@ public class PlayerController : Controller
         }
         Debug.Log($"player current hp : {FinalStats.hp.Current}");
         Debug.Log($"player max hp : {FinalStats.hp.Max}");
+    }
+
+    public List<StatAbility> SaveAbilityData()
+    {
+        return m_Augments;
     }
     #endregion
 }
