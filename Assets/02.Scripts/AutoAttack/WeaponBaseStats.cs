@@ -1,4 +1,5 @@
 using System;
+using _02.Scripts.AutoAttack;
 
 [Serializable]
 public class WeaponBaseStats
@@ -24,6 +25,9 @@ public class WeaponBaseStats
             percentAttackDelay = c;
         }
     }
+
+    public string weaponID;
+    public string weaponNamge;
     public float attackDelay = 1.0f;
     public int damage = 10;
     
@@ -36,6 +40,8 @@ public class WeaponBaseStats
     // 이 클래스를 복사하는 생성자
     public WeaponBaseStats(WeaponBaseStats other)
     {
+        this.weaponID = other.weaponID;
+        this.weaponNamge = other.weaponNamge;
         this.attackDelay = other.attackDelay;
         this.damage = other.damage;
 
@@ -70,6 +76,25 @@ public class WeaponBaseStats
         if (other.aoeWeaponStats != null)
         {
             this.aoeWeaponStats.Set(other.aoeWeaponStats);
+        }
+    }
+
+    public virtual void WeaponDataLoadLogic(WeaponData data)
+    {
+        weaponID = data.weaponID;
+        weaponNamge = data.weaponName;
+        attackDelay = data.attackDelay;
+        damage = data.weaponDamage;
+
+        if (projectileWeaponStats != null)
+        {
+            projectileWeaponStats.findTargetRange = data.effectRange;
+            projectileWeaponStats.projectileCount = data.projectileCount;
+        }
+
+        if (aoeWeaponStats != null)
+        {
+            aoeWeaponStats.areaOfEffectRadius = data.effectRange;
         }
     }
 }

@@ -334,8 +334,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94dc7e2dd6576348be4169d34db1bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AoEWeapon
-  weaponID: 
   baseStats:
+    weaponID: 
+    weaponNamge: 
     attackDelay: 1
     damage: 10
     projectileWeaponStats:

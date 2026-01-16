@@ -1,17 +1,12 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 /// <summary>
 /// 모든 무기의 기본 클래스입니다. 증강 시스템과 스탯 관리를 포함합니다.
 /// </summary>
 public abstract class Weapon : MonoBehaviour
 {
-    public string weaponID;
-    [Tooltip("무기의 기본 스탯. Inspector에서 설정합니다.")]
-    [SerializeField] protected WeaponBaseStats baseStats = new WeaponBaseStats();
+    public WeaponBaseStats baseStats = new WeaponBaseStats();
     private WeaponBaseStats.WeaponModifier m_GlobalAugmentsModifier;
     // 증강이 적용된 최종 스탯입니다.
     public WeaponBaseStats FinalStats { get; private set; }
@@ -105,4 +100,3 @@ public abstract class Weapon : MonoBehaviour
         }
     }
 }
-

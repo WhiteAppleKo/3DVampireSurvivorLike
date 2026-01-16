@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _02.Scripts.AutoAttack;
 using UnityEngine;
 using UnityEngine.Serialization;
 

@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
 using _02.Scripts.Augment.BaseAugment;
+using _02.Scripts.AutoAttack;
 using _02.Scripts.Managers.Save;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class SaveManager : SingletoneBase<SaveManager>
 {
@@ -11,7 +11,10 @@ public class SaveManager : SingletoneBase<SaveManager>
 
     public GameSaveData CurrentSaveData { get; private set; }
     public List<ISaveable> saveList = new List<ISaveable>();
+    
     public StatAbilityDatabase statAbilityDatabase;
+    public WeaponAbilityDatabase weaponAbilityDatabase;
+    public WeaponDatabase weaponDatabase;
 
     protected override void Awake()
     {
@@ -114,12 +117,20 @@ public class SaveManager : SingletoneBase<SaveManager>
 
     public PlayerSaveData LoadPlayerSaveData()
     {
-        
         if (CurrentSaveData == null)
         {
             return null;
         }
         return CurrentSaveData.playerData;
+    }
+
+    public AutoAttackerSaveData LoadAutoAttackerSaveData()
+    {
+        if (CurrentSaveData == null)
+        {
+            return null;
+        }
+        return CurrentSaveData.autoAttacker;
     }
 
     public List<StatAbility> GetStatAbilities(List<string> abilityID)
@@ -132,8 +143,24 @@ public class SaveManager : SingletoneBase<SaveManager>
         return statAbilities;
     }
 
+    public List<WeaponAbility> GetWeaponAbilities(List<string> abilityID)
+    {
+        List<WeaponAbility> weaponAbilities = new List<WeaponAbility>();
+        foreach (var iD in abilityID)
+        {
+            weaponAbilities.Add(weaponAbilityDatabase.GetWeaponAbility(iD));
+        }
+
+        return weaponAbilities;
+    }
+
     public void SetWeaponData(AutoAttackerSaveData saveData)
     {
         CurrentSaveData.autoAttacker = saveData;
+    }
+
+    public WeaponData GetWeaponData(string id)
+    {
+        return weaponDatabase.GetWeaponData(id);
     }
 }

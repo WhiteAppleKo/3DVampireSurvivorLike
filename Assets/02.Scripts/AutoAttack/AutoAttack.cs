@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using _02.Scripts.AutoAttack;
 using _02.Scripts.Managers.Save;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
@@ -31,7 +32,7 @@ public class AutoAttack : MonoBehaviour, ISaveable
     public void AddAugment(WeaponAbility augment)
     {
         m_GlobalAugments.Add(augment);
-        RecalculateGlobalStats();
+        RecalculateGlobalAugemnt();
     }
 
     /// <summary>
@@ -40,10 +41,10 @@ public class AutoAttack : MonoBehaviour, ISaveable
     public void RemoveAugment(WeaponAbility augment)
     {
         m_GlobalAugments.Remove(augment);
-        RecalculateGlobalStats();
+        RecalculateGlobalAugemnt();
     }
     
-    private void RecalculateGlobalStats()
+    private void RecalculateGlobalAugemnt()
     {
         for (int i = 0; i < m_GlobalAugments.Count; i++)
         {
@@ -158,7 +159,7 @@ public class AutoAttack : MonoBehaviour, ISaveable
                 continue;
             }
             WeaponSaveData newWeaponSaveData = new WeaponSaveData(
-                weaponData.weaponID,
+                weaponData.FinalStats.weaponID,
                 weaponData.GetWeaponLocalAugmentsID());
             
             weaponList.Add(newWeaponSaveData);
@@ -173,6 +174,31 @@ public class AutoAttack : MonoBehaviour, ISaveable
 
     public void LoadData()
     {
-        throw new NotImplementedException();
+        m_GlobalAugments.Clear();
+        AutoAttackerSaveData saveData = SaveManager.Instance.LoadAutoAttackerSaveData();
+        if (saveData == null)
+        {
+            return;
+        }
+
+        m_GlobalAugments = SaveManager.Instance.GetWeaponAbilities(saveData.globalWeaponAugments);
+        
+        // WeaponDatabase에서 saveData.weaponList.Count만큼 id 검색해서 찾아와
+        // 그 과정에서 Prefab을 하위로 생성하고 weaponList의 WeaponSaveData를 읽어서 내부를 채워
+        for (int i = 0; i < saveData.weaponList.Count; i++)
+        {
+            WeaponSaveData weaponSaveData = saveData.weaponList[i];
+            WeaponData loadWeaponData = SaveManager.Instance.GetWeaponData(weaponSaveData.weaponID);
+            GameObject createWeapon = Instantiate(loadWeaponData.weaponPrefab,transform);
+            Weapon weaponComponent = createWeapon.GetComponent<Weapon>();
+            AddWeapon(weaponComponent);
+
+            // TODO 스페셜 증강 가져오는 로직
+            for (int j = 0; j < weaponSaveData.localWeaponAugments.Count; j++)
+            {
+                
+            }
+        }
+        RecalculateGlobalAugemnt();
     }
 }

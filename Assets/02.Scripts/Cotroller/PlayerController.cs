@@ -30,6 +30,7 @@ public class PlayerController : Controller, ISaveable
         autoAttacker.GameStart();
         SubscribeManager.Instance.GameStart();
         LoadData();
+        autoAttacker.LoadData();
     }
 
     protected override void OnEnable()
