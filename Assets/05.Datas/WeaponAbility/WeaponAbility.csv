@@ -1,0 +1,13 @@
+Ability ID 작성 규칙,,,,,,,
+0,2,0,0,0,0,0,0
+시트 번호,시트 번호,타입,타입,값 타입,"정량, 정률",,
+,,,0 : 장비 스탯,0: Delay,0:Fixed,,
+,,,1: 장비 스페셜 스탯,1: Damage,1:Perentage,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+,,,,,,,
+Ability ID,Ability Name,Ability Type,IconNumber,Description,Value Type,Apply Type,Value 
+02000101,공격 속도 증가,Weapon,0000,공격 속도 +% 증가,AttackDelay,Percentage,2
+02001001,데미지 증가,Weapon,0001,데미지 +# 증가,Damage,Fixed,10

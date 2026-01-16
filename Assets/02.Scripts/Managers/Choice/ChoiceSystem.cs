@@ -7,6 +7,7 @@ using UnityEngine.Serialization;
 public class ChoiceSystem : MonoBehaviour
 {
     public StatAbilityDatabase statAbilityDatabase;
+    public WeaponAbilityDatabase weaponAbilityDatabase;
     public GameObject choicePanel;
     public BindImageText[] bindImageText;
     
@@ -39,10 +40,9 @@ public class ChoiceSystem : MonoBehaviour
                 m_ChoiceIndex = UnityEngine.Random.Range(0, statAbilityDatabase.statAbilities.Count);
                 return statAbilityDatabase.statAbilities[m_ChoiceIndex];
             case 1:
-                m_ChoiceIndex = UnityEngine.Random.Range(0, statAbilityDatabase.statAbilities.Count);
-                return statAbilityDatabase.statAbilities[m_ChoiceIndex];
+                m_ChoiceIndex = UnityEngine.Random.Range(0, weaponAbilityDatabase.weaponAbilities.Count);
+                return weaponAbilityDatabase.weaponAbilities[m_ChoiceIndex];
         }
-
         return null;
     }
 

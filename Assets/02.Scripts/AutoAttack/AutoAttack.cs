@@ -2,20 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using _02.Scripts.Managers.Save;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-public class AutoAttack : MonoBehaviour
+public class AutoAttack : MonoBehaviour, ISaveable
 {
     public Weapon[] weapon;
     
     private List<WeaponAbility> m_GlobalAugments = new List<WeaponAbility>();
+    private WeaponBaseStats.WeaponModifier m_GlobalModifier;
     private int m_WeaponCount = 0;
     private CancellationTokenSource m_Cts;
 
     public void GameStart()
     {
         weapon = new Weapon[5];
+        m_GlobalModifier = new WeaponBaseStats.WeaponModifier(0, 1, 1);
         foreach(Weapon weaponInChildren in GetComponentsInChildren<Weapon>())
         {
             AddWeapon(weaponInChildren);
@@ -42,9 +45,14 @@ public class AutoAttack : MonoBehaviour
     
     private void RecalculateGlobalStats()
     {
+        for (int i = 0; i < m_GlobalAugments.Count; i++)
+        {
+            m_GlobalAugments[i].Apply(m_GlobalModifier);
+        }
+        
         for (int i = 0; i < m_WeaponCount; i++)
         {
-            weapon[i].SetGlobalAugments(m_GlobalAugments);
+            weapon[i].SetGlobalAugments(m_GlobalModifier);
         }
     }
 
@@ -95,7 +103,7 @@ public class AutoAttack : MonoBehaviour
             return;
         }
         weapon[m_WeaponCount] = newWeapon;
-        newWeapon.SetGlobalAugments(m_GlobalAugments);
+        newWeapon.SetGlobalAugments(m_GlobalModifier);
         
         if (gameObject.activeInHierarchy && m_Cts != null)
         {
@@ -134,4 +142,37 @@ public class AutoAttack : MonoBehaviour
             weapon.AttackLogic();
         }
     }*/
+    public void SaveData()
+    {
+        List<string> augmentsID = new List<string>();
+        foreach (var augment in m_GlobalAugments)
+        {
+            augmentsID.Add(augment.abilityID);
+        }
+        
+        List<WeaponSaveData> weaponList = new List<WeaponSaveData>();
+        foreach (var weaponData in weapon)
+        {
+            if (weaponData == null)
+            {
+                continue;
+            }
+            WeaponSaveData newWeaponSaveData = new WeaponSaveData(
+                weaponData.weaponID,
+                weaponData.GetWeaponLocalAugmentsID());
+            
+            weaponList.Add(newWeaponSaveData);
+        }
+        
+        AutoAttackerSaveData saveData = new AutoAttackerSaveData(
+            augmentsID,
+            weaponList);
+        SaveManager.Instance.SetWeaponData(saveData);
+        Debug.Log("AutoAttackSaveDAta");
+    }
+
+    public void LoadData()
+    {
+        throw new NotImplementedException();
+    }
 }

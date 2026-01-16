@@ -55,9 +55,10 @@ namespace _02.Scripts.Managers.Save
         // === 무기 상태 정보 ===
         public List<string> globalWeaponAugments;
         public List<WeaponSaveData> weaponList = new List<WeaponSaveData>();
-        public AutoAttackerSaveData(List<string> globalAugmentsID)
+        public AutoAttackerSaveData(List<string> globalAugmentsID, List<WeaponSaveData> weaponSaveList)
         {
             globalWeaponAugments = globalAugmentsID;
+            weaponList = weaponSaveList;
         }
 
         public AutoAttackerSaveData()

@@ -10,6 +10,11 @@ public class ClampInt : ClampValue<int>
 
     public override float Ratio => (float)(Current - Min) / (Max - Min);
 
+    public void LoadValue(int value)
+    {
+        Current = value;
+    }
+
     public void IncreaseMaxValue(int amount)
     {
         Max += amount;

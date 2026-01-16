@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
+using _02.Scripts.Augment.BaseAugment;
 using _02.Scripts.Managers.Save;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class SaveManager : SingletoneBase<SaveManager>
 {
@@ -9,6 +11,7 @@ public class SaveManager : SingletoneBase<SaveManager>
 
     public GameSaveData CurrentSaveData { get; private set; }
     public List<ISaveable> saveList = new List<ISaveable>();
+    public StatAbilityDatabase statAbilityDatabase;
 
     protected override void Awake()
     {
@@ -29,10 +32,9 @@ public class SaveManager : SingletoneBase<SaveManager>
         {
             CurrentSaveData = new GameSaveData();
         }
-
-        // TODO: 실제 게임 오브젝트들(플레이어, 무기 매니저 등)로부터 최신 값을 
-        // CurrentSaveData에 갱신하는 로직이 필요할 수 있습니다. 
-        // 예: CollectDataFromPlayer();
+        
+        UpdateSaveData();
+        Debug.Log($"{CurrentSaveData.autoAttacker.weaponList.Count}");
 
         string json = JsonUtility.ToJson(CurrentSaveData, true); // true: 가독성 좋게 줄바꿈 포함
         
@@ -93,8 +95,45 @@ public class SaveManager : SingletoneBase<SaveManager>
         // 초기값 설정이 필요하다면 여기서 진행
     }
 
+    private void UpdateSaveData()
+    {
+        foreach (var saveable in saveList)
+        {
+            saveable.SaveData();
+        }
+    }
     public void RegistSaveData(ISaveable saveableData)
     {
         saveList.Add(saveableData);
+    }
+
+    public void SetPlayerData(PlayerSaveData saveData)
+    {
+        CurrentSaveData.playerData = saveData;
+    }
+
+    public PlayerSaveData LoadPlayerSaveData()
+    {
+        
+        if (CurrentSaveData == null)
+        {
+            return null;
+        }
+        return CurrentSaveData.playerData;
+    }
+
+    public List<StatAbility> GetStatAbilities(List<string> abilityID)
+    {
+        List<StatAbility> statAbilities = new List<StatAbility>();
+        foreach (var iD in abilityID)
+        {
+            statAbilities.Add(statAbilityDatabase.GetStatAbility(iD));
+        }
+        return statAbilities;
+    }
+
+    public void SetWeaponData(AutoAttackerSaveData saveData)
+    {
+        CurrentSaveData.autoAttacker = saveData;
     }
 }

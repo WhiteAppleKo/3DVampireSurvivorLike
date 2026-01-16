@@ -31,7 +31,7 @@ public class TestCode : MonoBehaviour
 
         if (m_InputActions.Player.P.WasReleasedThisFrame())
         {
-            
+            SaveManager.Instance.LoadGame();
         }
     }
 }

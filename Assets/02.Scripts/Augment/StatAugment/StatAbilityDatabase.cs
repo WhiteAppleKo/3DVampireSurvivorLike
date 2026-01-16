@@ -6,4 +6,10 @@ using UnityEngine;
 public class StatAbilityDatabase : ScriptableObject
 {
     public List<StatAbility> statAbilities = new List<StatAbility>();
+
+    public StatAbility GetStatAbility(string id)
+    {
+        StatAbility augment = statAbilities.Find(a => a.abilityID == id);
+        return augment;
+    }
 }

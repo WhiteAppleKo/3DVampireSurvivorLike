@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using _02.Scripts.Augment.BaseAugment;
 using _02.Scripts.Managers.Save;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,13 +22,14 @@ public class PlayerController : Controller, ISaveable
         baseStats.playerStats.exp = new ClampInt(0, 100, 0);
         base.Awake();
         m_InputActions = new InputSystem_Actions();
+        ((ISaveable)this).RegistSaveAble();
     }
 
     private void Start()
     {
         autoAttacker.GameStart();
         SubscribeManager.Instance.GameStart();
-        ((ISaveable)this).RegistSavedata();
+        LoadData();
     }
 
     protected override void OnEnable()
@@ -144,8 +146,6 @@ public class PlayerController : Controller, ISaveable
         {
             augment.Apply(FinalStats);
         }
-        Debug.Log($"player current hp : {FinalStats.hp.Current}");
-        Debug.Log($"player max hp : {FinalStats.hp.Max}");
     }
 
     public List<StatAbility> SaveAbilityData()
@@ -153,4 +153,40 @@ public class PlayerController : Controller, ISaveable
         return m_Augments;
     }
     #endregion
+
+    public void SaveData()
+    {
+        List<string> augmentsID = new List<string>();
+        foreach (var augment in m_Augments)
+        {
+            augmentsID.Add(augment.abilityID);
+        }
+        
+        PlayerSaveData saveData = new PlayerSaveData(
+            FinalStats.playerStats.level,
+            FinalStats.playerStats.exp.Current,
+            FinalStats.hp.Current,
+            augmentsID);
+        
+        SaveManager.Instance.SetPlayerData(saveData);
+        autoAttacker.SaveData();
+    }
+
+    public void LoadData()
+    {
+        m_Augments.Clear();
+        PlayerSaveData saveData = SaveManager.Instance.LoadPlayerSaveData();
+        if (saveData == null)
+        {
+            return;
+        }
+
+        FinalStats.playerStats.level = saveData.playerLevel;
+        FinalStats.playerStats.exp.IncreaseMaxValue(saveData.playerLevel * 10);
+        FinalStats.playerStats.exp.Increase(saveData.currentExp);
+        m_Augments = SaveManager.Instance.GetStatAbilities(saveData.statAugments);
+        RecalculateStats();
+        FinalStats.hp.LoadValue(saveData.currentHp);
+        RecalculateStats();
+    }
 }

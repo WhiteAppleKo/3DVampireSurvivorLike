@@ -7,6 +7,7 @@ public class ChoiceApplySystem : MonoBehaviour
 {
     public GameObject choicePanel;
     public PlayerController player;
+    public AutoAttack playerAutoAttack;
     private ScrollItemScaler m_ScrollItemScaler;
     private void Start()
     {
@@ -39,6 +40,7 @@ public class ChoiceApplySystem : MonoBehaviour
                 break;
             case "Weapon":
                 Debug.Log("Weapon");
+                playerAutoAttack.AddAugment((WeaponAbility)ab);
                 break;
             default:
                 Debug.Log("Default");

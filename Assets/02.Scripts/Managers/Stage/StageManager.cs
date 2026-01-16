@@ -65,7 +65,7 @@ namespace _02.Scripts.Managers.Stage
         /// </summary>
         private void AutoSave()
         {
-            // TODO: 실제 저장 로직 구현 필요
+            SaveManager.Instance.SaveGame();
             Debug.Log($"[StageManager] 스테이지 {currentStage} 데이터 자동 저장 완료.");
         }
 

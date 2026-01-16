@@ -4,19 +4,19 @@ using System.IO;
 using System.Text;
 using _02.Scripts.Augment.BaseAugment;
 
-public class AbilityImporter
+public class WeaponAbilityImporter
 {
     // CSV 파일 경로 (본인의 경로에 맞게 수정하세요)
-    private static string m_CsvPath = "Assets/05.Datas/StatAbility/StatAbility.csv";
-    private static string m_SoPath = "Assets/05.Datas/StatAbility/AbilityDatabase.asset";
+    private static string m_CsvPath = "Assets/05.Datas/WeaponAbility/WeaponAbility.csv";
+    private static string m_SoPath = "Assets/05.Datas/WeaponAbility/WeaponAbilityDatabase.asset";
 
-    [MenuItem("Tools/Import Abilities")]
+    [MenuItem("Tools/Import Weapon Abilities")]
     public static void ImportCSV()
     {
-        StatAbilityDatabase asset = AssetDatabase.LoadAssetAtPath<StatAbilityDatabase>(m_SoPath);
+        WeaponAbilityDatabase asset = AssetDatabase.LoadAssetAtPath<WeaponAbilityDatabase>(m_SoPath);
         if (asset == null)
         {
-            asset = ScriptableObject.CreateInstance<StatAbilityDatabase>();
+            asset = ScriptableObject.CreateInstance<WeaponAbilityDatabase>();
             AssetDatabase.CreateAsset(asset, m_SoPath);
         }
         Object[] subAssets = AssetDatabase.LoadAllAssetsAtPath(m_SoPath);
@@ -28,7 +28,7 @@ public class AbilityImporter
                 Object.DestroyImmediate(subAsset, true);
             }
         }
-        asset.statAbilities.Clear();
+        asset.weaponAbilities.Clear();
 
         // 한글 깨짐 방지를 위해 UTF8 또는 Default 설정
         string[] lines = File.ReadAllLines(m_CsvPath, Encoding.UTF8);
@@ -43,25 +43,24 @@ public class AbilityImporter
             // 데이터 개수가 부족한 줄은 스킵
             if (data.Length < 8) continue;
 
-            StatAbility.e_StatType statType;
+            WeaponAbility.e_WeaponStatType statType;
             switch (data[5].Trim())
             {
-                case "Health":
-                    statType = StatAbility.e_StatType.Health;
+                case "AttackDelay":
+                    statType = WeaponAbility.e_WeaponStatType.AttackDelay;
                     break;
-                case "MaxHp" :
-                    statType = StatAbility.e_StatType.MaxHp;
+                case "Damage" :
+                    statType = WeaponAbility.e_WeaponStatType.Damage;
                     break;
-                case "MoveSpeed":
-                    statType = StatAbility.e_StatType.MoveSpeed;
+                case "AoE" :
+                    statType = WeaponAbility.e_WeaponStatType.AoE;
                     break;
-                default: statType = StatAbility.e_StatType.WrongType;
+                default:
+                    statType = WeaponAbility.e_WeaponStatType.WrongType;
                     break;
             }
             
-            
-            
-            StatAbility newAbility = ScriptableObject.CreateInstance<StatAbility>();
+            WeaponAbility newAbility = ScriptableObject.CreateInstance<WeaponAbility>();
 
             newAbility.SetSo(data[0].Trim(),
                 data[1].Trim(),
@@ -70,11 +69,10 @@ public class AbilityImporter
                 data[4].Trim(),
                 statType,
                 data[6].Trim(),
-                data[7].Trim(),
-                data[8].Trim());
+                data[7].Trim());
             newAbility.name = $"{data[0].Trim()}_{data[1].Trim()}";
             AssetDatabase.AddObjectToAsset(newAbility, asset);
-            asset.statAbilities.Add(newAbility);
+            asset.weaponAbilities.Add(newAbility);
         }
         
 
@@ -82,6 +80,6 @@ public class AbilityImporter
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log($"임포트 완료! 총 {asset.statAbilities.Count}개의 능력을 로드했습니다.");
+        Debug.Log($"임포트 완료! 총 {asset.weaponAbilities.Count}개의 능력을 로드했습니다.");
     }
 }

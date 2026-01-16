@@ -13,7 +13,7 @@ public class Controller : MonoBehaviour
     
     protected virtual void Awake()
     {
-        baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp / 2);
+        baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp);
         FinalStats = new BaseStats(baseStats);
     }
 
@@ -44,12 +44,11 @@ public class Controller : MonoBehaviour
     {
         
         if (damageEvent.receiver != this) return;
-        Debug.Log($"데미지 받음 {gameObject.name}");
         FinalStats.hp.Decrease(damageEvent.damageAmount);
     }
     
     protected virtual void Die(int prev, int current)
     {
-        Debug.Log($"{gameObject.name} 사망");
+        
     }
 }

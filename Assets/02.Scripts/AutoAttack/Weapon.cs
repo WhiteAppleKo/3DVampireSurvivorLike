@@ -9,15 +9,24 @@ using UnityEngine.Serialization;
 /// </summary>
 public abstract class Weapon : MonoBehaviour
 {
+    public string weaponID;
     [Tooltip("무기의 기본 스탯. Inspector에서 설정합니다.")]
     [SerializeField] protected WeaponBaseStats baseStats = new WeaponBaseStats();
-
+    private WeaponBaseStats.WeaponModifier m_GlobalAugmentsModifier;
     // 증강이 적용된 최종 스탯입니다.
     public WeaponBaseStats FinalStats { get; private set; }
 
     private List<WeaponAbility> m_Augments = new List<WeaponAbility>();
-    private List<WeaponAbility> m_GlobalAugments;
 
+    public List<string> GetWeaponLocalAugmentsID()
+    {
+        List<string> IDList = new List<string>();
+        foreach (var augmnet in m_Augments)
+        {
+            IDList.Add(augmnet.abilityID);
+        }
+        return IDList;
+    }
     public List<WeaponAbility> GetWeaponLocalAugments()
     {
         return m_Augments;
@@ -27,11 +36,13 @@ public abstract class Weapon : MonoBehaviour
         // finalStats를 baseStats의 복사본으로 초기화합니다.
         WeaponSettingLogic();
         FinalStats = new WeaponBaseStats(baseStats);
+        m_GlobalAugmentsModifier = new WeaponBaseStats.WeaponModifier(1, 1, 1);
     }
 
-    public void SetGlobalAugments(List<WeaponAbility> globalAugments)
+    
+    public void SetGlobalAugments(WeaponBaseStats.WeaponModifier globalAugmentsModifier)
     {
-        m_GlobalAugments = globalAugments;
+        m_GlobalAugmentsModifier = globalAugmentsModifier;
         RecalculateStats();
     }
 
@@ -60,17 +71,24 @@ public abstract class Weapon : MonoBehaviour
     protected virtual void RecalculateStats()
     {
         // 1. 최종 스탯을 기본 스탯으로 초기화
-        FinalStats = new WeaponBaseStats(baseStats);
+        if (FinalStats == null)
+        {
+            FinalStats = new WeaponBaseStats(baseStats);
+        }
+        else
+        {
+            FinalStats.ResetTo(baseStats);
+        }
         
         // 2. 모든 증강의 스탯 수정치를 순서대로 적용
+        // >>>>> 최종 글로벌 증가값을 AutoAttack에서 받아오는걸로 바뀜
+        FinalStats.attackDelay = FinalStats.attackDelay / m_GlobalAugmentsModifier.percentAttackDelay;
+        FinalStats.damage = FinalStats.damage + m_GlobalAugmentsModifier.fixedDamageIncrease;
+        FinalStats.damage = (int)(FinalStats.damage * m_GlobalAugmentsModifier.percentDamageIncreadse);
+        
         foreach (var augment in m_Augments)
         {
-            augment.Apply(FinalStats);
-        }
-
-        foreach (var globalAugment in m_GlobalAugments)
-        {
-            globalAugment.Apply(FinalStats);
+            
         }
     }
     
@@ -80,10 +98,6 @@ public abstract class Weapon : MonoBehaviour
     // 실제 공격 로직
     public virtual void AttackLogic()
     {
-        foreach (var augment in m_GlobalAugments)
-        {
-            
-        }
         // 모든 증강의 OnAttack 효과 호출
         foreach (var augment in m_Augments)
         {

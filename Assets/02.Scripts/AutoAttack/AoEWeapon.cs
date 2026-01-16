@@ -69,7 +69,6 @@ public class AoEWeapon : Weapon
             {
                 if (enemy.gameObject.activeInHierarchy)
                 {
-                    Debug.Log($"적 {enemy.name} 이(가) AoE 공격을 받았습니다.");
                     // 증강이 적용된 최종 데미지(finalStats.damage)를 사용합니다.
                     m_DamageEvent = new BattleManager.DamageEventStruct(FinalStats.damage, this, m_Controller, enemy);
                     BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);

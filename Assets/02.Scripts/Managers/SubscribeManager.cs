@@ -66,7 +66,6 @@ public class SubscribeManager : SingletoneBase<SubscribeManager>
     {
         m_HpRatio = playerController.FinalStats.hp.Ratio;
         onPlayerHpChangeEvent?.Invoke(m_HpRatio);
-        Debug.Log(current);
     }
 
     private void ChangePlayerHp(int prev, int current)
