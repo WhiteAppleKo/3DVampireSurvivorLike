@@ -44,7 +44,9 @@ public class Controller : MonoBehaviour
     {
         
         if (damageEvent.receiver != this) return;
+        Debug.Log(FinalStats.hp.Current);
         FinalStats.hp.Decrease(damageEvent.damageAmount);
+        Debug.Log(FinalStats.hp.Current);
     }
     
     protected virtual void Die(int prev, int current)

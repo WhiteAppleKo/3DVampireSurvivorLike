@@ -87,8 +87,6 @@ public class Projectile : MonoBehaviour
     private IEnumerator ReturnToPoolAfterDelay()
     {
         yield return new WaitForSeconds(returnToPoolDelay);
-        
-        Debug.Log("시간이 다 되어 투사체를 풀로 반환합니다.");
         gameObject.SetActive(false); // 오브젝트 비활성화
     }
 

@@ -344,6 +344,9 @@ MonoBehaviour:
       findTargetRange: 5
     aoeWeaponStats:
       areaOfEffectRadius: 5
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!135 &1463629794394034678
 SphereCollider:
   m_ObjectHideFlags: 0

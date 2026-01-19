@@ -35,6 +35,7 @@ public class RepeatSpawner : MonoBehaviour
         m_Cts = new CancellationTokenSource();
         Async_LoadMonster(m_Cts.Token).Forget();
         Async_RepeatSpawn(m_Cts.Token).Forget();
+        SetEnemys();
     }
 
     public void StopSpawning()
