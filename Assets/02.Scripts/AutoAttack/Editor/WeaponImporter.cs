@@ -58,7 +58,7 @@ namespace _02.Scripts.AutoAttack.Editor
                     data[6].Trim(),
                     weapon);
             
-                newWeaponData.name = $"Monster_{data[0].Trim()}";
+                newWeaponData.name = $"Weapon_{data[0].Trim()}";
                 AssetDatabase.AddObjectToAsset(newWeaponData, asset);
                 asset.weaponDatas.Add(newWeaponData);
             }

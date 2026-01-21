@@ -9,13 +9,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3380664165551205349}
-  - component: {fileID: 7368764189483144950}
   - component: {fileID: 5877786903061236895}
   - component: {fileID: 1732477778005929485}
-  - component: {fileID: 7664626493228600463}
   - component: {fileID: 2022473118481291113}
+  - component: {fileID: -749779554654209221}
   m_Layer: 3
-  m_Name: Weapon_05010001
+  m_Name: Weapon_05010002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36,32 +35,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7368764189483144950
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 173423209539544223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d94dc7e2dd6576348be4169d34db1bf5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AoEWeapon
-  baseStats:
-    weaponID: 05010001
-    weaponNamge: "\uD6A8\uACFC \uBC94\uC704 \uBB34\uAE30"
-    attackDelay: 0.1
-    damage: 2
-    projectileWeaponStats:
-      projectileCount: 0
-      findTargetRange: 5
-    aoeWeaponStats:
-      areaOfEffectRadius: 2
-  audioSource: {fileID: 0}
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!135 &5877786903061236895
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -110,33 +83,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &7664626493228600463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 173423209539544223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9d6e0b1372fd3e4099a426c39d4af9f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HexGridRenderer
-  useCullingMasks: 0
-  gridMode: 1
-  target: {fileID: 3380664165551205349}
-  viewDistance: 1
-  hexRadius: 1
-  thickness: 0.01
-  color: {r: 0, g: 0.16470589, b: 0.16470589, a: 0.42745098}
-  yOffset: 0.02
-  aoeRange: 1
-  useOutline: 1
-  outlineAddThickness: 0.01
-  outlineColor: {r: 3.0672052, g: 0, b: 0, a: 1}
-  chargeColor: {r: 3, g: 3, b: 3, a: 3}
-  zTest: 4
-  renderPassEvent: 450
 --- !u!82 &2022473118481291113
 AudioSource:
   m_ObjectHideFlags: 0
@@ -148,7 +94,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 9adb425d8cb2ad54290b7c5202b0d248, type: 3}
+  m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.061
   m_Pitch: 1
@@ -234,3 +180,26 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &-749779554654209221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173423209539544223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a3e592f10ca4f94cae148e12b865c27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChargeDash
+  baseStats:
+    weaponID: 123
+    weaponNamge: 123
+    attackDelay: 1
+    damage: 10
+    projectileWeaponStats:
+      projectileCount: 1
+      findTargetRange: 5
+    aoeWeaponStats:
+      areaOfEffectRadius: 5
+  audioSource: {fileID: 0}

@@ -20,7 +20,7 @@
 
 * 기술 문서 작성 돕기 : 모든 다이어그램 도표 제작 등은 머메이드를 기준으로 작성해
 
-* 내가 MD파일 생성을 요청하면 C:\Users\kot77\Desktop\Unity\VampireSurvivorLike\Assets\99.MD 폴더에 MD파일을 생성해 줘.
+* 내가 MD파일 생성을 요청하면 C:\Users\kot77\Documents\3DVampireSurvivorLike\Assets\99.MD 폴더에 MD파일을 생성해 줘.
 
 
 

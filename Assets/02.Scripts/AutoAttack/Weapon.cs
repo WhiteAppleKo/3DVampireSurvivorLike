@@ -7,6 +7,8 @@ using UnityEngine;
 public abstract class Weapon : MonoBehaviour
 {
     public WeaponBaseStats baseStats = new WeaponBaseStats();
+    public AudioSource  audioSource;
+    
     private WeaponBaseStats.WeaponModifier m_GlobalAugmentsModifier;
     // 증강이 적용된 최종 스탯입니다.
     public WeaponBaseStats FinalStats { get; private set; }
@@ -32,6 +34,7 @@ public abstract class Weapon : MonoBehaviour
         WeaponSettingLogic();
         FinalStats = new WeaponBaseStats(baseStats);
         m_GlobalAugmentsModifier = new WeaponBaseStats.WeaponModifier(1, 1, 1);
+        audioSource = GetComponent<AudioSource>();
     }
 
     

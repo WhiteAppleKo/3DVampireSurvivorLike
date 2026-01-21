@@ -1,5 +1,7 @@
 using System;
 using _02.Scripts.AutoAttack;
+using _02.Scripts.AutoAttack.Charge;
+using _02.Scripts.AutoAttack.Projectile;
 
 [Serializable]
 public class WeaponBaseStats
@@ -30,6 +32,7 @@ public class WeaponBaseStats
     public string weaponNamge;
     public float attackDelay = 1.0f;
     public int damage = 10;
+    public float range = 10;
     
     // ProjectileWeapon Stats
     public ProjectileWeaponStats projectileWeaponStats;
@@ -37,6 +40,8 @@ public class WeaponBaseStats
     // AoEWeapon Stats
     public AoEWeaponStats aoeWeaponStats;
     
+    // ChargeStat
+    public ChargeWeaponStat chargeWeaponStat;
     // 이 클래스를 복사하는 생성자
     public WeaponBaseStats(WeaponBaseStats other)
     {
@@ -85,7 +90,7 @@ public class WeaponBaseStats
         weaponNamge = data.weaponName;
         attackDelay = data.attackDelay;
         damage = data.weaponDamage;
-
+        
         if (projectileWeaponStats != null)
         {
             projectileWeaponStats.findTargetRange = data.effectRange;
@@ -95,6 +100,11 @@ public class WeaponBaseStats
         if (aoeWeaponStats != null)
         {
             aoeWeaponStats.areaOfEffectRadius = data.effectRange;
+        }
+
+        if (chargeWeaponStat != null)
+        {
+            chargeWeaponStat.findTargetRange = data.effectRange;
         }
     }
 }
