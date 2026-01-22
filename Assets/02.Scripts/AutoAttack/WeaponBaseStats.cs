@@ -61,6 +61,12 @@ public class WeaponBaseStats
             this.aoeWeaponStats = new AoEWeaponStats();
             aoeWeaponStats.Set(other.aoeWeaponStats);
         }
+
+        if (other.chargeWeaponStat != null)
+        {
+            this.chargeWeaponStat = new ChargeWeaponStat();
+            chargeWeaponStat.Set(other.chargeWeaponStat);
+        }
     }
 
     public WeaponBaseStats()
@@ -81,6 +87,11 @@ public class WeaponBaseStats
         if (other.aoeWeaponStats != null)
         {
             this.aoeWeaponStats.Set(other.aoeWeaponStats);
+        }
+        
+        if (other.chargeWeaponStat != null)
+        {
+            this.chargeWeaponStat.Set(other.chargeWeaponStat);
         }
     }
 

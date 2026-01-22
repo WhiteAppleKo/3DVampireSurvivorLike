@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _02.Scripts.Cotroller;
 using UnityEngine;
 
 // 이 컴포넌트는 SphereCollider를 필요로 합니다.

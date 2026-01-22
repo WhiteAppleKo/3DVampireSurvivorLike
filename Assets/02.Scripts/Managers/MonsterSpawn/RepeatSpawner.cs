@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using _02.Scripts.Cotroller;
 using Cysharp.Threading.Tasks;
 using _02.Scripts.Managers.Spawn;
 using _02.Scripts.Managers.Stage;

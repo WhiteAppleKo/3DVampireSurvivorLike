@@ -20,6 +20,7 @@ public class ProjectileWeapon : Weapon
     // 생성된 투사체들을 저장하는 리스트
     private List<GameObject> m_PooledProjectiles;
     private Collider[] m_FindTargetResults = new Collider[50];
+    
     private GameObject m_CurrentTarget;
     private Controller m_Controller;
     
@@ -27,7 +28,6 @@ public class ProjectileWeapon : Weapon
     {
         m_Controller = GetComponentInParent<Controller>();
         m_PooledProjectiles = new List<GameObject>();
-        baseStats.projectileWeaponStats = new ProjectileWeaponStats();
         for (int i = 0; i < poolSize; i++)
         {
             // 투사체를 생성하고 비활성화 상태로 둔 뒤 리스트에 추가

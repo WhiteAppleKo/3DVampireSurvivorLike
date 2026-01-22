@@ -10,6 +10,7 @@ public class Controller : MonoBehaviour
     public BaseStats baseStats = new BaseStats();
     public AutoAttack autoAttacker;
     public BaseStats FinalStats { get; protected set; }
+    public bool isCharging = false;
     
     protected virtual void Awake()
     {

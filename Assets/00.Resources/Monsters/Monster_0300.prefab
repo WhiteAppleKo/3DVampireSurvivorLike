@@ -339,11 +339,14 @@ MonoBehaviour:
     weaponNamge: 
     attackDelay: 1
     damage: 10
+    range: 10
     projectileWeaponStats:
       projectileCount: 1
       findTargetRange: 5
     aoeWeaponStats:
       areaOfEffectRadius: 5
+    chargeWeaponStat:
+      findTargetRange: 5
   audioSource: {fileID: 0}
   targetLayer:
     serializedVersion: 2
@@ -787,6 +790,7 @@ MonoBehaviour:
       level: 1
       augmentationLevel: 1
   autoAttacker: {fileID: 2127458179281644321}
+  isCharging: 0
   exp: 50
   m_Target: {fileID: 0}
 --- !u!54 &7175056988994205650
