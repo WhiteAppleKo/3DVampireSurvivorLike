@@ -2,6 +2,8 @@ using System;
 using _02.Scripts.AutoAttack;
 using _02.Scripts.AutoAttack.Charge;
 using _02.Scripts.AutoAttack.Projectile;
+using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 
 [Serializable]
 public class WeaponBaseStats
@@ -33,6 +35,7 @@ public class WeaponBaseStats
     public float attackDelay = 1.0f;
     public int damage = 10;
     public float range = 10;
+    public LayerMask targetLayer;
     
     // ProjectileWeapon Stats
     public ProjectileWeaponStats projectileWeaponStats;

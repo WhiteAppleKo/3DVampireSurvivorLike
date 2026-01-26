@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _02.Scripts.Managers.Choice;
 using UnityEngine;
 
 public class ExpManager : SingletoneBase<ExpManager>
@@ -57,7 +58,16 @@ public class ExpManager : SingletoneBase<ExpManager>
         m_ChoiceManager.PopUpChoiceUI();
         for (int i = 0; i < 3; i++)
         {
-            m_ChoiceManager.SetChoices(i);
+            m_ChoiceManager.SetAugmentChoice(i);
+        }
+    }
+
+    public void ChoiceFirstWeapon()
+    {
+        m_ChoiceManager.PopUpChoiceUI();
+        for (int i = 0; i < 3; i++)
+        {
+            m_ChoiceManager.SetWeaponChoice(i);
         }
     }
 }

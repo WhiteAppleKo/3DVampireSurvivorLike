@@ -31,8 +31,9 @@ public abstract class Weapon : MonoBehaviour
     private void Awake()
     {
         // finalStats를 baseStats의 복사본으로 초기화합니다.
-        WeaponSettingLogic();
         FinalStats = new WeaponBaseStats(baseStats);
+        FinalStats.targetLayer = GetComponentInParent<AutoAttack>().layer;
+        WeaponSettingLogic();
         m_GlobalAugmentsModifier = new WeaponBaseStats.WeaponModifier(1, 1, 1);
         audioSource = GetComponent<AudioSource>();
     }

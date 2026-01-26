@@ -12,7 +12,7 @@ namespace _02.Scripts.AutoAttack
         // 증강에 의해 finalStats.areaOfEffectRadius가 변경될 때마다, 해당 콜라이더의 반지름을 업데이트하는 로직이 필요할 수 있습니다.
         // 예: RecalculateStats() 메서드 마지막에 sphereCollider.radius = finalStats.areaOfEffectRadius; 추가
 
-        public LayerMask targetLayer;
+        
         // 성능 최적화를 위한 버퍼 (최대 100마리까지 동시 타격 가능하게 설정)
         //private Collider[] m_ColliderBuffer = new Collider[100];
         private BattleManager.DamageEventStruct m_DamageEvent;
@@ -59,7 +59,7 @@ namespace _02.Scripts.AutoAttack
             // 증강이 적용된 반지름 사용
             float radius = FinalStats.aoeWeaponStats.areaOfEffectRadius;
         
-            List<Collider> scanedCollider = m_HexGridRenderer.ScanTargets(gameObject.transform.position, (int)radius, targetLayer);
+            List<Collider> scanedCollider = m_HexGridRenderer.ScanTargets(gameObject.transform.position, (int)radius, FinalStats.targetLayer);
             // 현재 위치 기준 반경 내의 모든 콜라이더 검출 (LayerMask를 지정하면 더 효율적임)
             // int count = Physics.OverlapSphereNonAlloc(transform.position, radius, m_ColliderBuffer);
         

@@ -16,6 +16,7 @@ namespace _02.Scripts.Managers.Stage
         private void Start()
         {
             Debug.Log($"[StageManager] 스테이지 시스템 시작. 현재 스테이지: {currentStage}, 제한 시간: {stageTimeLimit}초");
+            currentStage = SaveManager.Instance.GetCurrentStageData();
             spawnManager.StartNewStage(GetStageInformation(currentStage));
         }
 

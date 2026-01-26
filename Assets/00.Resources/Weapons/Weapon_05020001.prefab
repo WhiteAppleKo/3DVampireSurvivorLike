@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2022473118481291113}
   - component: {fileID: -749779554654209221}
   m_Layer: 3
-  m_Name: Weapon_05010002
+  m_Name: Weapon_05020001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -197,9 +197,19 @@ MonoBehaviour:
     weaponNamge: 123
     attackDelay: 1
     damage: 10
+    range: 10
+    targetLayer:
+      serializedVersion: 2
+      m_Bits: 128
     projectileWeaponStats:
       projectileCount: 1
       findTargetRange: 5
     aoeWeaponStats:
       areaOfEffectRadius: 5
+    chargeWeaponStat:
+      findTargetRange: 5
   audioSource: {fileID: 0}
+  triangle: {fileID: 0}
+  overShootDistance: 3
+  dashDuration: 0
+  hitRadius: 1

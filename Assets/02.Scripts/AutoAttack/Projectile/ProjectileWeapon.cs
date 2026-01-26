@@ -8,9 +8,6 @@ using UnityEngine;
 /// </summary>
 public class ProjectileWeapon : Weapon
 {
-    [Tooltip("타겟으로 지정할 레이어")]
-    public LayerMask targetLayer;
-    
     [Tooltip("풀링할 투사체 프리팹")]
     public GameObject projectilePrefab;
     
@@ -33,7 +30,7 @@ public class ProjectileWeapon : Weapon
             // 투사체를 생성하고 비활성화 상태로 둔 뒤 리스트에 추가
             GameObject obj = Instantiate(projectilePrefab);
             // 데미지 값을 미리 설정하지 않고, Controller와 Weapon 참조만 전달합니다.
-            obj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, targetLayer);
+            obj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
             obj.SetActive(false);
             m_PooledProjectiles.Add(obj);
         }
@@ -68,7 +65,7 @@ public class ProjectileWeapon : Weapon
 
         // 만약 사용 가능한 투사체가 없다면, 새로 생성 (풀 크기를 동적으로 늘림)
         GameObject newObj = Instantiate(projectilePrefab);
-        newObj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, targetLayer);
+        newObj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
         m_PooledProjectiles.Add(newObj);
         return newObj;
     }
@@ -89,7 +86,7 @@ public class ProjectileWeapon : Weapon
     private GameObject FindTarget()
     {
         // 증강으로 변경된 최종 타겟 탐지 범위(finalStats.findTargetRange)를 사용합니다.
-        int size = Physics.OverlapSphereNonAlloc(transform.position, FinalStats.projectileWeaponStats.findTargetRange, m_FindTargetResults, targetLayer);
+        int size = Physics.OverlapSphereNonAlloc(transform.position, FinalStats.projectileWeaponStats.findTargetRange, m_FindTargetResults, FinalStats.targetLayer);
 
         // 감지된 타겟이 없으면 null을 반환합니다.
         if (size == 0)

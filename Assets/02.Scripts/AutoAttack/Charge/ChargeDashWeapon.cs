@@ -10,9 +10,6 @@ namespace _02.Scripts.AutoAttack.Charge
 {
     public class ChargeDashWeapon : Weapon
     {
-        [Tooltip("타겟으로 지정할 레이어")]
-        public LayerMask targetLayer;
-        
         public Triangle triangle;
         // 타겟을 지나쳐서 더 이동할 거리
         public float overShootDistance = 3.0f;
@@ -150,8 +147,8 @@ namespace _02.Scripts.AutoAttack.Charge
         private void ChargeAttack(GameObject target)
         {
             // 현재 오브젝트 위치 기준 범위 내 적 감지
-            int hitCount = Physics.OverlapSphereNonAlloc(target.transform.position, hitRadius, m_TargetColliders, targetLayer);
-
+            int hitCount = Physics.OverlapSphereNonAlloc(target.transform.position, hitRadius, m_TargetColliders, FinalStats.targetLayer);
+            Debug.Log($"{gameObject.name} {hitCount}");
             for (int i = 0; i < hitCount; i++)
             {
                 GameObject enemyObj = m_TargetColliders[i].gameObject;
@@ -168,7 +165,7 @@ namespace _02.Scripts.AutoAttack.Charge
         
         private void ApplyDamage(GameObject enemy)
         {
-            Controller controller = GetComponent<Controller>();
+            Controller controller = enemy.GetComponent<Controller>();
             m_DamageEvent = new BattleManager.DamageEventStruct(FinalStats.damage, this, m_Controller, controller);
             BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
         }
@@ -176,7 +173,7 @@ namespace _02.Scripts.AutoAttack.Charge
         private GameObject FindTarget()
         {
             // 증강으로 변경된 최종 타겟 탐지 범위(finalStats.findTargetRange)를 사용합니다.
-            int size = Physics.OverlapSphereNonAlloc(transform.position, FinalStats.chargeWeaponStat.findTargetRange, m_TargetColliders, targetLayer);
+            int size = Physics.OverlapSphereNonAlloc(transform.position, FinalStats.chargeWeaponStat.findTargetRange, m_TargetColliders, FinalStats.targetLayer);
 
             // 감지된 타겟이 없으면 null을 반환합니다.
             if (size == 0)

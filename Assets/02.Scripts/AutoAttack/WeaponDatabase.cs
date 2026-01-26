@@ -11,8 +11,8 @@ namespace _02.Scripts.AutoAttack
         
         public WeaponData GetWeaponData(string id)
         {
-            WeaponData augment = weaponDatas.Find(a => a.weaponID == id);
-            return augment;
+            WeaponData weapon = weaponDatas.Find(a => a.weaponID == id);
+            return weapon;
         }
     }
 }

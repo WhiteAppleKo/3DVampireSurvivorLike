@@ -340,6 +340,9 @@ MonoBehaviour:
     attackDelay: 1
     damage: 10
     range: 10
+    targetLayer:
+      serializedVersion: 2
+      m_Bits: 0
     projectileWeaponStats:
       projectileCount: 1
       findTargetRange: 5
@@ -348,9 +351,6 @@ MonoBehaviour:
     chargeWeaponStat:
       findTargetRange: 5
   audioSource: {fileID: 0}
-  targetLayer:
-    serializedVersion: 2
-    m_Bits: 0
 --- !u!135 &1463629794394034678
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -589,6 +589,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoAttack
   weapon: []
+  layer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!1 &7547034883272071915
 GameObject:
   m_ObjectHideFlags: 0

@@ -12,5 +12,8 @@ namespace _02.Scripts.AutoAttack
         public float effectRange;
         public int projectileCount;
         public GameObject weaponPrefab;
+        public Sprite icon;
+        public int iconNumber;
+        public string weaponDescription;
     }
 }

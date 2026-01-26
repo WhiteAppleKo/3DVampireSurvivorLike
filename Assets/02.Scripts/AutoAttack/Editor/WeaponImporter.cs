@@ -56,7 +56,10 @@ namespace _02.Scripts.AutoAttack.Editor
                     data[4].Trim(),
                     data[5].Trim(),
                     data[6].Trim(),
-                    weapon);
+                    weapon,
+                    int.Parse(data[7].Trim()),
+                    data[8].Trim()
+                    );
             
                 newWeaponData.name = $"Weapon_{data[0].Trim()}";
                 AssetDatabase.AddObjectToAsset(newWeaponData, asset);

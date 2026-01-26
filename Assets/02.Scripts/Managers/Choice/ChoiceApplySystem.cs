@@ -1,6 +1,8 @@
 using System;
 using _02.Scripts.Augment.BaseAugment;
+using _02.Scripts.AutoAttack;
 using _02.Scripts.Managers.Choice;
+using _02.Scripts.UI;
 using UnityEngine;
 
 public class ChoiceApplySystem : MonoBehaviour
@@ -14,6 +16,7 @@ public class ChoiceApplySystem : MonoBehaviour
         m_ScrollItemScaler = GetComponent<ScrollItemScaler>();
     }
 
+    //0이면 증강 1이면 장비 추가
     public void ApplyAbility()
     {
         if (player == null)
@@ -23,28 +26,38 @@ public class ChoiceApplySystem : MonoBehaviour
         }
         Debug.Log($"[ChoiceSystem] Player ID: {player.GetInstanceID()} 에게 능력 적용 시도");
 
-        var ab = m_ScrollItemScaler.SelectedItem.GetComponent<BindImageText>().GetAbility();
-        CloseChoiceUI();
-        string abilityType = ab.abilityType;
-        switch (abilityType)
+        var bit = m_ScrollItemScaler.SelectedItem.GetComponent<BindImageText>();
+        if (bit.GetAbility(out BaseAbility ab))
         {
-            case "Stat":
-                Debug.Log($"[ChoiceSystem] AddAugment 호출 직전. 능력: {ab.abilityName}");
-                if (ab.isTemporary == true)
-                {
-                    (ab as StatAbility).Apply(player.FinalStats);
+            CloseChoiceUI();
+            string abilityType = ab.abilityType;
+            switch (abilityType)
+            {
+                case "Stat":
+                    Debug.Log($"[ChoiceSystem] AddAugment 호출 직전. 능력: {ab.abilityName}");
+                    if (ab.isTemporary == true)
+                    {
+                        (ab as StatAbility).Apply(player.FinalStats);
+                        break;
+                    }
+                    player.AddAugment((StatAbility)ab);
+                    Debug.Log($"[ChoiceSystem] AddAugment 호출 완료. 타입: {abilityType}");
                     break;
-                }
-                player.AddAugment((StatAbility)ab);
-                Debug.Log($"[ChoiceSystem] AddAugment 호출 완료. 타입: {abilityType}");
-                break;
-            case "Weapon":
-                Debug.Log("Weapon");
-                playerAutoAttack.AddAugment((WeaponAbility)ab);
-                break;
-            default:
-                Debug.Log("Default");
-                break;
+                case "Weapon":
+                    Debug.Log("Weapon");
+                    playerAutoAttack.AddAugment((WeaponAbility)ab);
+                    break;
+                default:
+                    Debug.Log("Default");
+                    break;
+            }
+        }
+        if(bit.GetWeaponData(out BaseWeaponData weapon))
+        {
+            CloseChoiceUI();
+            var weaponInstance = Instantiate(weapon.weaponPrefab, playerAutoAttack.transform);
+            var weaponComponent = weaponInstance.GetComponent<Weapon>();
+            playerAutoAttack.AddWeapon(weaponComponent);
         }
     }
 

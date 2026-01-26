@@ -163,4 +163,9 @@ public class SaveManager : SingletoneBase<SaveManager>
     {
         return weaponDatabase.GetWeaponData(id);
     }
+
+    public int GetCurrentStageData()
+    {
+        return CurrentSaveData.currentStage;
+    }
 }

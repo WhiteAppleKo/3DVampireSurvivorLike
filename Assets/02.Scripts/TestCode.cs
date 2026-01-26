@@ -10,6 +10,7 @@ public class TestCode : MonoBehaviour
     public GameObject player;
     public HexGridRenderer hexGridRenderer;
     public LayerMask layerMask;
+    public ExpManager lvup;
 
     private void Awake()
     {
@@ -30,7 +31,8 @@ public class TestCode : MonoBehaviour
     {
         if (m_InputActions.Player.O.WasReleasedThisFrame())
         {
-            hexGridRenderer.StartCharge(player.transform.position, 2, 2, layerMask, OnMeteorExplosion);
+            lvup.PlayerLevelUp();
+            //hexGridRenderer.StartCharge(player.transform.position, 2, 2, layerMask, OnMeteorExplosion);
             //SaveManager.Instance.SaveGame();
         }
 

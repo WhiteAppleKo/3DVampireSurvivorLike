@@ -10,6 +10,7 @@ using UnityEngine;
 public class AutoAttack : MonoBehaviour, ISaveable
 {
     public Weapon[] weapon;
+    public LayerMask layer;
     
     private List<WeaponAbility> m_GlobalAugments = new List<WeaponAbility>();
     private WeaponBaseStats.WeaponModifier m_GlobalModifier;
@@ -178,6 +179,7 @@ public class AutoAttack : MonoBehaviour, ISaveable
         AutoAttackerSaveData saveData = SaveManager.Instance.LoadAutoAttackerSaveData();
         if (saveData == null)
         {
+            ExpManager.Instance.ChoiceFirstWeapon();
             return;
         }
 
