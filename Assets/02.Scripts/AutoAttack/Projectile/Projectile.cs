@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using _02.Scripts.AutoAttack;
+using _02.Scripts.Cotroller;
 using UnityEngine;
 
 /// <summary>

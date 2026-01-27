@@ -1,4 +1,5 @@
 using System;
+using _02.Scripts.Cotroller;
 using UnityEngine;
 
 public class ExpCristal : MonoBehaviour

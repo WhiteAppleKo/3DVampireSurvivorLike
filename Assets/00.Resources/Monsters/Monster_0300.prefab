@@ -794,8 +794,10 @@ MonoBehaviour:
       augmentationLevel: 1
   autoAttacker: {fileID: 2127458179281644321}
   isCharging: 0
+  isDashing: 0
   exp: 50
   m_Target: {fileID: 0}
+  minimumDistance: 0.01
 --- !u!54 &7175056988994205650
 Rigidbody:
   m_ObjectHideFlags: 0

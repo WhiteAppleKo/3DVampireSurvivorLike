@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3380664165551205349}
+  - component: {fileID: -749779554654209221}
   - component: {fileID: 5877786903061236895}
   - component: {fileID: 1732477778005929485}
   - component: {fileID: 2022473118481291113}
-  - component: {fileID: -749779554654209221}
   m_Layer: 3
   m_Name: Weapon_05020001
   m_TagString: Untagged
@@ -35,6 +35,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-749779554654209221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 173423209539544223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a3e592f10ca4f94cae148e12b865c27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChargeDash
+  baseStats:
+    weaponID: 123
+    weaponNamge: 123
+    attackDelay: 1
+    damage: 10
+    range: 10
+    targetLayer:
+      serializedVersion: 2
+      m_Bits: 128
+    projectileWeaponStats:
+      projectileCount: 1
+      findTargetRange: 5
+    aoeWeaponStats:
+      areaOfEffectRadius: 5
+    chargeWeaponStat:
+      findTargetRange: 5
+  audioSource: {fileID: 0}
+  triangle: {fileID: 0}
+  overShootDistance: 3
+  dashDuration: 0
+  hitRadius: 1
 --- !u!135 &5877786903061236895
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -180,36 +213,3 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-749779554654209221
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 173423209539544223}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a3e592f10ca4f94cae148e12b865c27, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChargeDash
-  baseStats:
-    weaponID: 123
-    weaponNamge: 123
-    attackDelay: 1
-    damage: 10
-    range: 10
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 128
-    projectileWeaponStats:
-      projectileCount: 1
-      findTargetRange: 5
-    aoeWeaponStats:
-      areaOfEffectRadius: 5
-    chargeWeaponStat:
-      findTargetRange: 5
-  audioSource: {fileID: 0}
-  triangle: {fileID: 0}
-  overShootDistance: 3
-  dashDuration: 0
-  hitRadius: 1

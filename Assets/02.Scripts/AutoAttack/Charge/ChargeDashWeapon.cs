@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using _02.Scripts.Cotroller;
 using Cysharp.Threading.Tasks;
 using Shapes;
 using UnityEditor.Searcher;
@@ -12,7 +13,6 @@ namespace _02.Scripts.AutoAttack.Charge
     {
         public Triangle triangle;
         // 타겟을 지나쳐서 더 이동할 거리
-        public float overShootDistance = 3.0f;
         // 전체 돌진에 걸리는 시간
         public float dashDuration; 
         // 돌진 중 공격 반경
@@ -26,11 +26,18 @@ namespace _02.Scripts.AutoAttack.Charge
         private Controller m_Controller;
         private bool m_IsDashing;
         private BattleManager.DamageEventStruct m_DamageEvent;
+        private EnemyController enemyController;
+        
+        // 플레이어 돌진 판정은 플레이어가 누르는 방향으로 돌진해야함
+        private bool m_IsPlayer;
         public override void WeaponSettingLogic()
         {
             // 자기 자신을 참조하기 때문에 테스트 해볼 필요 있음
             m_Controller = GetComponentInParent<Controller>();
+            m_IsPlayer = m_Controller is PlayerController;
             m_TargetColliders = new Collider[20];
+            enemyController = m_Controller as EnemyController;
+            enemyController.minimumDistance = FinalStats.chargeWeaponStat.findTargetRange;
         }
 
         public override void AttackLogic()
@@ -40,19 +47,32 @@ namespace _02.Scripts.AutoAttack.Charge
             {
                 return;
             }
-            // 베이스 클래스의 AttackLogic을 호출하여 증강의 OnAttack 효과를 발동시킵니다.
+            // 베이스 클래스의 AttackLogic을 호출하여 증강의 OnAttack 효과를 발동시킵니다. 나중에 특수 증강 추가할 때 base.AttackLogic 수정할 필요 있음
             base.AttackLogic();
-        
-            m_CurrentTarget = FindTarget();
-            if (m_CurrentTarget != null)
-            {
-                SetTarget(m_CurrentTarget);
-            }else SetTarget(null);
 
-            if (m_CurrentTarget != null)
+            if (m_IsPlayer == false)
             {
-                Charge(m_CurrentTarget).Forget();
+                m_CurrentTarget = FindTarget();
+                if (m_CurrentTarget != null)
+                {
+                    SetTarget(m_CurrentTarget);
+                }else SetTarget(null);
+
+                if (m_CurrentTarget != null)
+                {
+                    Charge(m_CurrentTarget).Forget();
+                }
             }
+            else
+            {
+                
+            }
+        }
+
+        protected override void RecalculateStats()
+        {
+            base.RecalculateStats();
+            dashDuration = m_Controller.FinalStats.moveSpeed * 0.2f;
         }
 
         private async UniTaskVoid Charge(GameObject currenttTarget)
@@ -69,12 +89,12 @@ namespace _02.Scripts.AutoAttack.Charge
                 // 타겟 방향 벡터 계산
                 Vector3 startPos = m_Controller.transform.position;
                 Vector3 targetPos = currenttTarget.transform.position;
-
+                
                 // Y축 높이는 0으로 동일 하기 때문에 건드리지 않음
                 Vector3 direction = (targetPos - startPos).normalized;
                 float distanceToTarget = Vector3.Distance(startPos, targetPos);
 
-                Vector3 endPos = startPos + direction * (distanceToTarget + overShootDistance);
+                Vector3 endPos = startPos + direction * (distanceToTarget + FinalStats.chargeWeaponStat.findTargetRange);
 
                 // 3. 공격 딜레이 AttackDelay만큼 대기하면서 게이지를 채움 (TimeSpan 사용)
                 //FinalStats.attackDelay
@@ -101,6 +121,7 @@ namespace _02.Scripts.AutoAttack.Charge
                 }
                 
                 float elapsedTime = 0f;
+                m_Controller.isDashing = m_IsDashing;
                 while (elapsedTime < dashDuration)
                 {
                     //토큰 체크
@@ -119,6 +140,7 @@ namespace _02.Scripts.AutoAttack.Charge
                     await UniTask.NextFrame(PlayerLoopTiming.Update, token);
                 }
 
+                m_Controller.isDashing = false;
                 m_Controller.transform.position = endPos;
                 ChargeAttack(currenttTarget);
             }
@@ -128,6 +150,12 @@ namespace _02.Scripts.AutoAttack.Charge
             }
             finally
             {
+                float elapsedTime = 0f;
+                while (elapsedTime < dashDuration)
+                {
+                    elapsedTime += Time.deltaTime;
+                    await UniTask.NextFrame(PlayerLoopTiming.Update, token);
+                }
                 m_IsDashing = false;
                 m_Controller.isCharging = m_IsDashing;
             }

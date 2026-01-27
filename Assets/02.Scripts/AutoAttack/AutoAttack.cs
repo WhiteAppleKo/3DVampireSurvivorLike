@@ -105,6 +105,7 @@ public class AutoAttack : MonoBehaviour, ISaveable
             return;
         }
         weapon[m_WeaponCount] = newWeapon;
+        newWeapon.WeaponAwake();
         newWeapon.SetGlobalAugments(m_GlobalModifier);
         
         if (gameObject.activeInHierarchy && m_Cts != null)

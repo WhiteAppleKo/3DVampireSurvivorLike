@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using _02.Scripts.AutoAttack;
 using _02.Scripts.AutoAttack.Projectile;
+using _02.Scripts.Cotroller;
 using UnityEngine;
 
 /// <summary>

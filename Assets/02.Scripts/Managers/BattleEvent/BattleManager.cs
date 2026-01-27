@@ -1,4 +1,6 @@
 using System;
+using _02.Scripts.AutoAttack;
+using _02.Scripts.Cotroller;
 using Unity.Android.Gradle.Manifest;
 using UnityEngine;
 
