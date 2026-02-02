@@ -23,6 +23,7 @@ public class RepeatSpawner : MonoBehaviour
     private List<MonsterData> m_EnemysDatas = new List<MonsterData>();
 
     private CancellationTokenSource m_Cts;
+    private int m_TotalEnemySpawnWeight = 0;
 
     private void OnDestroy()
     {
@@ -58,6 +59,7 @@ public class RepeatSpawner : MonoBehaviour
             if (data.monsterSpawnMinTime <= currentTime && !m_EnemysDatas.Contains(data))
             {
                 m_EnemysDatas.Add(data);
+                SetSpawnWeight();
                 for (int i = 0; i < poolSize; i++)
                 {
                     var enemy = Instantiate(data.monsterPrefab, transform);
@@ -71,9 +73,22 @@ public class RepeatSpawner : MonoBehaviour
         }
     }
 
+    private void SetSpawnWeight()
+    {
+        m_TotalEnemySpawnWeight = 0;
+        foreach (var data in m_EnemysDatas)
+        {
+            m_TotalEnemySpawnWeight += data.spawnWeight;
+        }
+    }
+
     private void SpawnEnemy()
     {
         GameObject enemy = GetEnemy();
+        if (enemy == null)
+        {
+            return;
+        }
         enemy.transform.position = GetSpawnPoint();
         enemy.SetActive(true);
     }
@@ -118,8 +133,23 @@ public class RepeatSpawner : MonoBehaviour
     }
     private GameObject GetEnemy()
     {
-        m_SpawnIndex = Random.Range(0, m_EnemysDatas.Count);
-        MonsterData spawnTarget = m_EnemysDatas[m_SpawnIndex];
+        m_SpawnIndex = Random.Range(0, m_TotalEnemySpawnWeight);
+        int cumulativeWeight = 0;
+        MonsterData spawnTarget = null;
+        foreach (var data in m_EnemysDatas)
+        {
+            cumulativeWeight += data.spawnWeight;
+            if (m_SpawnIndex <= cumulativeWeight)
+            {
+                spawnTarget = data;
+                break;
+            }
+        }
+
+        if (spawnTarget == null)
+        {
+            return null;
+        }
         // 리스트를 순회하며 비활성화된 몬스터
         foreach (var enemy in m_EnemyList)
         {

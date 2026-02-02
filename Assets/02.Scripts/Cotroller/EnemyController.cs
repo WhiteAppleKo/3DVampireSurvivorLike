@@ -47,7 +47,7 @@ namespace _02.Scripts.Cotroller
                     }
                 }
                 
-                if (isCharging) return;
+                if (isMoveDisable) return;
                 
                 // 2. 이동 처리 (증강이 적용된 FinalStats 우선 사용)
                 float speed = FinalStats != null ? FinalStats.moveSpeed : baseStats.moveSpeed;

@@ -448,7 +448,7 @@ MonoBehaviour:
       level: 1
       augmentationLevel: 1
   autoAttacker: {fileID: 1797763004365581299}
-  isCharging: 0
+  isMoveDisable: 0
   isDashing: 0
   exp: 50
   m_Target: {fileID: 0}

@@ -3251,7 +3251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shapes.IMTimer
   color: {r: 0, g: 0, b: 0, a: 1}
-  timer: 01.09
+  timer: 01.12
   fontSize: 700
   fontAsset: {fileID: 11400000, guid: 65eb82dda5212f2448aff7de410823bd, type: 2}
 --- !u!222 &1031388903
@@ -4551,7 +4551,7 @@ MonoBehaviour:
       level: 1
       augmentationLevel: 1
   autoAttacker: {fileID: 1680397847}
-  isCharging: 0
+  isMoveDisable: 0
   isDashing: 0
   groundLayerMask:
     serializedVersion: 2

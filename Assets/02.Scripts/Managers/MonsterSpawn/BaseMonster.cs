@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace _02.Scripts.Managers.Spawn
+namespace _02.Scripts.Managers.MonsterSpawn
 {
     public abstract class BaseMonster : ScriptableObject
     {
@@ -13,5 +13,6 @@ namespace _02.Scripts.Managers.Spawn
         public int monsterExp;
         public GameObject monsterPrefab;
         public float monsterSpawnMinTime;
+        public int spawnWeight;
     }
 }

@@ -8,7 +8,7 @@ namespace _02.Scripts.Cotroller
         public BaseStats baseStats = new BaseStats();
         public global::AutoAttack autoAttacker;
         public BaseStats FinalStats { get; protected set; }
-        public bool isCharging = false;
+        public bool isMoveDisable = false;
         public bool isDashing = false;
     
         protected virtual void Awake()

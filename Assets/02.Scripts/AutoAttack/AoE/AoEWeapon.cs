@@ -8,11 +8,6 @@ namespace _02.Scripts.AutoAttack
     [RequireComponent(typeof(SphereCollider))]
     public class AoEWeapon : Weapon
     {
-        // 참고: 실제 공격 범위는 이 무기 오브젝트에 부착된 SphereCollider의 반지름(radius)으로 결정됩니다.
-        // 증강에 의해 finalStats.areaOfEffectRadius가 변경될 때마다, 해당 콜라이더의 반지름을 업데이트하는 로직이 필요할 수 있습니다.
-        // 예: RecalculateStats() 메서드 마지막에 sphereCollider.radius = finalStats.areaOfEffectRadius; 추가
-
-        
         // 성능 최적화를 위한 버퍼 (최대 100마리까지 동시 타격 가능하게 설정)
         //private Collider[] m_ColliderBuffer = new Collider[100];
         private BattleManager.DamageEventStruct m_DamageEvent;
@@ -68,8 +63,12 @@ namespace _02.Scripts.AutoAttack
                 //Collider col = m_ColliderBuffer[i];
                 Collider col = scanedCollider[i];
 
-                if (col.TryGetComponent<EnemyController>(out var enemy))
+                if (col.TryGetComponent<Controller>(out var enemy))
                 {
+                    if (enemy == m_Controller)
+                    {
+                        continue;
+                    }
                     if (enemy.gameObject.activeInHierarchy)
                     {
                         // 증강이 적용된 최종 데미지(finalStats.damage)를 사용합니다.

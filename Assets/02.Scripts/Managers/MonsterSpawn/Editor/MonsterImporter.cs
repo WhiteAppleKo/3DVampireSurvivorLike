@@ -57,7 +57,8 @@ public class MonsterImporter
                 data[5].Trim(),
                 data[6].Trim(),
                 data[7].Trim(),
-                monster);
+                monster,
+                data[8].Trim());
             
             newMonsterData.name = $"Monster_{data[0].Trim()}";
             AssetDatabase.AddObjectToAsset(newMonsterData, asset);

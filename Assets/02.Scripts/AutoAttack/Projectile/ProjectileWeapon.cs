@@ -32,7 +32,7 @@ public class ProjectileWeapon : Weapon
             // 투사체를 생성하고 비활성화 상태로 둔 뒤 리스트에 추가
             GameObject obj = Instantiate(projectilePrefab);
             // 데미지 값을 미리 설정하지 않고, Controller와 Weapon 참조만 전달합니다.
-            obj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
+            obj.GetComponentInChildren<Projectile>().ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
             obj.SetActive(false);
             m_PooledProjectiles.Add(obj);
         }

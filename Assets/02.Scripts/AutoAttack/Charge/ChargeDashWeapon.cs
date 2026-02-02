@@ -26,7 +26,7 @@ namespace _02.Scripts.AutoAttack.Charge
         private Controller m_Controller;
         private bool m_IsDashing;
         private BattleManager.DamageEventStruct m_DamageEvent;
-        private EnemyController enemyController;
+        private EnemyController m_EnemyController;
         
         // 플레이어 돌진 판정은 플레이어가 누르는 방향으로 돌진해야함
         private bool m_IsPlayer;
@@ -36,8 +36,12 @@ namespace _02.Scripts.AutoAttack.Charge
             m_Controller = GetComponentInParent<Controller>();
             m_IsPlayer = m_Controller is PlayerController;
             m_TargetColliders = new Collider[20];
-            enemyController = m_Controller as EnemyController;
-            enemyController.minimumDistance = FinalStats.chargeWeaponStat.findTargetRange;
+
+            if (m_IsPlayer == false)
+            {
+                m_EnemyController = m_Controller as EnemyController;
+                m_EnemyController.minimumDistance = FinalStats.chargeWeaponStat.findTargetRange;
+            }
         }
 
         public override void AttackLogic()
@@ -80,7 +84,7 @@ namespace _02.Scripts.AutoAttack.Charge
             // 1. Safe Token : 오브젝트가 파괴되면 작업 취소
             CancellationToken token = this.GetCancellationTokenOnDestroy();
             m_IsDashing = true;
-            m_Controller.isCharging = m_IsDashing;
+            m_Controller.isMoveDisable = m_IsDashing;
             m_HitEnemies.Clear();
 
             try
@@ -157,7 +161,7 @@ namespace _02.Scripts.AutoAttack.Charge
                     await UniTask.NextFrame(PlayerLoopTiming.Update, token);
                 }
                 m_IsDashing = false;
-                m_Controller.isCharging = m_IsDashing;
+                m_Controller.isMoveDisable = m_IsDashing;
             }
         }
 
