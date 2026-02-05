@@ -8,19 +8,28 @@ using UnityEngine;
 
 public class SubscribeManager : SingletoneBase<SubscribeManager>
 {
-    public Controller playerController;
+    public PlayerController playerController; // Controller -> PlayerController로 변경
     public Action<float> onPlayerHpChangeEvent;
     public Action<float> onPlayerExpChangeEvent;
     public IMEXPPanel expPanel;
     
     private float m_HpRatio;
     private float m_ExpRatio;
+
     public void GameStart()
     {
+        if (playerController == null)
+        {
+            Debug.LogError("[SubscribeManager] PlayerController가 할당되지 않았습니다.");
+            return;
+        }
+
         SubScribe();
-        expPanel.GameStart();
-        SetPlayerHp(1, 1);
-        OnChangePlayerExp(1, 1);
+        if (expPanel != null) expPanel.GameStart();
+        
+        // 초기값 설정
+        UpdateHp(playerController.Model.CurrentHp, playerController.Model.MaxHp);
+        UpdateExp(playerController.Model.CurrentExp, playerController.Model.MaxExp);
     }
 
     private void OnDisable()
@@ -30,49 +39,37 @@ public class SubscribeManager : SingletoneBase<SubscribeManager>
 
     private void SubScribe()
     {
-        playerController.FinalStats.hp.Events.onValueChanged += SetPlayerHp;
-        //playerController.FinalStats.hp.Events.onDecreased += ChangePlayerHp;
-        //playerController.FinalStats.hp.Events.onIncreased += ChangePlayerHp;
-        
-        playerController.FinalStats.playerStats.exp.Events.onValueChanged += OnChangePlayerExp;
-        //playerController.FinalStats.playerStats.exp.Events.onIncreased += OnChangePlayerExp;
-        //playerController.FinalStats.playerStats.exp.Events.onDecreased += OnChangePlayerExp;
-        playerController.FinalStats.playerStats.exp.Events.onMaxReached += PlayerLevelUp;
+        if (playerController == null || playerController.Model == null) return;
+
+        // 새로운 DLV 모델의 이벤트 구독
+        playerController.Model.OnHpChanged += UpdateHp;
+        playerController.Model.OnExpChanged += UpdateExp;
+        playerController.Model.OnLevelUp += OnLevelUp;
     }
     
     private void UnSubScribe()
     {
-        playerController.FinalStats.hp.Events.onValueChanged -= SetPlayerHp;
-        //playerController.FinalStats.hp.Events.onDecreased -= ChangePlayerHp;
-        //playerController.FinalStats.hp.Events.onIncreased -= ChangePlayerHp;
-        
-        playerController.FinalStats.playerStats.exp.Events.onValueChanged -= OnChangePlayerExp;
-        //playerController.FinalStats.playerStats.exp.Events.onIncreased -= OnChangePlayerExp;
-        //playerController.FinalStats.playerStats.exp.Events.onDecreased += OnChangePlayerExp;
-        playerController.FinalStats.playerStats.exp.Events.onMaxReached -= PlayerLevelUp;
+        if (playerController == null || playerController.Model == null) return;
+
+        playerController.Model.OnHpChanged -= UpdateHp;
+        playerController.Model.OnExpChanged -= UpdateExp;
+        playerController.Model.OnLevelUp -= OnLevelUp;
     }
     
-    private void PlayerLevelUp(int prev, int current)
+    private void OnLevelUp(int newLevel)
     {
-        ExpManager.Instance.PlayerLevelUp();
+        ExpManager.Instance?.PlayerLevelUp();
     }
     
-    private void OnChangePlayerExp(int prev, int current)
+    private void UpdateExp(int current, int max)
     {
-        m_ExpRatio = playerController.FinalStats.playerStats.exp.Ratio;
+        m_ExpRatio = (float)current / max;
         onPlayerExpChangeEvent?.Invoke(m_ExpRatio);
     }
 
-    private void SetPlayerHp(int prev, int current)
+    private void UpdateHp(int current, int max)
     {
-        m_HpRatio = playerController.FinalStats.hp.Ratio;
+        m_HpRatio = (float)current / max;
         onPlayerHpChangeEvent?.Invoke(m_HpRatio);
-    }
-
-    private void ChangePlayerHp(int prev, int current)
-    {
-        m_HpRatio = playerController.FinalStats.hp.Ratio;
-        onPlayerHpChangeEvent?.Invoke(m_HpRatio);
-        Debug.Log($"{m_HpRatio}");
     }
 }

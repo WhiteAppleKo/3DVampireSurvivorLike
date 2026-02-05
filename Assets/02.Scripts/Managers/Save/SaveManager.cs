@@ -37,9 +37,13 @@ public class SaveManager : SingletoneBase<SaveManager>
         }
         
         UpdateSaveData();
-        Debug.Log($"{CurrentSaveData.autoAttacker.weaponList.Count}");
+        
+        if (CurrentSaveData.autoAttacker != null && CurrentSaveData.autoAttacker.weaponList != null)
+        {
+            Debug.Log($"[SaveManager] 저장할 무기 개수: {CurrentSaveData.autoAttacker.weaponList.Count}");
+        }
 
-        string json = JsonUtility.ToJson(CurrentSaveData, true); // true: 가독성 좋게 줄바꿈 포함
+        string json = JsonUtility.ToJson(CurrentSaveData, true); 
         
         try
         {

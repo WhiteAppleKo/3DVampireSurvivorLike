@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8499898629880805721}
   - component: {fileID: 3916538265489364438}
   - component: {fileID: 7438844259117706751}
+  - component: {fileID: 7345504797780291884}
   m_Layer: 0
   m_Name: Test Projec
   m_TagString: Untagged
@@ -95,12 +96,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b170a4ec6c2818846ba78abdd6bf516b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  projectilePoolManager: {fileID: 0}
-  speed: 10
-  returnToPoolDelay: 2
-  m_TargetLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  pureData: {fileID: 0}
+--- !u!114 &7345504797780291884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3602233626605945715}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e322135f21f371f439d2b5974177a473, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Projectile.ProjectileVisualizer
 --- !u!1001 &7634374600732700254
 PrefabInstance:
   m_ObjectHideFlags: 0

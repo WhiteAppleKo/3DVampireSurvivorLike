@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6144448689597294479}
   - component: {fileID: 122567930820187902}
   - component: {fileID: -6943851206558049709}
+  - component: {fileID: 5853851946927423829}
   m_Layer: 8
   m_Name: EXP Cristal
   m_TagString: Untagged
@@ -49,9 +50,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbbb4fd6ce2c3db45980e0f8151f587a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExpCristal
-  moveSpeed: 5
-  acceleration: 10
-  expAmount: 10
+  _pureData: {fileID: 11400000, guid: 30a88cd42d7aca044856da128e89e3ca, type: 2}
 --- !u!114 &4922985754031472937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -209,3 +208,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5853851946927423829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1858271311470668380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1229a4c95e2fa3f43b93a51864c3db34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.ExpCristal.ExpCristalVisualizer

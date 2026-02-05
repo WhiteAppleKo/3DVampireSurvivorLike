@@ -40,6 +40,9 @@ public class BattleManager : SingletoneBase<BattleManager>
     
     public void BroadcastExpEvent(int expAmount)
     {
-        player.baseStats.playerStats.AddExp(expAmount);
+        if (player != null && player.Model != null)
+        {
+            player.Model.AddExp(expAmount);
+        }
     }
 }

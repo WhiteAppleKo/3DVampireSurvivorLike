@@ -71,7 +71,6 @@ namespace _02.Scripts.Cotroller
 
         protected override void Die(int prev, int current)
         {
-            base.Die(prev, current);
             ExpManager.Instance.SetExp(exp, transform.position);
             gameObject.SetActive(false);
         }

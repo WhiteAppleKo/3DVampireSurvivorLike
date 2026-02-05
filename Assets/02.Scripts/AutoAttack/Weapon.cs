@@ -1,110 +1,120 @@
 using System.Collections.Generic;
+using Features.Weapon;
 using UnityEngine;
 
 namespace _02.Scripts.AutoAttack
 {
-    /// <summary>
-    /// 모든 무기의 기본 클래스입니다. 증강 시스템과 스탯 관리를 포함합니다.
-    /// </summary>
+    [RequireComponent(typeof(IWeaponVisualizer))]
     public abstract class Weapon : MonoBehaviour
     {
-        public WeaponBaseStats baseStats = new WeaponBaseStats();
-        public AudioSource  audioSource;
-    
-        private WeaponBaseStats.WeaponModifier m_GlobalAugmentsModifier;
-        // 증강이 적용된 최종 스탯입니다.
-        public WeaponBaseStats FinalStats { get; private set; }
+        [SerializeField] protected WeaponData pureData;
+        
+        protected RuntimeDataWeapon model;
+        protected IWeaponVisualizer visuals;
+        public AudioSource audioSource;
 
-        private List<WeaponAbility> m_Augments = new List<WeaponAbility>();
+        // --- 기존 프로퍼티 유지 (호환성용) ---
+        public WeaponBaseStats baseStats = new WeaponBaseStats();
+        public WeaponBaseStats FinalStats { get; protected set; }
+        // ----------------------------------
+
+        protected List<WeaponAbility> m_Augments = new List<WeaponAbility>();
+        private WeaponBaseStats.WeaponModifier m_GlobalAugmentsModifier;
 
         public List<string> GetWeaponLocalAugmentsID()
         {
             List<string> IDList = new List<string>();
-            foreach (var augmnet in m_Augments)
+            foreach (var augment in m_Augments)
             {
-                IDList.Add(augmnet.abilityID);
+                IDList.Add(augment.abilityID);
             }
             return IDList;
         }
+
         public List<WeaponAbility> GetWeaponLocalAugments()
         {
             return m_Augments;
         }
-        public void WeaponAwake()
+
+        public virtual void WeaponAwake()
         {
-            // finalStats를 baseStats의 복사본으로 초기화합니다.
+            visuals = GetComponent<IWeaponVisualizer>();
+            audioSource = GetComponent<AudioSource>();
+            
+            if (pureData != null)
+            {
+                model = new RuntimeDataWeapon(pureData);
+            }
+            
+            // 기존 시스템과의 호환성을 위한 초기화
             FinalStats = new WeaponBaseStats(baseStats);
             FinalStats.targetLayer = GetComponentInParent<global::AutoAttack>().layer;
-            WeaponSettingLogic();
             m_GlobalAugmentsModifier = new WeaponBaseStats.WeaponModifier(1, 1, 1);
-            audioSource = GetComponent<AudioSource>();
+            
+            WeaponSettingLogic();
         }
 
-    
-        public void SetGlobalAugments(WeaponBaseStats.WeaponModifier globalAugmentsModifier)
+        public void SetGlobalAugments(WeaponBaseStats.WeaponModifier modifier)
         {
-            m_GlobalAugmentsModifier = globalAugmentsModifier;
+            m_GlobalAugmentsModifier = modifier;
             RecalculateStats();
         }
 
-        /// <summary>
-        /// 무기에 새로운 증강을 추가합니다.
-        /// </summary>
-        public void AddAugment(WeaponAbility augment)
+        public virtual void AddAugment(WeaponAbility augment)
         {
             m_Augments.Add(augment);
             RecalculateStats();
         }
 
-        /// <summary>
-        /// 무기에서 증강을 제거합니다.
-        /// </summary>
-        public void RemoveAugment(WeaponAbility augment)
+        public virtual void RemoveAugment(WeaponAbility augment)
         {
             m_Augments.Remove(augment);
             RecalculateStats();
         }
-    
 
-        /// <summary>
-        /// 기본 스탯부터 시작하여 모든 증강을 적용해 최종 스탯을 다시 계산합니다.
-        /// </summary>
         protected virtual void RecalculateStats()
         {
-            // 1. 최종 스탯을 기본 스탯으로 초기화
-            if (FinalStats == null)
+            if (FinalStats == null) FinalStats = new WeaponBaseStats(baseStats);
+            FinalStats.ResetTo(baseStats);
+
+            // DLV Model 업데이트
+            if (model != null)
             {
-                FinalStats = new WeaponBaseStats(baseStats);
-            }
-            else
-            {
-                FinalStats.ResetTo(baseStats);
-            }
-        
-            // 2. 모든 증강의 스탯 수정치를 순서대로 적용
-            // >>>>> 최종 글로벌 증가값을 AutoAttack에서 받아오는걸로 바뀜
-            FinalStats.attackDelay = FinalStats.attackDelay / m_GlobalAugmentsModifier.percentAttackDelay;
-            FinalStats.damage = FinalStats.damage + m_GlobalAugmentsModifier.fixedDamageIncrease;
-            FinalStats.damage = (int)(FinalStats.damage * m_GlobalAugmentsModifier.percentDamageIncreadse);
-        
-            foreach (var augment in m_Augments)
-            {
-            
+                model.UpdateStats(
+                    m_GlobalAugmentsModifier.percentAttackDelay,
+                    m_GlobalAugmentsModifier.fixedDamageIncrease,
+                    m_GlobalAugmentsModifier.percentDamageIncreadse
+                );
+
+                // 호환성: FinalStats에도 적용
+                FinalStats.attackDelay = model.FinalAttackDelay;
+                FinalStats.damage = model.FinalDamage;
             }
         }
-    
-        // 각 무기 타입에 맞는 초기화 로직
+
         public abstract void WeaponSettingLogic();
-    
-        // 실제 공격 로직
+
         public virtual void AttackLogic()
         {
-            
-            // 모든 증강의 OnAttack 효과 호출
+            if (model == null) return;
+
+            // Visual 실행
+            visuals.PlayAttackAnimation();
+            if (pureData != null) visuals.PlayAttackSound(pureData.AttackSound);
+
+            // 증강 효과 실행
             foreach (var augment in m_Augments)
             {
-            
+                // augment.OnAttack(this); // 추후 증강 시스템 리팩토링 시 활성화
             }
+
+            // 쿨타임 설정
+            model.SetCooldown(model.FinalAttackDelay);
+        }
+
+        protected virtual void Update()
+        {
+            model?.Tick(Time.deltaTime);
         }
     }
 }

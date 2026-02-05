@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5710820133975032482}
   - component: {fileID: 8016864390819868721}
   - component: {fileID: -7143798658245680157}
+  - component: {fileID: 313272236082770307}
   m_Layer: 0
   m_Name: Projectile
   m_TagString: Untagged
@@ -210,9 +211,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b170a4ec6c2818846ba78abdd6bf516b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
-  projectilePoolManager: {fileID: 0}
-  speed: 10
-  returnToPoolDelay: 2
-  m_TargetLayer:
-    serializedVersion: 2
-    m_Bits: 0
+  pureData: {fileID: 11400000, guid: e25642c1d7628ca46b44daf2a530cc67, type: 2}
+--- !u!114 &313272236082770307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7733665347935382119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e322135f21f371f439d2b5974177a473, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Projectile.ProjectileVisualizer

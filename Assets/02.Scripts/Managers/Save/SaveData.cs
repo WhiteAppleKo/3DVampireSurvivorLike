@@ -8,11 +8,11 @@ namespace _02.Scripts.Managers.Save
     {
         // === 게임 시스템 정보 ===
         public int currentStage = 1;
-        public int augmentationLevel; // 증강 레벨
+        public int augmentationLevel = 1;
 
-        public PlayerSaveData playerData;
-        public AutoAttackerSaveData autoAttacker;
-        // 기본 생성자
+        public PlayerSaveData playerData = new PlayerSaveData();
+        public AutoAttackerSaveData autoAttacker = new AutoAttackerSaveData();
+
         public GameSaveData(PlayerSaveData playerData, AutoAttackerSaveData autoAttacker)
         {
             this.playerData = playerData;
@@ -21,7 +21,6 @@ namespace _02.Scripts.Managers.Save
 
         public GameSaveData()
         {
-            
         }
     }
 
@@ -33,37 +32,37 @@ namespace _02.Scripts.Managers.Save
         public int currentExp;
         public int currentHp;
         
-        // 획득한 증강 ID 목록 (UI 표시 또는 복구용)
-        public List<string> statAugments;
+        // 획득한 증강 ID 목록
+        public List<string> statAugments = new List<string>();
 
         public PlayerSaveData(int playerLevel, int currentExp, int currentHp, List<string> statAugments)
         {
             this.playerLevel = playerLevel;
             this.currentExp = currentExp;
             this.currentHp = currentHp;
-            this.statAugments = statAugments;
+            this.statAugments = statAugments ?? new List<string>();
         }
 
         public PlayerSaveData()
         {
-            
         }
     }
+
     [Serializable]
     public class AutoAttackerSaveData
     {
         // === 무기 상태 정보 ===
-        public List<string> globalWeaponAugments;
+        public List<string> globalWeaponAugments = new List<string>();
         public List<WeaponSaveData> weaponList = new List<WeaponSaveData>();
+
         public AutoAttackerSaveData(List<string> globalAugmentsID, List<WeaponSaveData> weaponSaveList)
         {
-            globalWeaponAugments = globalAugmentsID;
-            weaponList = weaponSaveList;
+            globalWeaponAugments = globalAugmentsID ?? new List<string>();
+            weaponList = weaponSaveList ?? new List<WeaponSaveData>();
         }
 
         public AutoAttackerSaveData()
         {
-            
         }
     }
 
@@ -71,18 +70,16 @@ namespace _02.Scripts.Managers.Save
     public class WeaponSaveData
     {
         public string weaponID;
-        // 해당 무기에 적용된 증강 ID들
-        public List<string> localWeaponAugments;
+        public List<string> localWeaponAugments = new List<string>();
 
         public WeaponSaveData(string id, List<string> localAugments)
         {
             weaponID = id;
-            localWeaponAugments = localAugments;
+            localWeaponAugments = localAugments ?? new List<string>();
         }
 
         public WeaponSaveData()
         {
-            
         }
     }
 }

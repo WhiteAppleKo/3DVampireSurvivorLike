@@ -178,9 +178,14 @@ public class AutoAttack : MonoBehaviour, ISaveable
     {
         m_GlobalAugments.Clear();
         AutoAttackerSaveData saveData = SaveManager.Instance.LoadAutoAttackerSaveData();
-        if (saveData == null)
+        
+        // 데이터가 아예 없거나, 저장된 무기가 하나도 없을 때 첫 무기 선택 실행
+        if (saveData == null || saveData.weaponList == null || saveData.weaponList.Count == 0)
         {
-            ExpManager.Instance.ChoiceFirstWeapon();
+            if (ExpManager.Instance != null)
+            {
+                ExpManager.Instance.ChoiceFirstWeapon();
+            }
             return;
         }
 

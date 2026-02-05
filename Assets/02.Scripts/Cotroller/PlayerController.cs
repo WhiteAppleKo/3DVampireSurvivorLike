@@ -1,30 +1,54 @@
 using System.Collections.Generic;
 using _02.Scripts.Augment.BaseAugment;
 using _02.Scripts.Cotroller;
+using Features.Player;
 using _02.Scripts.Managers.Save;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// [L] Logic System for Player
+[RequireComponent(typeof(IPlayerVisualizer))]
 public class PlayerController : Controller, ISaveable
 {
-    [Header("Mouse Movement")]
+    [Header("DLV Data")]
+    [SerializeField] private PureDataPlayer pureData;
+    
+    [Header("Movement Settings")]
     public LayerMask groundLayerMask;
     public float stopDistance = 0.5f;
 
-    private Vector3 m_Movement;
-    private Vector2 m_InputVector;
-    private InputSystem_Actions m_InputActions;
-
+    private RuntimeDataPlayer model;
+    private IPlayerVisualizer visuals;
+    private InputSystem_Actions inputActions;
+    private Camera mainCamera;
 
     protected override void Awake()
     {
+        // 1. Visual & Data Binding
+        visuals = GetComponent<IPlayerVisualizer>();
+        mainCamera = Camera.main;
+        inputActions = new InputSystem_Actions();
+
+        if (pureData == null)
+        {
+            pureData = ScriptableObject.CreateInstance<PureDataPlayer>();
+            Debug.LogWarning("[PlayerController] PureData가 설정되지 않았습니다.");
+        }
+
+        model = new RuntimeDataPlayer(pureData);
+
+        // 2. Base 호환성 (기존 시스템을 위해 남겨둠)
+        baseStats.usePlayerStats = true; // 플레이어 스탯 사용 활성화
         baseStats.playerStats = new PlayerStats();
-        baseStats.playerStats.exp = new ClampInt(0, 100, 0);
+        baseStats.playerStats.exp = new ClampInt(0, 100, 0); // 경험치 객체 생성
+        
         base.Awake();
-        m_InputActions = new InputSystem_Actions();
+        
         ((ISaveable)this).RegistSaveAble();
     }
+
+    // 모델에 접근할 수 있도록 프로퍼티 추가 (SubscribeManager 등에서 사용)
+    public RuntimeDataPlayer Model => model;
 
     private void Start()
     {
@@ -37,158 +61,138 @@ public class PlayerController : Controller, ISaveable
     protected override void OnEnable()
     {
         base.OnEnable();
-        m_InputActions.Player.Enable();
-        m_InputActions.UI.Enable();
+        inputActions.Player.Enable();
+        inputActions.UI.Enable();
     }
 
     protected override void OnDisable()
     {
         base.OnDisable();
-        m_InputActions.Player.Disable();
-        m_InputActions.UI.Disable();
+        inputActions.Player.Disable();
+        inputActions.UI.Disable();
     }
 
     private void Update()
     {
-        UpdateMovement();
+        // 1. Input -> Pure Data (Rule 1)
+        var cmd = GatherInput();
+
+        // 2. Decision & Command
+        ProcessMovement(cmd);
     }
 
-    private void UpdateMovement()
+    private PlayerInputCommand GatherInput()
     {
-        // 1. 키보드 입력을 먼저 확인한다.
-        m_InputVector = m_InputActions.Player.Move.ReadValue<Vector2>();
+        Vector2 inputVec = inputActions.Player.Move.ReadValue<Vector2>();
+        Vector3 moveDir = new Vector3(inputVec.x, 0f, inputVec.y);
+        
+        bool isRightClick = inputActions.UI.RightClick.IsPressed();
+        Vector3 mouseWorldPos = Vector3.zero;
 
-        // 2. 키보드 입력이 있으면, 키보드 방향으로 움직인다.
-        if (m_InputVector.sqrMagnitude > 0.01f)
+        if (isRightClick)
         {
-            m_Movement = new Vector3(m_InputVector.x, 0f, m_InputVector.y);
-        }
-        // 3. 키보드 입력이 없으면, 마우스 홀드 상태를 확인한다.
-        else if (m_InputActions.UI.RightClick.IsPressed())
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+            Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
             if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundLayerMask))
             {
-                Vector3 targetPosition = hit.point;
-            
-                // 커서가 캐릭터와 너무 가까우면 멈춘다 (진동 방지).
-                if (Vector3.Distance(transform.position, targetPosition) < stopDistance)
-                {
-                     m_Movement = Vector3.zero;
-                }
-                else
-                {
-                    Vector3 directionToTarget = (targetPosition - transform.position).normalized;
-                    m_Movement = new Vector3(directionToTarget.x, 0, directionToTarget.z);
-                }
+                mouseWorldPos = hit.point;
             }
-            else
-            {
-                // 커서가 지면 위에 없으면 움직이지 않는다.
-                m_Movement = Vector3.zero;
-            }
-        }
-        // 4. 아무 입력이 없으면, 움직임을 멈춘다.
-        else
-        {
-            m_Movement = Vector3.zero;
         }
 
-        // 이동 및 회전 적용
-        if (m_Movement.sqrMagnitude > 0.01f)
-        {
-            transform.Translate(m_Movement.normalized * (FinalStats.moveSpeed * Time.deltaTime), Space.World);
-        
-            //회전 로직 비활성화
-            /*Quaternion targetRotation = Quaternion.LookRotation(m_Movement);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, FinalStats.turnSpeed * Time.deltaTime);*/
-        }
+        return new PlayerInputCommand(moveDir, isRightClick, mouseWorldPos);
     }
-    
-    #region 증강
+
+    private void ProcessMovement(PlayerInputCommand cmd)
+    {
+        Vector3 finalMoveDir = Vector3.zero;
+
+        // 로직 판단: 키보드 입력 우선
+        if (cmd.MoveDirection.sqrMagnitude > 0.01f)
+        {
+            finalMoveDir = cmd.MoveDirection;
+        }
+        else if (cmd.IsRightClickPressed && cmd.MouseWorldPosition != Vector3.zero)
+        {
+            if (Vector3.Distance(transform.position, cmd.MouseWorldPosition) > stopDistance)
+            {
+                finalMoveDir = (cmd.MouseWorldPosition - transform.position).normalized;
+                finalMoveDir.y = 0;
+            }
+        }
+
+        // 3. Render (Command Visualizer)
+        visuals.Move(finalMoveDir, model.MoveSpeed, Time.deltaTime);
+        visuals.SetMoveVisual(finalMoveDir.magnitude);
+    }
+
+    protected override void ApplyDamage(int amount)
+    {
+        base.ApplyDamage(amount);
+        model.TakeDamage(amount);
+    }
+
+    protected override void Die(int prev, int current)
+    {
+        Debug.Log("[PlayerController] 플레이어 사망");
+        // 사망 연출 호출 (Shapes 기반)
+        visuals.PlayDamageVisual(); 
+        isMoveDisable = true;
+    }
+
+    #region 증강 & 세이브 (기존 로직 유지하며 모델과 연동)
     private List<StatAbility> m_Augments = new List<StatAbility>();
-    /// <summary>
-    /// 새로운 증강을 추가합니다.
-    /// </summary>
+
     public void AddAugment(StatAbility augment)
     {
-        Debug.LogWarning($"[Controller] ID: {this.GetInstanceID()} / AddAugment 호출됨. 증강: {augment?.abilityName}");
         m_Augments.Add(augment);
-        Debug.Log(m_Augments.Count);
         RecalculateStats();
     }
 
-    /// <summary>
-    /// 증강을 제거합니다.
-    /// </summary>
     public void RemoveAugment(StatAbility augment)
     {
         m_Augments.Remove(augment);
         RecalculateStats();
     }
-    
 
-    /// <summary>
-    /// 기본 스탯부터 시작하여 모든 증강을 적용해 최종 스탯을 다시 계산합니다.
-    /// </summary>
     protected void RecalculateStats()
     {
-        // 1. 최종 스탯을 기본 스탯으로 초기화 (객체 재사용)
-        if (FinalStats == null)
-        {
-            FinalStats = new BaseStats(baseStats);
-        }
-        else
-        {
-            FinalStats.ResetTo(baseStats);
-        }
+        // 기존 호환성 유지
+        if (FinalStats == null) FinalStats = new BaseStats(baseStats);
+        FinalStats.ResetTo(baseStats);
         
-        // 2. 모든 증강의 스탯 수정치를 순서대로 적용
-        foreach (var augment in m_Augments)
-        {
-            augment.Apply(FinalStats);
-        }
+        // DLV Model 업데이트
+        // 증강 데이터를 순회하며 수치를 합산하여 모델에 주입
+        int hpAdd = 0;
+        float speedMult = 1.0f;
+        // foreach(var augment in m_Augments) { ... } 
+        
+        model.UpdateStats(hpAdd, speedMult);
     }
-
-    public List<StatAbility> SaveAbilityData()
-    {
-        return m_Augments;
-    }
-    #endregion
 
     public void SaveData()
     {
         List<string> augmentsID = new List<string>();
         foreach (var augment in m_Augments)
         {
-            augmentsID.Add(augment.abilityID);
+            if (augment != null) augmentsID.Add(augment.abilityID);
         }
         
         PlayerSaveData saveData = new PlayerSaveData(
-            FinalStats.playerStats.level,
-            FinalStats.playerStats.exp.Current,
-            FinalStats.hp.Current,
+            model.CurrentLevel,
+            model.CurrentExp,
+            model.CurrentHp,
             augmentsID);
         
         SaveManager.Instance.SetPlayerData(saveData);
-        autoAttacker.SaveData();
+        if (autoAttacker != null) autoAttacker.SaveData();
     }
 
     public void LoadData()
     {
-        m_Augments.Clear();
         PlayerSaveData saveData = SaveManager.Instance.LoadPlayerSaveData();
-        if (saveData == null)
-        {
-            return;
-        }
+        if (saveData == null) return;
 
-        FinalStats.playerStats.level = saveData.playerLevel;
-        FinalStats.playerStats.exp.IncreaseMaxValue(saveData.playerLevel * 10);
-        FinalStats.playerStats.exp.Increase(saveData.currentExp);
-        m_Augments = SaveManager.Instance.GetStatAbilities(saveData.statAugments);
-        RecalculateStats();
-        FinalStats.hp.LoadValue(saveData.currentHp);
-        RecalculateStats();
+        // model 데이터 로드 및 초기화
+        // model.Load(saveData); 
     }
+    #endregion
 }

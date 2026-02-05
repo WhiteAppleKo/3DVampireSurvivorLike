@@ -55,11 +55,15 @@ public class ExpManager : SingletoneBase<ExpManager>
 
     public void PlayerLevelUp()
     {
-        playerController.FinalStats.playerStats.LevelUp();
-        m_ChoiceManager.PopUpChoiceUI();
-        for (int i = 0; i < 3; i++)
+        // 모델 내부에서 레벨업 수치 처리는 이미 완료됨
+        // 여기서는 선택지 UI만 팝업
+        if (m_ChoiceManager != null)
         {
-            m_ChoiceManager.SetAugmentChoice(i);
+            m_ChoiceManager.PopUpChoiceUI();
+            for (int i = 0; i < 3; i++)
+            {
+                m_ChoiceManager.SetAugmentChoice(i);
+            }
         }
     }
 

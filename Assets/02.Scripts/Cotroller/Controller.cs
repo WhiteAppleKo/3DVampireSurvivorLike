@@ -1,19 +1,26 @@
+using _02.Scripts.Cotroller;
 using UnityEngine;
 
 namespace _02.Scripts.Cotroller
 {
-    public class Controller : MonoBehaviour
+    // [L] Base Logic System for all Entities
+    public abstract class Controller : MonoBehaviour
     {
-        [SerializeField]
+        [Header("Base References")]
         public BaseStats baseStats = new BaseStats();
         public global::AutoAttack autoAttacker;
         public BaseStats FinalStats { get; protected set; }
+        
         public bool isMoveDisable = false;
         public bool isDashing = false;
-    
+
         protected virtual void Awake()
         {
-            baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp);
+            // 하위 클래스에서 각자의 Model 및 Stats 초기화
+            if (baseStats.hp == null)
+            {
+                baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp);
+            }
             FinalStats = new BaseStats(baseStats);
         }
 
@@ -23,8 +30,12 @@ namespace _02.Scripts.Cotroller
             {
                 BattleManager.Instance.onDamageEvent += OnDamageReceived;
             }
-
-            FinalStats.hp.Events.onMinReached += Die;
+            
+            // HP 최소 도달 시 Die 호출 (이벤트 기반)
+            if (FinalStats?.hp != null)
+            {
+                FinalStats.hp.Events.onMinReached += Die;
+            }
         }
 
         protected virtual void OnDisable()
@@ -34,24 +45,29 @@ namespace _02.Scripts.Cotroller
                 BattleManager.Instance.onDamageEvent -= OnDamageReceived;
             }
         
-            if (FinalStats != null && FinalStats.hp != null)
+            if (FinalStats?.hp != null)
             {
                 FinalStats.hp.Events.onMinReached -= Die;
             }
         }
-    
+
         protected virtual void OnDamageReceived(BattleManager.DamageEventStruct damageEvent)
         {
-        
             if (damageEvent.receiver != this) return;
-            Debug.Log(FinalStats.hp.Current);
-            FinalStats.hp.Decrease(damageEvent.damageAmount);
-            Debug.Log(FinalStats.hp.Current);
+            
+            // 로직: 데미지 계산 및 데이터 갱신
+            // 실제 구현에서는 각 클래스의 Model.TakeDamage()를 호출하도록 유도하는 것이 좋습니다.
+            ApplyDamage(damageEvent.damageAmount);
         }
-    
-        protected virtual void Die(int prev, int current)
+
+        protected virtual void ApplyDamage(int amount)
         {
-        
+            if (FinalStats?.hp != null)
+            {
+                FinalStats.hp.Decrease(amount);
+            }
         }
+
+        protected abstract void Die(int prev, int current);
     }
 }

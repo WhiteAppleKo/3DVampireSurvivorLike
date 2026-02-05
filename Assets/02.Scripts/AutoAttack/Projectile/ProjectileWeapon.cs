@@ -1,12 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using _02.Scripts.AutoAttack;
-using _02.Scripts.AutoAttack.Projectile;
 using _02.Scripts.Cotroller;
 using UnityEngine;
 
 /// <summary>
-/// 투사체를 관리하는 오브젝트 풀링 클래스입니다.
+/// 투사체를 관리하는 오브젝트 풀링 클래스입니다. (DLV Refactored)
 /// </summary>
 public class ProjectileWeapon : Weapon
 {
@@ -18,45 +16,65 @@ public class ProjectileWeapon : Weapon
     
     // 생성된 투사체들을 저장하는 리스트
     private List<GameObject> m_PooledProjectiles;
+    
+    // NonAlloc을 위한 캐시
     private Collider[] m_FindTargetResults = new Collider[50];
-    
-    private GameObject m_CurrentTarget;
     private Controller m_Controller;
-    
+    private GameObject m_CurrentTarget;
+
     public override void WeaponSettingLogic()
     {
         m_Controller = GetComponentInParent<Controller>();
         m_PooledProjectiles = new List<GameObject>();
+        
+        // 초기 풀 생성
         for (int i = 0; i < poolSize; i++)
         {
-            // 투사체를 생성하고 비활성화 상태로 둔 뒤 리스트에 추가
-            GameObject obj = Instantiate(projectilePrefab);
-            // 데미지 값을 미리 설정하지 않고, Controller와 Weapon 참조만 전달합니다.
-            obj.GetComponentInChildren<Projectile>().ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
-            obj.SetActive(false);
-            m_PooledProjectiles.Add(obj);
+            CreateProjectile();
         }
     }
-    
+
+    private GameObject CreateProjectile()
+    {
+        if (projectilePrefab == null)
+        {
+            Debug.LogError($"[ProjectileWeapon] 프리팹이 설정되지 않았습니다: {name}");
+            return null;
+        }
+
+        GameObject obj = Instantiate(projectilePrefab);
+        // Projectile 컴포넌트 설정 (DLV Logic System)
+        var projectileLogic = obj.GetComponent<Projectile>();
+        if (projectileLogic != null)
+        {
+            projectileLogic.ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
+        }
+        else
+        {
+            Debug.LogError($"[ProjectileWeapon] 프리팹에 Projectile 컴포넌트가 없습니다.");
+        }
+
+        obj.SetActive(false);
+        m_PooledProjectiles.Add(obj);
+        return obj;
+    }
+
     public override void AttackLogic()
     {
-        // 베이스 클래스의 AttackLogic을 호출하여 증강의 OnAttack 효과를 발동시킵니다.
-        base.AttackLogic();
-        
+        base.AttackLogic(); // Visual & Sound & CD
+
         m_CurrentTarget = FindTarget();
         if (m_CurrentTarget != null)
         {
-            SetTarget(m_CurrentTarget);
+            SpawnProjectiles(m_CurrentTarget);
         }
     }
 
     /// <summary>
-    /// 풀에서 비활성화된 투사체를 찾아 반환합니다.
+    /// 풀에서 비활성화된 투사체를 찾아 반환하거나 새로 생성합니다.
     /// </summary>
-    /// <returns>사용 가능한 투사체 게임 오브젝트</returns>
     public GameObject GetProjectile()
     {
-        // 리스트를 순회하며 비활성화된 투사체를 찾는다
         foreach (var projectile in m_PooledProjectiles)
         {
             if (!projectile.activeInHierarchy)
@@ -64,47 +82,48 @@ public class ProjectileWeapon : Weapon
                 return projectile;
             }
         }
-
-        // 만약 사용 가능한 투사체가 없다면, 새로 생성 (풀 크기를 동적으로 늘림)
-        GameObject newObj = Instantiate(projectilePrefab);
-        newObj.GetComponent<Projectile>().ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
-        m_PooledProjectiles.Add(newObj);
-        return newObj;
+        return CreateProjectile();
     }
 
-    public void SetTarget(GameObject target)
+    private void SpawnProjectiles(GameObject target)
     {
-        m_CurrentTarget = target;
-        // 증강으로 변경된 최종 투사체 수(finalStats.projectileCount)를 사용합니다.
-        for (int i = 0; i < FinalStats.projectileWeaponStats.projectileCount; i++)
+        // 증강 등으로 변경된 최종 투사체 수 사용 (RuntimeData 활용 권장하지만 호환성 위해 FinalStats 사용)
+        int count = FinalStats.projectileWeaponStats.projectileCount;
+        
+        for (int i = 0; i < count; i++)
         {
             GameObject obj = GetProjectile();
-            obj.SetActive(true);
+            if (obj == null) continue;
+
             obj.transform.position = transform.position;
-            obj.GetComponent<Projectile>().SetTarget(target);
+            obj.SetActive(true);
+            
+            var logic = obj.GetComponent<Projectile>();
+            if (logic != null)
+            {
+                logic.SetTarget(target);
+            }
         }
     }
 
     private GameObject FindTarget()
     {
-        // 증강으로 변경된 최종 타겟 탐지 범위(finalStats.findTargetRange)를 사용합니다.
-        int size = Physics.OverlapSphereNonAlloc(transform.position, FinalStats.projectileWeaponStats.findTargetRange, m_FindTargetResults, FinalStats.targetLayer);
+        // 탐지 범위
+        float range = FinalStats.projectileWeaponStats.findTargetRange;
+        int size = Physics.OverlapSphereNonAlloc(transform.position, range, m_FindTargetResults, FinalStats.targetLayer);
 
-        // 감지된 타겟이 없으면 null을 반환합니다.
-        if (size == 0)
-        {
-            return null;
-        }
+        if (size == 0) return null;
 
         GameObject closestTarget = null;
         float closestDistanceSqr = Mathf.Infinity;
         Vector3 currentPosition = transform.position;
 
-        // 감지된 모든 콜라이더를 순회하며 가장 가까운 타겟을 찾습니다.
-        for (int i = 0; i < Mathf.Min(size, m_FindTargetResults.Length); i++)
+        for (int i = 0; i < size; i++)
         {
+            if (m_FindTargetResults[i] == null) continue;
+
             Vector3 directionToTarget = m_FindTargetResults[i].transform.position - currentPosition;
-            float dSqrToTarget = directionToTarget.sqrMagnitude; // 제곱 거리를 사용하여 성능 최적화
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
 
             if (dSqrToTarget < closestDistanceSqr)
             {
