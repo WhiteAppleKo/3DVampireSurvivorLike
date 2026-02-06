@@ -1,77 +1,126 @@
 using System.IO;
 using System.Text;
-using _02.Scripts.Managers.Spawn;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using Features.Weapon;
 
 namespace _02.Scripts.AutoAttack.Editor
 {
     public class WeaponImporter
     {
-        // CSV 파일 경로 (본인의 경로에 맞게 수정하세요)
         private static string m_CsvPath = "Assets/05.Datas/WeaponData/WeaponDatas.csv";
-        private static string m_SoPath = "Assets/05.Datas/WeaponData/WeaponDatabase.asset";
+        private static string m_PureDataPath = "Assets/05.Datas/WeaponData/PureData";
+        private static string m_DatabasePath = "Assets/05.Datas/WeaponData/PureDataBaseWeapon.asset";
         private static string m_WeaponPrefabPath = "Assets/00.Resources/Weapons/";
 
-        [MenuItem("Tools/Import WeaponDatas")]
+        [MenuItem("Tools/Import WeaponDatas (DLV)")]
         public static void ImportCSV()
         {
-            WeaponDatabase asset = AssetDatabase.LoadAssetAtPath<WeaponDatabase>(m_SoPath);
-            if (asset == null)
+            if (!Directory.Exists(m_PureDataPath))
             {
-                asset = ScriptableObject.CreateInstance<WeaponDatabase>();
-                AssetDatabase.CreateAsset(asset, m_SoPath);
+                Directory.CreateDirectory(m_PureDataPath);
             }
-            Object[] subAssets = AssetDatabase.LoadAllAssetsAtPath(m_SoPath);
-            foreach (Object subAsset in subAssets)
-            {
-                if (subAsset != asset)
-                {
-                    AssetDatabase.RemoveObjectFromAsset(subAsset);
-                    Object.DestroyImmediate(subAsset, true);
-                }
-            }
-            asset.weaponDatas.Clear();
 
-            // 한글 깨짐 방지를 위해 UTF8 또는 Default 설정
+            PureDataBaseWeapon database = AssetDatabase.LoadAssetAtPath<PureDataBaseWeapon>(m_DatabasePath);
+            if (database == null)
+            {
+                database = ScriptableObject.CreateInstance<PureDataBaseWeapon>();
+                AssetDatabase.CreateAsset(database, m_DatabasePath);
+            }
+            database.WeaponList.Clear();
+
             string[] lines = File.ReadAllLines(m_CsvPath, Encoding.UTF8);
 
-            // 12번째 줄(인덱스 11)부터 데이터 시작
             for (int i = 11; i < lines.Length; i++)
             {
                 if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
                 string[] data = lines[i].Split(',');
-            
-                string prefabPath = m_WeaponPrefabPath + $"Weapon_{data[0].Trim()}.prefab";
-                GameObject weapon = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-                // 데이터 개수가 부족한 줄은 스킵
-                if (data.Length < 7) continue;
-                WeaponData newWeaponData = ScriptableObject.CreateInstance<WeaponData>();
-                newWeaponData.SetSo(
-                    data[0].Trim(), 
-                    data[1].Trim(),
-                    data[2].Trim(),
-                    data[3].Trim(),
-                    data[4].Trim(),
-                    data[5].Trim(),
-                    data[6].Trim(),
-                    weapon,
-                    int.Parse(data[7].Trim()),
-                    data[8].Trim()
-                    );
-            
-                newWeaponData.name = $"Weapon_{data[0].Trim()}";
-                AssetDatabase.AddObjectToAsset(newWeaponData, asset);
-                asset.weaponDatas.Add(newWeaponData);
-            }
-        
+                if (data.Length < 9) continue;
 
-            EditorUtility.SetDirty(asset);
+                string id = data[0].Trim();
+                if (string.IsNullOrEmpty(id)) continue;
+
+                string weaponName = data[1].Trim();
+                string weaponType = data[2].Trim();
+                float delay = float.Parse(data[3].Trim());
+                int damage = int.Parse(data[4].Trim());
+                float range = float.Parse(data[5].Trim());
+                int projCount = int.Parse(data[6].Trim());
+                int iconNum = int.Parse(data[7].Trim());
+                string desc = data[8].Trim();
+
+                string assetPath = $"{m_PureDataPath}/PureDataWeapon_{id}_{weaponName}.asset";
+                PureDataWeapon pureData = AssetDatabase.LoadAssetAtPath<PureDataWeapon>(assetPath);
+                if (pureData == null)
+                {
+                    pureData = ScriptableObject.CreateInstance<PureDataWeapon>();
+                    AssetDatabase.CreateAsset(pureData, assetPath);
+                }
+
+                pureData.ID = id;
+                pureData.Name = weaponName;
+                pureData.Type = weaponType;
+                pureData.AttackDelay = delay;
+                pureData.Damage = damage;
+                pureData.EffectRange = range;
+                pureData.ProjectileCount = projCount;
+                pureData.IconNumber = iconNum;
+                pureData.Description = desc;
+
+                string prefabPath = m_WeaponPrefabPath + $"Weapon_{id}.prefab";
+                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+                if (prefab != null)
+                {
+                    pureData.Prefab = prefab;
+                    PatchPrefab(prefab, pureData);
+                }
+
+                EditorUtility.SetDirty(pureData);
+                database.WeaponList.Add(pureData);
+            }
+
+            EditorUtility.SetDirty(database);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            Debug.Log($"임포트 완료! 총 {asset.weaponDatas.Count}개의 무기를 로드했습니다.");
+            Debug.Log($"[DLV Weapon Import] 완료! 총 {database.WeaponList.Count}개의 무기를 로드했습니다.");
+        }
+
+        private static void PatchPrefab(GameObject prefab, PureDataWeapon pureData)
+        {
+            string prefabAssetPath = AssetDatabase.GetAssetPath(prefab);
+            using (var editScope = new PrefabUtility.EditPrefabContentsScope(prefabAssetPath))
+            {
+                GameObject root = editScope.prefabContentsRoot;
+
+                // 1. Missing Scripts cleanup
+                var allTransforms = root.GetComponentsInChildren<Transform>(true);
+                foreach (var t in allTransforms)
+                {
+                    GameObjectUtility.RemoveMonoBehavioursWithMissingScript(t.gameObject);
+                }
+
+                // 2. Add WeaponVisualizer if missing
+                var visualizer = root.GetComponent<WeaponVisualizer>();
+                if (visualizer == null)
+                {
+                    visualizer = root.AddComponent<WeaponVisualizer>();
+                }
+
+                // 3. Link Logic System if exists
+                var weaponLogic = root.GetComponent<Weapon>();
+                if (weaponLogic != null)
+                {
+                    SerializedObject so = new SerializedObject(weaponLogic);
+                    SerializedProperty prop = so.FindProperty("pureData");
+                    if (prop != null)
+                    {
+                        // Note: Weapon.cs might need updating to use the new PureDataWeapon type
+                    }
+                }
+            }
         }
     }
 }

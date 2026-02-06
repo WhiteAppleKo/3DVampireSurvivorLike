@@ -2,37 +2,42 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Text;
-using _02.Scripts.Augment.BaseAugment;
-using _02.Scripts.Managers.Spawn;
+using Features.Enemy;
+using System.Collections.Generic;
 
 public class MonsterImporter
 {
-    // CSV 파일 경로 (본인의 경로에 맞게 수정하세요)
+    // CSV 파일 경로
     private static string m_CsvPath = "Assets/05.Datas/MonsterData/MonsterDatas.csv";
-    private static string m_SoPath = "Assets/05.Datas/MonsterData/MonsterDatabase.asset";
+    
+    // DLV 데이터 저장 경로 (새로운 경로)
+    private static string m_PureDataPath = "Assets/05.Datas/MonsterData/PureData"; 
+    private static string m_DatabasePath = "Assets/05.Datas/MonsterData/PureDataBaseEnemy.asset";
+    
+    // 프리팹 경로
     private static string m_MonsterPrefabPath = "Assets/00.Resources/Monsters/";
 
-    [MenuItem("Tools/Import MonsterDatas")]
+    [MenuItem("Tools/Import MonsterDatas (DLV)")]
     public static void ImportCSV()
     {
-        MonsterDatabase asset = AssetDatabase.LoadAssetAtPath<MonsterDatabase>(m_SoPath);
-        if (asset == null)
+        // 0. 폴더 확인 및 생성
+        if (!Directory.Exists(m_PureDataPath))
         {
-            asset = ScriptableObject.CreateInstance<MonsterDatabase>();
-            AssetDatabase.CreateAsset(asset, m_SoPath);
+            Directory.CreateDirectory(m_PureDataPath);
         }
-        Object[] subAssets = AssetDatabase.LoadAllAssetsAtPath(m_SoPath);
-        foreach (Object subAsset in subAssets)
-        {
-            if (subAsset != asset)
-            {
-                AssetDatabase.RemoveObjectFromAsset(subAsset);
-                Object.DestroyImmediate(subAsset, true);
-            }
-        }
-        asset.monsterDatas.Clear();
 
-        // 한글 깨짐 방지를 위해 UTF8 또는 Default 설정
+        // 1. PureDataBase 로드 또는 생성
+        PureDataBaseEnemy database = AssetDatabase.LoadAssetAtPath<PureDataBaseEnemy>(m_DatabasePath);
+        if (database == null)
+        {
+            database = ScriptableObject.CreateInstance<PureDataBaseEnemy>();
+            AssetDatabase.CreateAsset(database, m_DatabasePath);
+        }
+        
+        // 기존 리스트 초기화 (새로 채우기 위함)
+        database.MonsterList.Clear();
+
+        // 2. CSV 읽기
         string[] lines = File.ReadAllLines(m_CsvPath, Encoding.UTF8);
 
         // 12번째 줄(인덱스 11)부터 데이터 시작
@@ -41,35 +46,130 @@ public class MonsterImporter
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
             string[] data = lines[i].Split(',');
-            
-            string prefabPath = m_MonsterPrefabPath + $"Monster_{data[0].Trim()}.prefab";
-            Debug.Log(prefabPath);
-            GameObject monster = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
-            // 데이터 개수가 부족한 줄은 스킵
+            // 최소 데이터 길이 확인 (ID, Name, HP, Speed, Exp 등등...)
             if (data.Length < 8) continue;
-            MonsterData newMonsterData = ScriptableObject.CreateInstance<MonsterData>();
-            newMonsterData.SetSo(
-                data[0].Trim(), 
-                data[1].Trim(),
-                data[2].Trim(),
-                data[3].Trim(),
-                data[4].Trim(),
-                data[5].Trim(),
-                data[6].Trim(),
-                data[7].Trim(),
-                monster,
-                data[8].Trim());
-            
-            newMonsterData.name = $"Monster_{data[0].Trim()}";
-            AssetDatabase.AddObjectToAsset(newMonsterData, asset);
-            asset.monsterDatas.Add(newMonsterData);
-        }
-        
 
-        EditorUtility.SetDirty(asset);
+            // 데이터 파싱 (ID는 문자열로 처리하여 앞자리 0 보존)
+            string id = data[0].Trim();
+            if (string.IsNullOrEmpty(id)) 
+            {
+                continue;
+            }
+
+            string monsterName = data[1].Trim(); // 이름
+            // data[2] : desc (사용 안 함)
+            
+            if (!int.TryParse(data[3].Trim(), out int hp)) hp = 10;
+            if (!float.TryParse(data[4].Trim(), out float speed)) speed = 3.0f;
+            // data[5] : atk (사용 안 함 - 접촉 데미지?)
+            // data[6] : atkDelay (사용 안 함)
+            if (!int.TryParse(data[7].Trim(), out int exp)) exp = 5;
+            
+            // 3. PureDataEnemy 에셋 생성 또는 로드
+            string assetPath = $"{m_PureDataPath}/PureDataEnemy_{id}_{monsterName}.asset";
+            PureDataEnemy pureData = AssetDatabase.LoadAssetAtPath<PureDataEnemy>(assetPath);
+            
+            if (pureData == null)
+            {
+                pureData = ScriptableObject.CreateInstance<PureDataEnemy>();
+                AssetDatabase.CreateAsset(pureData, assetPath);
+            }
+
+            // 4. 데이터 주입
+            pureData.ID = id;
+            pureData.MonsterName = monsterName;
+            
+            pureData.BaseMaxHp = hp;
+            pureData.BaseMoveSpeed = speed;
+            pureData.BaseExpAmount = exp;
+            
+            // 기타 기본값 설정 (CSV에 없는 값)
+            pureData.BaseTurnSpeed = 5.0f; 
+            pureData.MinimumDistance = 0.01f;
+
+            // 6. 프리팹 자동 연결 및 할당
+            string prefabPath = m_MonsterPrefabPath + $"Monster_{id}.prefab"; 
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            if (prefab != null)
+            {
+                pureData.Prefab = prefab; // 필드 할당
+                
+                // 프리팹 내부 수정
+                string prefabAssetPath = AssetDatabase.GetAssetPath(prefab);
+                using (var editScope = new PrefabUtility.EditPrefabContentsScope(prefabAssetPath))
+                {
+                    GameObject root = editScope.prefabContentsRoot;
+                    
+                    // 1. 프리팹 전체 계층에서 누락된 스크립트 제거 (자식 오브젝트 포함)
+                    var allTransforms = root.GetComponentsInChildren<Transform>(true);
+                    foreach (var t in allTransforms)
+                    {
+                        GameObjectUtility.RemoveMonoBehavioursWithMissingScript(t.gameObject);
+
+                        // [무결성 복구] 무기 스크립트들이 요구하는 컴포넌트가 없어서 저장이 안 되는 문제 해결
+                        // BodyAttack -> BoxCollider 필요
+                        if (t.GetComponent<_02.Scripts.AutoAttack.BodyAttack.BodyAttack>() != null && t.GetComponent<BoxCollider>() == null)
+                        {
+                            t.gameObject.AddComponent<BoxCollider>().isTrigger = true;
+                        }
+                        // AoEWeapon -> SphereCollider 필요
+                        if (t.GetComponent<_02.Scripts.AutoAttack.AoE.AoEWeapon>() != null && t.GetComponent<SphereCollider>() == null)
+                        {
+                            t.gameObject.AddComponent<SphereCollider>().isTrigger = true;
+                        }
+
+                        // [무결성 복구] 모든 Weapon은 IWeaponVisualizer(구체 클래스: WeaponVisualizer)를 요구함
+                        if (t.GetComponent<_02.Scripts.AutoAttack.Weapon>() != null && t.GetComponent<Features.Weapon.WeaponVisualizer>() == null)
+                        {
+                            t.gameObject.AddComponent<Features.Weapon.WeaponVisualizer>();
+                        }
+                    }
+
+                    // 2. 비주얼 및 로직 컴포넌트 자동 추가
+                    var visuals = root.GetComponent<EnemyVisualizer>();
+                    if (visuals == null)
+                    {
+                        visuals = root.AddComponent<EnemyVisualizer>();
+                    }
+
+                    var logic = root.GetComponent<EnemyLogicSystem>();
+                    if (logic == null)
+                    {
+                        logic = root.AddComponent<EnemyLogicSystem>();
+                    }
+
+                    if (logic != null)
+                    {
+                        // 3. SerializedObject를 통해 PureData 필드에 할당
+                        SerializedObject so = new SerializedObject(logic);
+                        SerializedProperty dataProp = so.FindProperty("pureData");
+                        if (dataProp != null)
+                        {
+                            dataProp.objectReferenceValue = pureData;
+                            so.ApplyModifiedProperties();
+                            Debug.Log($"[Importer] 프리팹 '{prefab.name}'에 PureData 및 DLV 컴포넌트 설정 완료.");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"[Importer] 프리팹을 찾을 수 없습니다: {prefabPath}");
+            }
+
+            EditorUtility.SetDirty(pureData);
+            
+            // 5. 데이터베이스에 등록
+            if (!database.MonsterList.Contains(pureData))
+            {
+                database.MonsterList.Add(pureData);
+            }
+        }
+
+        EditorUtility.SetDirty(database);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log($"임포트 완료! 총 {asset.monsterDatas.Count}개의 몬스터를 로드했습니다.");
+        Debug.Log($"[DLV Import] 완료! 총 {database.MonsterList.Count}개의 몬스터 데이터 생성 및 갱신.");
     }
 }

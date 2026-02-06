@@ -3,7 +3,7 @@ using _02.Scripts.Cotroller;
 using UnityEngine;
 
 // 이 컴포넌트는 SphereCollider를 필요로 합니다.
-namespace _02.Scripts.AutoAttack
+namespace _02.Scripts.AutoAttack.AoE
 {
     [RequireComponent(typeof(SphereCollider))]
     public class AoEWeapon : Weapon

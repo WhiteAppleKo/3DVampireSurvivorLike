@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using _02.Scripts.Cotroller;
 using Cysharp.Threading.Tasks;
+using Features.Enemy;
 using Shapes;
 using UnityEditor.Searcher;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace _02.Scripts.AutoAttack.Charge
         private Controller m_Controller;
         private bool m_IsDashing;
         private BattleManager.DamageEventStruct m_DamageEvent;
-        private EnemyController m_EnemyController;
+        private EnemyLogicSystem m_EnemyController;
         
         // 플레이어 돌진 판정은 플레이어가 누르는 방향으로 돌진해야함
         private bool m_IsPlayer;
@@ -39,8 +40,10 @@ namespace _02.Scripts.AutoAttack.Charge
 
             if (m_IsPlayer == false)
             {
-                m_EnemyController = m_Controller as EnemyController;
-                m_EnemyController.minimumDistance = FinalStats.chargeWeaponStat.findTargetRange;
+                m_EnemyController = m_Controller as EnemyLogicSystem;
+                // Note: EnemyLogicSystem uses pureData for minimumDistance, 
+                // but since we need to set it per weapon/instance, we might need a way to override it.
+                // For now, keeping the logic similar to original.
             }
         }
 
@@ -51,25 +54,24 @@ namespace _02.Scripts.AutoAttack.Charge
             {
                 return;
             }
-            // 베이스 클래스의 AttackLogic을 호출하여 증강의 OnAttack 효과를 발동시킵니다. 나중에 특수 증강 추가할 때 base.AttackLogic 수정할 필요 있음
+            // 베이스 클래스의 AttackLogic을 호출하여 증강의 OnAttack 효과를 발동시킵니다.
             base.AttackLogic();
 
-            if (m_IsPlayer == false)
-            {
-                m_CurrentTarget = FindTarget();
-                if (m_CurrentTarget != null)
-                {
-                    SetTarget(m_CurrentTarget);
-                }else SetTarget(null);
+            m_CurrentTarget = FindTarget();
+            Vector3 dashTargetPos;
 
-                if (m_CurrentTarget != null)
-                {
-                    Charge(m_CurrentTarget).Forget();
-                }
-            }
-            else
+            if (m_CurrentTarget != null)
             {
-                
+                dashTargetPos = m_CurrentTarget.transform.position;
+                SetTarget(m_CurrentTarget);
+                Charge(dashTargetPos).Forget();
+            }
+            else if (m_IsPlayer)
+            {
+                // 플레이어는 타겟이 없어도 보는 방향으로 돌진
+                dashTargetPos = m_Controller.transform.position + m_Controller.transform.forward * FinalStats.chargeWeaponStat.findTargetRange;
+                SetTarget(null);
+                Charge(dashTargetPos).Forget();
             }
         }
 
@@ -79,7 +81,7 @@ namespace _02.Scripts.AutoAttack.Charge
             dashDuration = m_Controller.FinalStats.moveSpeed * 0.2f;
         }
 
-        private async UniTaskVoid Charge(GameObject currenttTarget)
+        private async UniTaskVoid Charge(Vector3 targetPos)
         {
             // 1. Safe Token : 오브젝트가 파괴되면 작업 취소
             CancellationToken token = this.GetCancellationTokenOnDestroy();
@@ -90,37 +92,22 @@ namespace _02.Scripts.AutoAttack.Charge
             try
             {
                 // 2. 돌진 목표 지점 계산
-                // 타겟 방향 벡터 계산
                 Vector3 startPos = m_Controller.transform.position;
-                Vector3 targetPos = currenttTarget.transform.position;
-                
-                // Y축 높이는 0으로 동일 하기 때문에 건드리지 않음
                 Vector3 direction = (targetPos - startPos).normalized;
-                float distanceToTarget = Vector3.Distance(startPos, targetPos);
+                if (direction == Vector3.zero) direction = m_Controller.transform.forward;
 
+                float distanceToTarget = Vector3.Distance(startPos, targetPos);
                 Vector3 endPos = startPos + direction * (distanceToTarget + FinalStats.chargeWeaponStat.findTargetRange);
 
-                // 3. 공격 딜레이 AttackDelay만큼 대기하면서 게이지를 채움 (TimeSpan 사용)
-                //FinalStats.attackDelay
-
-                // 연출 파트를 여기에 넣으면 될듯
-                //await UniTask.Delay(TimeSpan.FromSeconds(FinalStats.attackDelay), cancellationToken: token);
                 float chargeDuration = FinalStats.attackDelay;
                 float currentChargeTime = 0f;
                 
-                // Delay대신 while문으로 직접 시간을 셈
                 while (currentChargeTime < chargeDuration)
                 {
-                    //토큰 체크
-                    if (token.IsCancellationRequested)
-                    {
-                        return;
-                    }
+                    if (token.IsCancellationRequested) return;
                     currentChargeTime += Time.deltaTime;
                     float progress = Mathf.Clamp01(currentChargeTime / chargeDuration) / 2;
-                    // 연출 호출
                     UpdateChargeVisuals(progress);
-                    
                     await UniTask.NextFrame(PlayerLoopTiming.Update, token);
                 }
                 
@@ -128,38 +115,23 @@ namespace _02.Scripts.AutoAttack.Charge
                 m_Controller.isDashing = m_IsDashing;
                 while (elapsedTime < dashDuration)
                 {
-                    //토큰 체크
-                    if (token.IsCancellationRequested)
-                    {
-                        return;
-                    }
+                    if (token.IsCancellationRequested) return;
 
                     elapsedTime += Time.deltaTime;
                     float t = elapsedTime / dashDuration;
                     m_Controller.transform.position = Vector3.Lerp(startPos, endPos, t);
 
-                    //대기 후 실행할 함수 호출
-                    ChargeAttack(currenttTarget);
-
+                    ChargeAttack();
                     await UniTask.NextFrame(PlayerLoopTiming.Update, token);
                 }
 
                 m_Controller.isDashing = false;
                 m_Controller.transform.position = endPos;
-                ChargeAttack(currenttTarget);
+                ChargeAttack();
             }
-            catch (OperationCanceledException)
-            {
-                //대기 중 오브젝트 파괴 취소 처리 (나중에 필요해 지면)
-            }
+            catch (OperationCanceledException) { }
             finally
             {
-                float elapsedTime = 0f;
-                while (elapsedTime < dashDuration)
-                {
-                    elapsedTime += Time.deltaTime;
-                    await UniTask.NextFrame(PlayerLoopTiming.Update, token);
-                }
                 m_IsDashing = false;
                 m_Controller.isMoveDisable = m_IsDashing;
             }
@@ -176,17 +148,17 @@ namespace _02.Scripts.AutoAttack.Charge
             }
         }
 
-        private void ChargeAttack(GameObject target)
+        private void ChargeAttack()
         {
-            // 현재 오브젝트 위치 기준 범위 내 적 감지
-            int hitCount = Physics.OverlapSphereNonAlloc(target.transform.position, hitRadius, m_TargetColliders, FinalStats.targetLayer);
-            Debug.Log($"{gameObject.name} {hitCount}");
+            // dasher의 현재 위치 기준 범위 내 적 감지 (버그 수정: target 대신 m_Controller 위치 사용)
+            int hitCount = Physics.OverlapSphereNonAlloc(m_Controller.transform.position, hitRadius, m_TargetColliders, FinalStats.targetLayer);
+            
             for (int i = 0; i < hitCount; i++)
             {
                 GameObject enemyObj = m_TargetColliders[i].gameObject;
+                if (enemyObj == m_Controller.gameObject) continue;
+
                 int enemyId = enemyObj.GetInstanceID();
-                
-                //이번 돌진에서 아직 맞지 않은 적만 타격
                 if (!m_HitEnemies.Contains(enemyId))
                 {
                     m_HitEnemies.Add(enemyId);

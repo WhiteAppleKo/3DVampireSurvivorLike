@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7840076543057068909}
   - component: {fileID: 5978698363437910885}
   - component: {fileID: 1440336523940818042}
+  - component: {fileID: 70855493491869940}
   m_Layer: 0
   m_Name: Weapon_05030001
   m_TagString: Untagged
@@ -46,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6746ee365952946438e0a2ca89b7df0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.AutoAttack.BodyAttack.BodyAttack
+  pureData: {fileID: 0}
+  audioSource: {fileID: 0}
   baseStats:
     weaponID: 
     weaponNamge: 
@@ -62,7 +65,6 @@ MonoBehaviour:
       areaOfEffectRadius: 5
     chargeWeaponStat:
       findTargetRange: 5
-  audioSource: {fileID: 0}
 --- !u!82 &5978698363437910885
 AudioSource:
   m_ObjectHideFlags: 0
@@ -181,3 +183,15 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.9908085, y: 1, z: 1.9806423}
   m_Center: {x: -0.000166893, y: 0, z: -0.015561104}
+--- !u!114 &70855493491869940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1893715106553236007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd7c9fe6200a22a4f94bf6de21cf27fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Weapon.WeaponVisualizer

@@ -1,5 +1,6 @@
 using System;
 using _02.Scripts.Managers.Stage;
+using Features.Stage;
 using UnityEngine;
 
 namespace _02.Scripts.Managers.Spawn
@@ -15,7 +16,7 @@ namespace _02.Scripts.Managers.Spawn
             m_PatternSpawner = GetComponentInChildren<PatternSpawner>();
         }
 
-        public void StartNewStage(StageData stageData)
+        public void StartNewStage(PureDataStage stageData)
         {
             m_ReapeatSpawner.StartSpawning(stageData);
         }

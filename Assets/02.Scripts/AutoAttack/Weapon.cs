@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Features.Weapon;
+using Features.Augment;
 using UnityEngine;
 
 namespace _02.Scripts.AutoAttack
@@ -7,7 +8,7 @@ namespace _02.Scripts.AutoAttack
     [RequireComponent(typeof(IWeaponVisualizer))]
     public abstract class Weapon : MonoBehaviour
     {
-        [SerializeField] protected WeaponData pureData;
+        [SerializeField] protected PureDataWeapon pureData;
         
         protected RuntimeDataWeapon model;
         protected IWeaponVisualizer visuals;
@@ -60,6 +61,40 @@ namespace _02.Scripts.AutoAttack
             RecalculateStats();
         }
 
+        public void ApplyPureAugment(PureDataWeaponAbility ability)
+        {
+            if (model == null) return;
+
+            switch (ability.TargetStatType)
+            {
+                case WeaponAbility.e_WeaponStatType.AttackDelay:
+                    // 공격 딜레이 감소 (공격 속도 증가)
+                    // 예: ValueAmount가 -0.1이면 딜레이 10% 감소
+                    model.AddAttackDelayModifier(ability.ValueAmount);
+                    break;
+                case WeaponAbility.e_WeaponStatType.Damage:
+                    if (ability.ValueType == "Fixed")
+                    {
+                        model.AddDamageModifier((int)ability.ValueAmount, 0);
+                    }
+                    else if (ability.ValueType == "Percentage" || ability.ValueType == "Percent")
+                    {
+                        model.AddDamageModifier(0, ability.ValueAmount);
+                    }
+                    break;
+                case WeaponAbility.e_WeaponStatType.AoE:
+                    model.AddRangeModifier(ability.ValueAmount);
+                    break;
+                default:
+                    Debug.LogWarning($"[Weapon] 미지원 증강 타입: {ability.TargetStatType}");
+                    break;
+            }
+            
+            // 호환성: FinalStats에도 적용 (Model의 최신값 반영)
+            FinalStats.attackDelay = model.FinalAttackDelay;
+            FinalStats.damage = model.FinalDamage;
+        }
+
         public virtual void AddAugment(WeaponAbility augment)
         {
             m_Augments.Add(augment);
@@ -80,10 +115,12 @@ namespace _02.Scripts.AutoAttack
             // DLV Model 업데이트
             if (model != null)
             {
-                model.UpdateStats(
-                    m_GlobalAugmentsModifier.percentAttackDelay,
-                    m_GlobalAugmentsModifier.fixedDamageIncrease,
-                    m_GlobalAugmentsModifier.percentDamageIncreadse
+                // 레거시 글로벌 증강 적용 (누적 방식이 아닌 설정 방식이 필요할 수 있으나, 
+                // 현재 구조에서는 기존 값을 반영하도록 호출)
+                model.AddAttackDelayModifier(m_GlobalAugmentsModifier.percentAttackDelay - 1.0f); // 1.2배라면 +0.2 전달
+                model.AddDamageModifier(
+                    m_GlobalAugmentsModifier.fixedDamageIncrease, 
+                    m_GlobalAugmentsModifier.percentDamageIncreadse - 1.0f // 1.5배라면 +0.5 전달
                 );
 
                 // 호환성: FinalStats에도 적용

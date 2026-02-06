@@ -2,84 +2,86 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 using _02.Scripts.Augment.BaseAugment;
+using Features.Augment;
 
 public class WeaponAbilityImporter
 {
-    // CSV 파일 경로 (본인의 경로에 맞게 수정하세요)
     private static string m_CsvPath = "Assets/05.Datas/WeaponAbility/WeaponAbility.csv";
-    private static string m_SoPath = "Assets/05.Datas/WeaponAbility/WeaponAbilityDatabase.asset";
+    private static string m_PureDataPath = "Assets/05.Datas/WeaponAbility/PureData";
+    private static string m_DatabasePath = "Assets/05.Datas/WeaponAbility/PureDataBaseWeaponAbility.asset";
 
-    [MenuItem("Tools/Import Weapon Abilities")]
+    [MenuItem("Tools/Import Weapon Abilities (DLV)")]
     public static void ImportCSV()
     {
-        WeaponAbilityDatabase asset = AssetDatabase.LoadAssetAtPath<WeaponAbilityDatabase>(m_SoPath);
-        if (asset == null)
+        if (!Directory.Exists(m_PureDataPath))
         {
-            asset = ScriptableObject.CreateInstance<WeaponAbilityDatabase>();
-            AssetDatabase.CreateAsset(asset, m_SoPath);
+            Directory.CreateDirectory(m_PureDataPath);
         }
-        Object[] subAssets = AssetDatabase.LoadAllAssetsAtPath(m_SoPath);
-        foreach (Object subAsset in subAssets)
-        {
-            if (subAsset != asset)
-            {
-                AssetDatabase.RemoveObjectFromAsset(subAsset);
-                Object.DestroyImmediate(subAsset, true);
-            }
-        }
-        asset.weaponAbilities.Clear();
 
-        // 한글 깨짐 방지를 위해 UTF8 또는 Default 설정
+        PureDataBaseWeaponAbility database = AssetDatabase.LoadAssetAtPath<PureDataBaseWeaponAbility>(m_DatabasePath);
+        if (database == null)
+        {
+            database = ScriptableObject.CreateInstance<PureDataBaseWeaponAbility>();
+            AssetDatabase.CreateAsset(database, m_DatabasePath);
+        }
+        database.AbilityList.Clear();
+
         string[] lines = File.ReadAllLines(m_CsvPath, Encoding.UTF8);
 
-        // 12번째 줄(인덱스 11)부터 데이터 시작
         for (int i = 11; i < lines.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
             string[] data = lines[i].Split(',');
-
-            // 데이터 개수가 부족한 줄은 스킵
             if (data.Length < 8) continue;
+
+            string id = data[0].Trim();
+            if (string.IsNullOrEmpty(id)) continue;
+
+            string name = data[1].Trim();
+            string type = data[2].Trim();
+            int iconNum = int.Parse(data[3].Trim());
+            string desc = data[4].Trim();
 
             WeaponAbility.e_WeaponStatType statType;
             switch (data[5].Trim())
             {
-                case "AttackDelay":
-                    statType = WeaponAbility.e_WeaponStatType.AttackDelay;
-                    break;
-                case "Damage" :
-                    statType = WeaponAbility.e_WeaponStatType.Damage;
-                    break;
-                case "AoE" :
-                    statType = WeaponAbility.e_WeaponStatType.AoE;
-                    break;
-                default:
-                    statType = WeaponAbility.e_WeaponStatType.WrongType;
-                    break;
+                case "AttackDelay": statType = WeaponAbility.e_WeaponStatType.AttackDelay; break;
+                case "Damage": statType = WeaponAbility.e_WeaponStatType.Damage; break;
+                case "AoE": statType = WeaponAbility.e_WeaponStatType.AoE; break;
+                default: statType = WeaponAbility.e_WeaponStatType.WrongType; break;
             }
-            
-            WeaponAbility newAbility = ScriptableObject.CreateInstance<WeaponAbility>();
 
-            newAbility.SetSo(data[0].Trim(),
-                data[1].Trim(),
-                data[2].Trim(),
-                int.Parse(data[3].Trim()),
-                data[4].Trim(),
-                statType,
-                data[6].Trim(),
-                data[7].Trim());
-            newAbility.name = $"{data[0].Trim()}_{data[1].Trim()}";
-            AssetDatabase.AddObjectToAsset(newAbility, asset);
-            asset.weaponAbilities.Add(newAbility);
+            string valueType = data[6].Trim();
+            float valueAmount = float.Parse(data[7].Trim());
+
+            string assetPath = $"{m_PureDataPath}/PureDataWeaponAbility_{id}_{name}.asset";
+            PureDataWeaponAbility pureData = AssetDatabase.LoadAssetAtPath<PureDataWeaponAbility>(assetPath);
+            if (pureData == null)
+            {
+                pureData = ScriptableObject.CreateInstance<PureDataWeaponAbility>();
+                AssetDatabase.CreateAsset(pureData, assetPath);
+            }
+
+            pureData.ID = id;
+            pureData.Name = name;
+            pureData.Type = type;
+            pureData.IconNumber = iconNum;
+            pureData.Description = desc;
+            pureData.TargetStatType = statType;
+            pureData.ValueType = valueType;
+            pureData.ValueAmount = valueAmount;
+
+            EditorUtility.SetDirty(pureData);
+            database.AbilityList.Add(pureData);
         }
-        
 
-        EditorUtility.SetDirty(asset);
+        EditorUtility.SetDirty(database);
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log($"임포트 완료! 총 {asset.weaponAbilities.Count}개의 능력을 로드했습니다.");
+        Debug.Log($"[DLV Weapon Ability Import] 완료! 총 {database.AbilityList.Count}개의 능력을 로드했습니다.");
     }
 }

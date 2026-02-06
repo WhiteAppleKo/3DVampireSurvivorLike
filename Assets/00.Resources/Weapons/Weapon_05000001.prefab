@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3797543758524452465}
   - component: {fileID: 3611926210389201443}
   - component: {fileID: -2847337444196029806}
+  - component: {fileID: 9052690184934778929}
   m_Layer: 3
   m_Name: Weapon_05000001
   m_TagString: Untagged
@@ -162,3 +163,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &9052690184934778929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9073283639403404188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd7c9fe6200a22a4f94bf6de21cf27fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Weapon.WeaponVisualizer

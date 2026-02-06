@@ -730,9 +730,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb9fc0fd84fd684583ea6b5ac158780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChoiceManager
-  statAbilityDatabase: {fileID: 11400000, guid: 70e033fc777bbe240bc2dcfe891d5415, type: 2}
-  weaponAbilityDatabase: {fileID: 11400000, guid: 3ca382405beb734448b2895a417ef63f, type: 2}
-  weaponDatabase: {fileID: 11400000, guid: 132be9f96b197e64dad2bc27841261fd, type: 2}
+  statAbilityDB: {fileID: 11400000, guid: 1f4f26a165ab717478902da81aa0a8de, type: 2}
+  weaponAbilityDB: {fileID: 11400000, guid: f5988d331d3a6f04a91fde335ed338e8, type: 2}
+  weaponDB: {fileID: 11400000, guid: 0f610e054899b0c45b7786b05c06b7c7, type: 2}
   choicePanel: {fileID: 762029766}
   bindImageText:
   - {fileID: 600753177}
@@ -918,6 +918,7 @@ GameObject:
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
   - component: {fileID: 330585548}
+  - component: {fileID: 330585549}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1052,12 +1053,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 330585543}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 304c2db1fef579f4f817c9e7b7d013d1, type: 3}
+  m_Script: {fileID: 11500000, guid: 5832ff718b960ed4cb08e0b6f3934e7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCamera
+--- !u!114 &330585549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaf66da9652706944afca01fe7ccc850, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Camera.CameraLogicSystem
+  pureData: {fileID: 11400000, guid: 577ada7290d68694d9491856ef3eb9e2, type: 2}
   player: {fileID: 1844755946}
-  heightOffset: 20
-  followSpeed: 5
 --- !u!1 &356902126
 GameObject:
   m_ObjectHideFlags: 0
@@ -2237,7 +2249,6 @@ GameObject:
   m_Component:
   - component: {fileID: 640933342}
   - component: {fileID: 640933341}
-  - component: {fileID: 640933340}
   m_Layer: 0
   m_Name: SaveManager
   m_TagString: Untagged
@@ -2245,24 +2256,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &640933340
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 640933339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9b3a1fffad9aff489d16e3c5360178d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestCode
-  player: {fileID: 1844755945}
-  hexGridRenderer: {fileID: 631843304}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 0
-  lvup: {fileID: 264135743}
 --- !u!114 &640933341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3075,9 +3068,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
-  stageTimeLimit: 20
+  stageTimeLimit: 300
   currentStage: 1
-  stageDataBase: {fileID: 11400000, guid: f5b05e4f8e806144e9fe9cbc23c915e9, type: 2}
+  pureDataBase: {fileID: 11400000, guid: e5c8bc2acedf39e48b72fdeb550bcf8f, type: 2}
   spawnManager: {fileID: 1982211535}
 --- !u!4 &907438533
 Transform:
@@ -3251,7 +3244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shapes.IMTimer
   color: {r: 0, g: 0, b: 0, a: 1}
-  timer: 01.12
+  timer: 24.68
   fontSize: 700
   fontAsset: {fileID: 11400000, guid: 65eb82dda5212f2448aff7de410823bd, type: 2}
 --- !u!222 &1031388903
@@ -4484,6 +4477,7 @@ GameObject:
   - component: {fileID: 1844755946}
   - component: {fileID: 1844755947}
   - component: {fileID: 1844755949}
+  - component: {fileID: 1844755950}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -4553,10 +4547,26 @@ MonoBehaviour:
   autoAttacker: {fileID: 1680397847}
   isMoveDisable: 0
   isDashing: 0
+  pureData: {fileID: 11400000, guid: c65b19d66a9a6d7419751cb1959f8142, type: 2}
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 64
   stopDistance: 0.5
+--- !u!114 &1844755950
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1844755945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73c68acc5dd89e04b84bf52f9ca3eb21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Features.Player.PlayerVisualizer
+  bodyDisc: {fileID: 0}
+  baseRadius: 0.5
+  moveSquashAmount: 0.2
 --- !u!1 &1859074219
 GameObject:
   m_ObjectHideFlags: 0

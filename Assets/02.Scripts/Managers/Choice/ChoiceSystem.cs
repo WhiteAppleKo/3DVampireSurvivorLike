@@ -1,20 +1,24 @@
+using System.Collections.Generic;
 using _02.Scripts.AutoAttack;
 using _02.Scripts.UI;
+using Features.Augment;
+using Features.Weapon;
 using UnityEngine;
 
 namespace _02.Scripts.Managers.Choice
 {
     public class ChoiceSystem : MonoBehaviour
     {
-        public StatAbilityDatabase statAbilityDatabase;
-        public WeaponAbilityDatabase weaponAbilityDatabase;
-        public WeaponDatabase weaponDatabase;
+        [Header("DLV Databases")]
+        public PureDataBaseStatAbility statAbilityDB;
+        public PureDataBaseWeaponAbility weaponAbilityDB;
+        public PureDataBaseWeapon weaponDB;
+
         public GameObject choicePanel;
         public BindImageText[] bindImageText;
     
         private BaseAbility[] m_Abilities;
-        private int m_StatCount;
-        private int m_WeponCont;
+        private HashSet<string> m_CurrentChoiceIDs = new HashSet<string>();
 
         private enum e_ChoiceType
         {
@@ -30,6 +34,7 @@ namespace _02.Scripts.Managers.Choice
 
         public void RerollChoices()
         {
+            m_CurrentChoiceIDs.Clear();
             for (int i = 0; i < 3; i++)
             {
                 SetChoices(i);
@@ -43,8 +48,6 @@ namespace _02.Scripts.Managers.Choice
                 switch (rnd)
                 {
                     case 0:
-                        SettingAbility(index);
-                        break;
                     case 1:
                         SettingAbility(index);
                         break;
@@ -62,54 +65,68 @@ namespace _02.Scripts.Managers.Choice
 
         public void SetAugmentChoice(int index)
         {
+            if (index == 0) m_CurrentChoiceIDs.Clear(); // 첫 번째 슬롯일 때 초기화
             m_ChoiceType = e_ChoiceType.Augment;
             SetChoices(index);
         }
 
         public void SetWeaponChoice(int index)
         {
+            if (index == 0) m_CurrentChoiceIDs.Clear();
             m_ChoiceType = e_ChoiceType.Weapon;
             SettingWeapon(index);
         }
 
         private void SettingAbility(int index)
         {
-            var ch = ChoiceAbilities();
-            bindImageText[index].SetImage(ch.icon);
-            bindImageText[index].SetText(ch.abilityName);
-            bindImageText[index].SetAbility(ch);
+            // 중복 방지를 위한 시도 횟수 제한 (무한 루프 방지)
+            for (int attempt = 0; attempt < 10; attempt++)
+            {
+                int rnd = UnityEngine.Random.Range(0, 2);
+                if (rnd == 0 && statAbilityDB != null && statAbilityDB.AbilityList.Count > 0)
+                {
+                    var ch = statAbilityDB.AbilityList[UnityEngine.Random.Range(0, statAbilityDB.AbilityList.Count)];
+                    if (m_CurrentChoiceIDs.Contains(ch.ID)) continue;
+
+                    m_CurrentChoiceIDs.Add(ch.ID);
+                    bindImageText[index].SetText(ch.Name);
+                    bindImageText[index].SetPureStatAbility(ch);
+                    return;
+                }
+                else if (weaponAbilityDB != null && weaponAbilityDB.AbilityList.Count > 0)
+                {
+                    var ch = weaponAbilityDB.AbilityList[UnityEngine.Random.Range(0, weaponAbilityDB.AbilityList.Count)];
+                    if (m_CurrentChoiceIDs.Contains(ch.ID)) continue;
+
+                    m_CurrentChoiceIDs.Add(ch.ID);
+                    bindImageText[index].SetText(ch.Name);
+                    bindImageText[index].SetPureWeaponAbility(ch);
+                    return;
+                }
+            }
         }
 
         private void SettingWeapon(int index)
         {
-            var ch = ChoiceWeapon();
-            bindImageText[index].SetImage(ch.icon);
-            bindImageText[index].SetText(ch.weaponName);
-            bindImageText[index].SetWeaponData(ch);
-        }
-
-        private int m_Rnd;
-        private int m_ChoiceIndex;
-        private BaseAbility ChoiceAbilities()
-        {
-            //0이면 스탯 1이면 장비
-            m_Rnd = UnityEngine.Random.Range(0, 2);
-            switch (m_Rnd)
+            for (int attempt = 0; attempt < 10; attempt++)
             {
-                case 0:
-                    m_ChoiceIndex = UnityEngine.Random.Range(0, statAbilityDatabase.statAbilities.Count);
-                    return statAbilityDatabase.statAbilities[m_ChoiceIndex];
-                case 1:
-                    m_ChoiceIndex = UnityEngine.Random.Range(0, weaponAbilityDatabase.weaponAbilities.Count);
-                    return weaponAbilityDatabase.weaponAbilities[m_ChoiceIndex];
+                var ch = ChoiceWeapon();
+                if (ch == null) return;
+                if (m_CurrentChoiceIDs.Contains(ch.ID)) continue;
+
+                m_CurrentChoiceIDs.Add(ch.ID);
+                bindImageText[index].SetImage(ch.Icon);
+                bindImageText[index].SetText(ch.Name);
+                bindImageText[index].SetPureWeapon(ch);
+                return;
             }
-            return null;
         }
 
-        private BaseWeaponData ChoiceWeapon()
+        private PureDataWeapon ChoiceWeapon()
         {
-            m_ChoiceIndex = UnityEngine.Random.Range(0, weaponDatabase.weaponDatas.Count);
-            return weaponDatabase.weaponDatas[m_ChoiceIndex];
+            if (weaponDB == null || weaponDB.WeaponList.Count == 0) return null;
+            int idx = UnityEngine.Random.Range(0, weaponDB.WeaponList.Count);
+            return weaponDB.WeaponList[idx];
         }
 
         public void PopUpChoiceUI()

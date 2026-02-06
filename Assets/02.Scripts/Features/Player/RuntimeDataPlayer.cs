@@ -16,6 +16,10 @@ namespace Features.Player
         public int MaxHp { get; private set; }
         public float MoveSpeed { get; private set; }
 
+        // 증강 누적치
+        private int _maxHpAdded = 0;
+        private float _moveSpeedMultiplier = 1.0f;
+
         // 이벤트
         public event Action<int, int> OnHpChanged; // (current, max)
         public event Action<int, int> OnExpChanged; // (current, max)
@@ -32,11 +36,35 @@ namespace Features.Player
             CurrentLevel = 1;
             CurrentExp = 0;
             MaxExp = PureData.BaseExpToLevelUp;
-            MaxHp = PureData.BaseMaxHp;
-            CurrentHp = MaxHp;
-            MoveSpeed = PureData.BaseMoveSpeed;
+            
+            _maxHpAdded = 0;
+            _moveSpeedMultiplier = 1.0f;
+            
+            RecalculateStats();
+            CurrentHp = MaxHp; // Reset 시 체력 풀 회복
 
             NotifyAll();
+        }
+
+        public void AddMaxHpModifier(int amount)
+        {
+            _maxHpAdded += amount;
+            RecalculateStats();
+            // 최대 체력이 늘어난 만큼 현재 체력도 채워준다 (선택 사항)
+            CurrentHp += amount; 
+            OnHpChanged?.Invoke(CurrentHp, MaxHp);
+        }
+
+        public void AddMoveSpeedModifier(float multiplierAdd)
+        {
+            _moveSpeedMultiplier += multiplierAdd;
+            RecalculateStats();
+        }
+
+        private void RecalculateStats()
+        {
+            MaxHp = PureData.BaseMaxHp + _maxHpAdded;
+            MoveSpeed = PureData.BaseMoveSpeed * _moveSpeedMultiplier;
         }
 
         public void AddExp(int amount)
@@ -60,6 +88,12 @@ namespace Features.Player
         public void TakeDamage(int damage)
         {
             CurrentHp = Math.Max(0, CurrentHp - damage);
+            OnHpChanged?.Invoke(CurrentHp, MaxHp);
+        }
+
+        public void Heal(int amount)
+        {
+            CurrentHp = Math.Min(MaxHp, CurrentHp + amount);
             OnHpChanged?.Invoke(CurrentHp, MaxHp);
         }
 

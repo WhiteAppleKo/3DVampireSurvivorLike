@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using _02.Scripts.AutoAttack;
 using _02.Scripts.Managers.Save;
+using Features.Augment;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class AutoAttack : MonoBehaviour, ISaveable
     public LayerMask layer;
     
     private List<WeaponAbility> m_GlobalAugments = new List<WeaponAbility>();
+    private List<PureDataWeaponAbility> m_PureGlobalAugments = new List<PureDataWeaponAbility>();
+
     private WeaponBaseStats.WeaponModifier m_GlobalModifier;
     private int m_WeaponCount = 0;
     private CancellationTokenSource m_Cts;
@@ -27,6 +30,21 @@ public class AutoAttack : MonoBehaviour, ISaveable
         }
     }
     
+    /// <summary>
+    /// DLV: 무기에 새로운 PureData 증강을 추가합니다.
+    /// </summary>
+    public void AddPureAugment(PureDataWeaponAbility augment)
+    {
+        m_PureGlobalAugments.Add(augment);
+        for (int i = 0; i < m_WeaponCount; i++)
+        {
+            if (weapon[i] != null)
+            {
+                weapon[i].ApplyPureAugment(augment);
+            }
+        }
+    }
+
     /// <summary>
     /// 무기에 새로운 증강을 추가합니다.
     /// </summary>
@@ -107,6 +125,12 @@ public class AutoAttack : MonoBehaviour, ISaveable
         weapon[m_WeaponCount] = newWeapon;
         newWeapon.WeaponAwake();
         newWeapon.SetGlobalAugments(m_GlobalModifier);
+        
+        // DLV: 기존에 획득한 Pure 증강들 적용
+        foreach (var pureAugment in m_PureGlobalAugments)
+        {
+            newWeapon.ApplyPureAugment(pureAugment);
+        }
         
         if (gameObject.activeInHierarchy && m_Cts != null)
         {
