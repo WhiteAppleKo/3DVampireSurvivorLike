@@ -7,21 +7,15 @@ namespace _02.Scripts.Cotroller
     public abstract class Controller : MonoBehaviour
     {
         [Header("Base References")]
-        public BaseStats baseStats = new BaseStats();
         public global::AutoAttack autoAttacker;
-        public BaseStats FinalStats { get; protected set; }
         
         public bool isMoveDisable = false;
         public bool isDashing = false;
 
         protected virtual void Awake()
         {
-            // 하위 클래스에서 각자의 Model 및 Stats 초기화
-            if (baseStats.hp == null)
-            {
-                baseStats.hp = new ClampInt(0, baseStats.maxHp, baseStats.maxHp);
-            }
-            FinalStats = new BaseStats(baseStats);
+            // [DLV Refactored] Legacy stats removed. 
+            // Child classes should initialize their own Models here.
         }
 
         protected virtual void OnEnable()
@@ -30,12 +24,6 @@ namespace _02.Scripts.Cotroller
             {
                 BattleManager.Instance.onDamageEvent += OnDamageReceived;
             }
-            
-            // HP 최소 도달 시 Die 호출 (이벤트 기반)
-            if (FinalStats?.hp != null)
-            {
-                FinalStats.hp.Events.onMinReached += Die;
-            }
         }
 
         protected virtual void OnDisable()
@@ -43,11 +31,6 @@ namespace _02.Scripts.Cotroller
             if (BattleManager.Instance != null)
             {
                 BattleManager.Instance.onDamageEvent -= OnDamageReceived;
-            }
-        
-            if (FinalStats?.hp != null)
-            {
-                FinalStats.hp.Events.onMinReached -= Die;
             }
         }
 
@@ -60,14 +43,11 @@ namespace _02.Scripts.Cotroller
             ApplyDamage(damageEvent.damageAmount);
         }
 
-        protected virtual void ApplyDamage(int amount)
-        {
-            if (FinalStats?.hp != null)
-            {
-                FinalStats.hp.Decrease(amount);
-            }
-        }
+        protected abstract void ApplyDamage(int amount);
 
         protected abstract void Die(int prev, int current);
+
+        // DLV Interface for shared stats
+        public abstract float CurrentMoveSpeed { get; }
     }
 }

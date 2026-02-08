@@ -46,24 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22b93e0cfb85b5a4a92ff0e50733c7c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileWeapon
-  pureData: {fileID: 11400000, guid: a48aedd6ccd6a0e438aa1157ab53a500, type: 2}
+  pureData: {fileID: 11400000, guid: 3c0242d92b759f444a8ae9f096b9866d, type: 2}
   audioSource: {fileID: 0}
-  baseStats:
-    weaponID: 05000001
-    weaponNamge: "\uD22C\uC0AC\uCCB4 \uBB34\uAE30"
-    attackDelay: 5
-    damage: 10
-    range: 10
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 0
-    projectileWeaponStats:
-      projectileCount: 1
-      findTargetRange: 10
-    aoeWeaponStats:
-      areaOfEffectRadius: 10
-    chargeWeaponStat:
-      findTargetRange: 10
   projectilePrefab: {fileID: 3602233626605945715, guid: 6630c52d062f573468598f65e0402bf1, type: 3}
   poolSize: 20
 --- !u!82 &-2847337444196029806

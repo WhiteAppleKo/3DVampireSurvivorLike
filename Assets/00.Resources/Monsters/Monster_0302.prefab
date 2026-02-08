@@ -109,14 +109,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed9ebb14e8abd194aa6ad5356b67bf68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Features.Enemy.EnemyLogicSystem
-  baseStats:
-    usePlayerStats: 0
-    maxHp: 100
-    moveSpeed: 5
-    turnSpeed: 10
-    playerStats:
-      level: 1
-      augmentationLevel: 1
   autoAttacker: {fileID: 8152901529945728377}
   isMoveDisable: 0
   isDashing: 0
@@ -399,24 +391,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6746ee365952946438e0a2ca89b7df0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.AutoAttack.BodyAttack.BodyAttack
-  pureData: {fileID: 0}
+  pureData: {fileID: 11400000, guid: 66fd34ece37503846a00b1ac2781a380, type: 2}
   audioSource: {fileID: 0}
-  baseStats:
-    weaponID: 
-    weaponNamge: 
-    attackDelay: 1
-    damage: 1
-    range: 10
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 0
-    projectileWeaponStats:
-      projectileCount: 1
-      findTargetRange: 5
-    aoeWeaponStats:
-      areaOfEffectRadius: 5
-    chargeWeaponStat:
-      findTargetRange: 5
 --- !u!82 &5688982196048840771
 AudioSource:
   m_ObjectHideFlags: 0

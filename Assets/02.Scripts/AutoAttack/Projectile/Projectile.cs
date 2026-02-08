@@ -107,9 +107,12 @@ public class Projectile : MonoBehaviour
             var enemy = other.GetComponent<Controller>();
             if (enemy != null)
             {
+                // DLV Refactoring: Use Model data directly
+                int damage = ownerWeapon.Model.FinalDamage;
+
                 var damageEvent = new BattleManager.DamageEventStruct
                 {
-                    damageAmount = ownerWeapon.FinalStats.damage,
+                    damageAmount = damage,
                     senderWeapon = ownerWeapon,
                     sender = ownerController,
                     receiver = enemy

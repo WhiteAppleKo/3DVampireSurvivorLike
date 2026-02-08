@@ -48,24 +48,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a3e592f10ca4f94cae148e12b865c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChargeDash
-  pureData: {fileID: 0}
+  pureData: {fileID: 11400000, guid: 907b390cb0e50b34fa1b84b1a0efb54f, type: 2}
   audioSource: {fileID: 0}
-  baseStats:
-    weaponID: 123
-    weaponNamge: 123
-    attackDelay: 1
-    damage: 10
-    range: 10
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 128
-    projectileWeaponStats:
-      projectileCount: 1
-      findTargetRange: 5
-    aoeWeaponStats:
-      areaOfEffectRadius: 5
-    chargeWeaponStat:
-      findTargetRange: 5
   triangle: {fileID: 0}
   dashDuration: 0
   hitRadius: 1

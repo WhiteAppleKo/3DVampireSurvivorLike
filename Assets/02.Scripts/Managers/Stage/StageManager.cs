@@ -18,7 +18,7 @@ namespace _02.Scripts.Managers.Stage
         private void Start()
         {
             Debug.Log($"[StageManager] 스테이지 시스템 시작. 현재 스테이지: {currentStage}, 제한 시간: {stageTimeLimit}초");
-            currentStage = SaveManager.Instance.GetCurrentStageData();
+            currentStage = DataHub.Instance.GetCurrentStageData();
             
             var stageData = GetStageInformation(currentStage);
             if (stageData != null)
@@ -62,7 +62,7 @@ namespace _02.Scripts.Managers.Stage
 
         private void AutoSave()
         {
-            SaveManager.Instance.SaveGame();
+            DataHub.Instance.SaveGame();
             Debug.Log($"[StageManager] 스테이지 {currentStage} 데이터 자동 저장 완료.");
         }
 

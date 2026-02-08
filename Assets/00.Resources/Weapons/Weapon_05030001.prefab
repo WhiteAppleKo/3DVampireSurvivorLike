@@ -47,24 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6746ee365952946438e0a2ca89b7df0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.AutoAttack.BodyAttack.BodyAttack
-  pureData: {fileID: 0}
+  pureData: {fileID: 11400000, guid: 66fd34ece37503846a00b1ac2781a380, type: 2}
   audioSource: {fileID: 0}
-  baseStats:
-    weaponID: 
-    weaponNamge: 
-    attackDelay: 1
-    damage: 1
-    range: 10
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 0
-    projectileWeaponStats:
-      projectileCount: 1
-      findTargetRange: 5
-    aoeWeaponStats:
-      areaOfEffectRadius: 5
-    chargeWeaponStat:
-      findTargetRange: 5
 --- !u!82 &5978698363437910885
 AudioSource:
   m_ObjectHideFlags: 0

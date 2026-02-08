@@ -69,7 +69,8 @@ namespace _02.Scripts.AutoAttack.Charge
             else if (m_IsPlayer)
             {
                 // 플레이어는 타겟이 없어도 보는 방향으로 돌진
-                dashTargetPos = m_Controller.transform.position + m_Controller.transform.forward * FinalStats.chargeWeaponStat.findTargetRange;
+                float range = Model.FinalEffectRange;
+                dashTargetPos = m_Controller.transform.position + m_Controller.transform.forward * range;
                 SetTarget(null);
                 Charge(dashTargetPos).Forget();
             }
@@ -78,7 +79,17 @@ namespace _02.Scripts.AutoAttack.Charge
         protected override void RecalculateStats()
         {
             base.RecalculateStats();
-            dashDuration = m_Controller.FinalStats.moveSpeed * 0.2f;
+            
+            // 방어 로직: m_Controller가 아직 설정되지 않았을 경우(예: 초기화 순서 문제 등) 스킵
+            if (m_Controller != null)
+            {
+                dashDuration = m_Controller.CurrentMoveSpeed * 0.2f;
+            }
+            else
+            {
+                // 기본값 또는 추후 다시 계산되도록 설정
+                dashDuration = 0.5f; 
+            }
         }
 
         private async UniTaskVoid Charge(Vector3 targetPos)
@@ -96,10 +107,11 @@ namespace _02.Scripts.AutoAttack.Charge
                 Vector3 direction = (targetPos - startPos).normalized;
                 if (direction == Vector3.zero) direction = m_Controller.transform.forward;
 
+                float range = Model.FinalEffectRange;
                 float distanceToTarget = Vector3.Distance(startPos, targetPos);
-                Vector3 endPos = startPos + direction * (distanceToTarget + FinalStats.chargeWeaponStat.findTargetRange);
+                Vector3 endPos = startPos + direction * (distanceToTarget + range);
 
-                float chargeDuration = FinalStats.attackDelay;
+                float chargeDuration = Model.FinalAttackDelay;
                 float currentChargeTime = 0f;
                 
                 while (currentChargeTime < chargeDuration)
@@ -151,7 +163,7 @@ namespace _02.Scripts.AutoAttack.Charge
         private void ChargeAttack()
         {
             // dasher의 현재 위치 기준 범위 내 적 감지 (버그 수정: target 대신 m_Controller 위치 사용)
-            int hitCount = Physics.OverlapSphereNonAlloc(m_Controller.transform.position, hitRadius, m_TargetColliders, FinalStats.targetLayer);
+            int hitCount = Physics.OverlapSphereNonAlloc(m_Controller.transform.position, hitRadius, m_TargetColliders, TargetLayer);
             
             for (int i = 0; i < hitCount; i++)
             {
@@ -170,14 +182,16 @@ namespace _02.Scripts.AutoAttack.Charge
         private void ApplyDamage(GameObject enemy)
         {
             Controller controller = enemy.GetComponent<Controller>();
-            m_DamageEvent = new BattleManager.DamageEventStruct(FinalStats.damage, this, m_Controller, controller);
+            int damage = Model.FinalDamage;
+            m_DamageEvent = new BattleManager.DamageEventStruct(damage, this, m_Controller, controller);
             BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
         }
 
         private GameObject FindTarget()
         {
-            // 증강으로 변경된 최종 타겟 탐지 범위(finalStats.findTargetRange)를 사용합니다.
-            int size = Physics.OverlapSphereNonAlloc(transform.position, FinalStats.chargeWeaponStat.findTargetRange, m_TargetColliders, FinalStats.targetLayer);
+            // 증강으로 변경된 최종 타겟 탐지 범위(Model.FinalEffectRange)를 사용합니다.
+            float range = Model.FinalEffectRange;
+            int size = Physics.OverlapSphereNonAlloc(transform.position, range, m_TargetColliders, TargetLayer);
 
             // 감지된 타겟이 없으면 null을 반환합니다.
             if (size == 0)

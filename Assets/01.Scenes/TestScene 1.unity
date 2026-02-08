@@ -2248,7 +2248,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 640933342}
-  - component: {fileID: 640933341}
+  - component: {fileID: 640933343}
   m_Layer: 0
   m_Name: SaveManager
   m_TagString: Untagged
@@ -2256,22 +2256,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &640933341
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 640933339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49562495cab02c2448915c204ec33625, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SaveManager
-  dontDestroyOnLoad: 0
-  statAbilityDatabase: {fileID: 11400000, guid: 70e033fc777bbe240bc2dcfe891d5415, type: 2}
-  weaponAbilityDatabase: {fileID: 11400000, guid: 3ca382405beb734448b2895a417ef63f, type: 2}
-  weaponDatabase: {fileID: 11400000, guid: 132be9f96b197e64dad2bc27841261fd, type: 2}
 --- !u!4 &640933342
 Transform:
   m_ObjectHideFlags: 0
@@ -2287,6 +2271,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &640933343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 640933339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5209fd796f06843bd2544822a7314b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DataHub
+  dontDestroyOnLoad: 0
+  weaponDatabase: {fileID: 11400000, guid: 0f610e054899b0c45b7786b05c06b7c7, type: 2}
+  weaponAbilityDatabase: {fileID: 11400000, guid: f5988d331d3a6f04a91fde335ed338e8, type: 2}
+  statAbilityDatabase: {fileID: 11400000, guid: 1f4f26a165ab717478902da81aa0a8de, type: 2}
 --- !u!1 &655450823
 GameObject:
   m_ObjectHideFlags: 0
@@ -3068,7 +3068,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
-  stageTimeLimit: 300
+  stageTimeLimit: 20
   currentStage: 1
   pureDataBase: {fileID: 11400000, guid: e5c8bc2acedf39e48b72fdeb550bcf8f, type: 2}
   spawnManager: {fileID: 1982211535}
@@ -3244,7 +3244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shapes.IMTimer
   color: {r: 0, g: 0, b: 0, a: 1}
-  timer: 24.68
+  timer: 20.01
   fontSize: 700
   fontAsset: {fileID: 11400000, guid: 65eb82dda5212f2448aff7de410823bd, type: 2}
 --- !u!222 &1031388903
@@ -4536,14 +4536,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60a790e2882ab50498861bfe7ead36a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  baseStats:
-    usePlayerStats: 1
-    maxHp: 200
-    moveSpeed: 10
-    turnSpeed: 10
-    playerStats:
-      level: 1
-      augmentationLevel: 1
   autoAttacker: {fileID: 1680397847}
   isMoveDisable: 0
   isDashing: 0

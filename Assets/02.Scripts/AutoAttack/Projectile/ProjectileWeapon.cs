@@ -47,7 +47,7 @@ public class ProjectileWeapon : Weapon
         var projectileLogic = obj.GetComponent<Projectile>();
         if (projectileLogic != null)
         {
-            projectileLogic.ProjectileSetting(m_Controller, this, FinalStats.targetLayer);
+            projectileLogic.ProjectileSetting(m_Controller, this, TargetLayer);
         }
         else
         {
@@ -87,8 +87,8 @@ public class ProjectileWeapon : Weapon
 
     private void SpawnProjectiles(GameObject target)
     {
-        // 증강 등으로 변경된 최종 투사체 수 사용 (RuntimeData 활용 권장하지만 호환성 위해 FinalStats 사용)
-        int count = FinalStats.projectileWeaponStats.projectileCount;
+        // DLV Refactoring: Use Model directly
+        int count = Model.FinalProjectileCount;
         
         for (int i = 0; i < count; i++)
         {
@@ -108,9 +108,9 @@ public class ProjectileWeapon : Weapon
 
     private GameObject FindTarget()
     {
-        // 탐지 범위
-        float range = FinalStats.projectileWeaponStats.findTargetRange;
-        int size = Physics.OverlapSphereNonAlloc(transform.position, range, m_FindTargetResults, FinalStats.targetLayer);
+        // 탐지 범위 (DLV Refactoring)
+        float range = Model.FinalEffectRange;
+        int size = Physics.OverlapSphereNonAlloc(transform.position, range, m_FindTargetResults, TargetLayer);
 
         if (size == 0) return null;
 

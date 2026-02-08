@@ -25,10 +25,10 @@ namespace _02.Scripts.AutoAttack.AoE
                 collider.isTrigger = true;
             }
         
-            // 초기 반지름 설정
-            if (baseStats.aoeWeaponStats != null)
+            // 초기 반지름 설정 (DLV)
+            if (Model != null)
             {
-                collider.radius = baseStats.aoeWeaponStats.areaOfEffectRadius;
+                collider.radius = Model.FinalEffectRange;
             }
 
             m_HexGridRenderer = GetComponent<HexGridRenderer>();
@@ -37,13 +37,14 @@ namespace _02.Scripts.AutoAttack.AoE
         protected override void RecalculateStats()
         {
             base.RecalculateStats();
-            m_HexGridRenderer.aoeRange = (int)FinalStats.aoeWeaponStats.areaOfEffectRadius;
-            // 증강 등으로 인해 스탯이 변경되면 콜라이더 크기도 업데이트
-            /*var collider = GetComponent<SphereCollider>();
-        if (collider != null && FinalStats.aoeWeaponStats != null)
-        {
-            collider.radius = FinalStats.aoeWeaponStats.areaOfEffectRadius;
-        }*/
+            
+            if (m_HexGridRenderer == null) m_HexGridRenderer = GetComponent<HexGridRenderer>();
+            
+            if (m_HexGridRenderer != null)
+            {
+                // DLV Refactoring: Use Model.FinalEffectRange
+                m_HexGridRenderer.aoeRange = (int)Model.FinalEffectRange;
+            }
         }
 
         public override void AttackLogic()
@@ -51,10 +52,10 @@ namespace _02.Scripts.AutoAttack.AoE
             // 베이스 클래스의 AttackLogic을 호출하여 증강의 OnAttack 효과를 발동시킵니다.
             base.AttackLogic();
 
-            // 증강이 적용된 반지름 사용
-            float radius = FinalStats.aoeWeaponStats.areaOfEffectRadius;
+            // 증강이 적용된 반지름 사용 (DLV)
+            float radius = Model.FinalEffectRange;
         
-            List<Collider> scanedCollider = m_HexGridRenderer.ScanTargets(gameObject.transform.position, (int)radius, FinalStats.targetLayer);
+            List<Collider> scanedCollider = m_HexGridRenderer.ScanTargets(gameObject.transform.position, (int)radius, TargetLayer);
             // 현재 위치 기준 반경 내의 모든 콜라이더 검출 (LayerMask를 지정하면 더 효율적임)
             // int count = Physics.OverlapSphereNonAlloc(transform.position, radius, m_ColliderBuffer);
         
@@ -71,8 +72,9 @@ namespace _02.Scripts.AutoAttack.AoE
                     }
                     if (enemy.gameObject.activeInHierarchy)
                     {
-                        // 증강이 적용된 최종 데미지(finalStats.damage)를 사용합니다.
-                        m_DamageEvent = new BattleManager.DamageEventStruct(FinalStats.damage, this, m_Controller, enemy);
+                        // 증강이 적용된 최종 데미지(Model.FinalDamage)를 사용합니다.
+                        int damage = Model.FinalDamage;
+                        m_DamageEvent = new BattleManager.DamageEventStruct(damage, this, m_Controller, enemy);
                         BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
                     }
                 }

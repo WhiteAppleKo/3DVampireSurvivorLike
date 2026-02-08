@@ -33,12 +33,12 @@ public class TestCode : MonoBehaviour
         {
             lvup.PlayerLevelUp();
             //hexGridRenderer.StartCharge(player.transform.position, 2, 2, layerMask, OnMeteorExplosion);
-            //SaveManager.Instance.SaveGame();
+            //DataHub.Instance.SaveGame();
         }
 
         if (m_InputActions.Player.P.WasReleasedThisFrame())
         {
-            SaveManager.Instance.LoadGame();
+            DataHub.Instance.LoadGame();
         }
     }
 

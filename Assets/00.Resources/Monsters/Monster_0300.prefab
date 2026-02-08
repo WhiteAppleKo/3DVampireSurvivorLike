@@ -338,22 +338,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AoEWeapon
   pureData: {fileID: 0}
   audioSource: {fileID: 0}
-  baseStats:
-    weaponID: 
-    weaponNamge: 
-    attackDelay: 1
-    damage: 10
-    range: 10
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 0
-    projectileWeaponStats:
-      projectileCount: 1
-      findTargetRange: 5
-    aoeWeaponStats:
-      areaOfEffectRadius: 5
-    chargeWeaponStat:
-      findTargetRange: 5
 --- !u!135 &1463629794394034678
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -559,22 +543,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectileWeapon
   pureData: {fileID: 0}
   audioSource: {fileID: 0}
-  baseStats:
-    weaponID: 
-    weaponNamge: 
-    attackDelay: 1
-    damage: 10
-    range: 10
-    targetLayer:
-      serializedVersion: 2
-      m_Bits: 0
-    projectileWeaponStats:
-      projectileCount: 1
-      findTargetRange: 5
-    aoeWeaponStats:
-      areaOfEffectRadius: 5
-    chargeWeaponStat:
-      findTargetRange: 5
   projectilePrefab: {fileID: 3602233626605945715, guid: 6630c52d062f573468598f65e0402bf1, type: 3}
   poolSize: 20
 --- !u!82 &6628617914064847426
@@ -1120,14 +1088,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed9ebb14e8abd194aa6ad5356b67bf68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Features.Enemy.EnemyLogicSystem
-  baseStats:
-    usePlayerStats: 0
-    maxHp: 100
-    moveSpeed: 5
-    turnSpeed: 10
-    playerStats:
-      level: 1
-      augmentationLevel: 1
   autoAttacker: {fileID: 2127458179281644321}
   isMoveDisable: 0
   isDashing: 0

@@ -42,19 +42,13 @@ public class ChoiceApplySystem : MonoBehaviour
             switch (pureStat.TargetStatType)
             {
                 case StatAbility.e_StatType.Health:
-                    // 체력 회복
                     player.Model.Heal((int)pureStat.ValueAmount);
-                    Debug.Log($"[ChoiceSystem] DLV 체력 회복 적용: {pureStat.ValueAmount}");
                     break;
                 case StatAbility.e_StatType.MaxHp:
-                    // 최대 체력 증가
                     player.Model.AddMaxHpModifier((int)pureStat.ValueAmount);
-                    Debug.Log($"[ChoiceSystem] DLV 최대 체력 증가 적용: {pureStat.ValueAmount}");
                     break;
                 case StatAbility.e_StatType.MoveSpeed:
-                    // 이동 속도 증가 (ValueAmount가 0.1이면 10% 증가 가정)
                     player.Model.AddMoveSpeedModifier(pureStat.ValueAmount);
-                    Debug.Log($"[ChoiceSystem] DLV 이동 속도 증가 적용: {pureStat.ValueAmount}");
                     break;
                 default:
                     Debug.LogWarning($"[ChoiceSystem] 미구현 Stat 타입: {pureStat.TargetStatType}");
@@ -66,47 +60,12 @@ public class ChoiceApplySystem : MonoBehaviour
         else if (bit.GetPureWeaponAbility(out PureDataWeaponAbility pureWeaponAbility))
         {
             playerAutoAttack.AddPureAugment(pureWeaponAbility);
-            Debug.Log($"[ChoiceSystem] DLV 무기 강화 적용: {pureWeaponAbility.Name}");
-            applied = true;
-        }
-        // 4. Legacy: 기존 시스템 유지
-        else if (bit.GetAbility(out BaseAbility ab))
-        {
-            ApplyLegacyAbility(ab);
-            applied = true;
-        }
-        else if (bit.GetWeaponData(out BaseWeaponData weapon))
-        {
-            var weaponInstance = Instantiate(weapon.weaponPrefab, playerAutoAttack.transform);
-            var weaponComponent = weaponInstance.GetComponent<Weapon>();
-            playerAutoAttack.AddWeapon(weaponComponent);
             applied = true;
         }
 
         if (applied)
         {
             CloseChoiceUI();
-        }
-    }
-
-    private void ApplyLegacyAbility(BaseAbility ab)
-    {
-        string abilityType = ab.abilityType;
-        switch (abilityType)
-        {
-            case "Stat":
-                if (ab.isTemporary)
-                {
-                    (ab as StatAbility).Apply(player.FinalStats);
-                }
-                else
-                {
-                    player.AddAugment((StatAbility)ab);
-                }
-                break;
-            case "Weapon":
-                playerAutoAttack.AddAugment((WeaponAbility)ab);
-                break;
         }
     }
 

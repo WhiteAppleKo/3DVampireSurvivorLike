@@ -16,31 +16,6 @@ public class WeaponAbility : BaseAbility
     public int intAmount;
     public float floatAmount;
     
-    public virtual void Apply(WeaponBaseStats.WeaponModifier weaponModifier)
-    {
-        switch (targetStatType)
-        {
-            case e_WeaponStatType.AttackDelay:
-                weaponModifier.percentAttackDelay += floatAmount;
-                break;
-            case e_WeaponStatType.Damage:
-                switch (valueType)
-                {
-                    case "Fixed":
-                        weaponModifier.fixedDamageIncrease += intAmount;
-                        break;
-                    case "Percent":
-                        weaponModifier.percentDamageIncreadse += floatAmount;
-                        break;
-                }
-                break;
-            case e_WeaponStatType.AoE:
-                break;
-            default:
-                break;
-        }
-    }
-    
     public void SetSo(string id, string name, string typeOfAbility, int numberOfIcon, string descriptions, e_WeaponStatType statType, string valueTypes, string valueAmount)
     {
         abilityID = id;

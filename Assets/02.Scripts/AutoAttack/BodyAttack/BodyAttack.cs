@@ -40,7 +40,7 @@ namespace _02.Scripts.AutoAttack.BodyAttack
                 transform.position + transform.TransformDirection(col.center), 
                 trueSize, 
                 transform.rotation, 
-                FinalStats.targetLayer
+                TargetLayer
             );
             
             for (int i = 0; i < hits.Length; i++)
@@ -53,10 +53,10 @@ namespace _02.Scripts.AutoAttack.BodyAttack
                     }
                     if (enemy.gameObject.activeInHierarchy)
                     {
-                        // 증강이 적용된 최종 데미지(finalStats.damage)를 사용합니다.
-                        m_DamageEvent = new BattleManager.DamageEventStruct(FinalStats.damage, this, m_Controller, enemy);
+                        // 증강이 적용된 최종 데미지(Model.FinalDamage)를 사용합니다.
+                        int damage = Model.FinalDamage;
+                        m_DamageEvent = new BattleManager.DamageEventStruct(damage, this, m_Controller, enemy);
                         BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
-                        Debug.Log($"{FinalStats.damage}, {m_Controller.gameObject.name}");
                     }
                 }
             }

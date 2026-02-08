@@ -138,16 +138,50 @@ public class MonsterImporter
                         logic = root.AddComponent<EnemyLogicSystem>();
                     }
 
+                    // 3. 몬스터 로직 PureData 할당
                     if (logic != null)
                     {
-                        // 3. SerializedObject를 통해 PureData 필드에 할당
                         SerializedObject so = new SerializedObject(logic);
                         SerializedProperty dataProp = so.FindProperty("pureData");
                         if (dataProp != null)
                         {
                             dataProp.objectReferenceValue = pureData;
                             so.ApplyModifiedProperties();
-                            Debug.Log($"[Importer] 프리팹 '{prefab.name}'에 PureData 및 DLV 컴포넌트 설정 완료.");
+                        }
+                    }
+
+                    // 4. [중요] 하위 무기들 PureData 할당 및 동기화 (DLV)
+                    // 몬스터가 자식으로 무기를 들고 있는 경우, 각 무기에도 PureData를 꽂아줘야 함.
+                    var childWeapons = root.GetComponentsInChildren<_02.Scripts.AutoAttack.Weapon>(true);
+                    foreach (var weapon in childWeapons)
+                    {
+                        // 무기 ID 추출 시도 (프리팹 이름이나 기존 ID 참조)
+                        // 보통 몬스터 무기 ID는 05xxxxxx 형태
+                        // 여기서는 무기 프리팹 이름에서 ID를 유추하거나 이미 설정된 ID를 기반으로 DB 조회
+                        string weaponID = weapon.name.Replace("Weapon_", ""); 
+                        
+                        // DataHub의 무기 데이터베이스 로드 (에디터 전용 로드)
+                        string weaponDbPath = "Assets/05.Datas/WeaponData/PureDataBaseWeapon.asset";
+                        var weaponDb = AssetDatabase.LoadAssetAtPath<Features.Weapon.PureDataBaseWeapon>(weaponDbPath);
+                        
+                        if (weaponDb != null)
+                        {
+                            var weaponPureData = weaponDb.GetData(weaponID);
+                            if (weaponPureData != null)
+                            {
+                                SerializedObject wSo = new SerializedObject(weapon);
+                                SerializedProperty wDataProp = wSo.FindProperty("pureData");
+                                if (wDataProp != null)
+                                {
+                                    wDataProp.objectReferenceValue = weaponPureData;
+                                    wSo.ApplyModifiedProperties();
+                                    Debug.Log($"[MonsterImporter] 몬스터 '{root.name}'의 하위 무기 '{weapon.name}'에 PureData 할당 완료.");
+                                }
+                            }
+                            else
+                            {
+                                Debug.LogWarning($"[MonsterImporter] 무기 ID '{weaponID}'를 DB에서 찾을 수 없습니다. (몬스터: {root.name})");
+                            }
                         }
                     }
                 }

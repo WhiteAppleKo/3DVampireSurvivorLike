@@ -114,11 +114,50 @@ namespace _02.Scripts.AutoAttack.Editor
                 if (weaponLogic != null)
                 {
                     SerializedObject so = new SerializedObject(weaponLogic);
-                    SerializedProperty prop = so.FindProperty("pureData");
-                    if (prop != null)
+                    
+                    // 3-1. Assign PureData SO
+                    SerializedProperty pureDataProp = so.FindProperty("pureData");
+                    if (pureDataProp != null) pureDataProp.objectReferenceValue = pureData;
+
+                    // 3-2. Sync BaseStats (Inspector visible values)
+                    SerializedProperty baseStatsProp = so.FindProperty("baseStats");
+                    if (baseStatsProp != null)
                     {
-                        // Note: Weapon.cs might need updating to use the new PureDataWeapon type
+                        baseStatsProp.FindPropertyRelative("weaponID").stringValue = pureData.ID;
+                        baseStatsProp.FindPropertyRelative("weaponName").stringValue = pureData.Name;
+                        baseStatsProp.FindPropertyRelative("attackDelay").floatValue = pureData.AttackDelay;
+                        baseStatsProp.FindPropertyRelative("damage").intValue = pureData.Damage;
+                        baseStatsProp.FindPropertyRelative("range").floatValue = pureData.EffectRange;
+                        
+                        // Projectile Stats Sync
+                        SerializedProperty projStatsProp = baseStatsProp.FindPropertyRelative("projectileWeaponStats");
+                        if (projStatsProp != null)
+                        {
+                            var rangeProp = projStatsProp.FindPropertyRelative("findTargetRange");
+                            var countProp = projStatsProp.FindPropertyRelative("projectileCount");
+                            if (rangeProp != null) rangeProp.floatValue = pureData.EffectRange;
+                            if (countProp != null) countProp.intValue = pureData.ProjectileCount;
+                        }
+
+                        // AoE Stats Sync
+                        SerializedProperty aoeStatsProp = baseStatsProp.FindPropertyRelative("aoeWeaponStats");
+                        if (aoeStatsProp != null)
+                        {
+                            var radiusProp = aoeStatsProp.FindPropertyRelative("areaOfEffectRadius");
+                            if (radiusProp != null) radiusProp.floatValue = pureData.EffectRange;
+                        }
+
+                        // Charge Stats Sync
+                        SerializedProperty chargeStatsProp = baseStatsProp.FindPropertyRelative("chargeWeaponStat");
+                        if (chargeStatsProp != null)
+                        {
+                            var chargeRangeProp = chargeStatsProp.FindPropertyRelative("findTargetRange");
+                            if (chargeRangeProp != null) chargeRangeProp.floatValue = pureData.EffectRange;
+                        }
                     }
+
+                    so.ApplyModifiedProperties();
+                    Debug.Log($"[WeaponImporter] {root.name} 프리팹 완전 동기화 완료 (Name: {pureData.Name})");
                 }
             }
         }

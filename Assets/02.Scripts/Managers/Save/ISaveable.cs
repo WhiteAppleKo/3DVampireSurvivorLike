@@ -5,9 +5,8 @@ namespace _02.Scripts.Managers.Save
         void SaveData();
         void LoadData();
 
-        public void RegistSaveAble()
-        {
-            SaveManager.Instance.RegistSaveData(this);
-        }
-    }
+            public void RegistSaveAble()
+            {
+                DataHub.Instance.RegistSaveData(this);
+            }    }
 }

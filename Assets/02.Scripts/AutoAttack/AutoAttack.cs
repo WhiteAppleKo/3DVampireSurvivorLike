@@ -5,6 +5,7 @@ using System.Threading;
 using _02.Scripts.AutoAttack;
 using _02.Scripts.Managers.Save;
 using Features.Augment;
+using Features.Weapon;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
@@ -13,17 +14,16 @@ public class AutoAttack : MonoBehaviour, ISaveable
     public Weapon[] weapon;
     public LayerMask layer;
     
-    private List<WeaponAbility> m_GlobalAugments = new List<WeaponAbility>();
     private List<PureDataWeaponAbility> m_PureGlobalAugments = new List<PureDataWeaponAbility>();
 
-    private WeaponBaseStats.WeaponModifier m_GlobalModifier;
+    private Features.Weapon.WeaponModifier m_GlobalModifier;
     private int m_WeaponCount = 0;
     private CancellationTokenSource m_Cts;
 
     public void GameStart()
     {
         weapon = new Weapon[5];
-        m_GlobalModifier = new WeaponBaseStats.WeaponModifier(0, 1, 1);
+        m_GlobalModifier = new Features.Weapon.WeaponModifier(0, 1, 1);
         foreach(Weapon weaponInChildren in GetComponentsInChildren<Weapon>())
         {
             AddWeapon(weaponInChildren);
@@ -45,37 +45,6 @@ public class AutoAttack : MonoBehaviour, ISaveable
         }
     }
 
-    /// <summary>
-    /// 무기에 새로운 증강을 추가합니다.
-    /// </summary>
-    public void AddAugment(WeaponAbility augment)
-    {
-        m_GlobalAugments.Add(augment);
-        RecalculateGlobalAugemnt();
-    }
-
-    /// <summary>
-    /// 무기에서 증강을 제거합니다.
-    /// </summary>
-    public void RemoveAugment(WeaponAbility augment)
-    {
-        m_GlobalAugments.Remove(augment);
-        RecalculateGlobalAugemnt();
-    }
-    
-    private void RecalculateGlobalAugemnt()
-    {
-        for (int i = 0; i < m_GlobalAugments.Count; i++)
-        {
-            m_GlobalAugments[i].Apply(m_GlobalModifier);
-        }
-        
-        for (int i = 0; i < m_WeaponCount; i++)
-        {
-            weapon[i].SetGlobalAugments(m_GlobalModifier);
-        }
-    }
-
     private void OnEnable()
     {
         if (m_Cts != null)
@@ -86,10 +55,6 @@ public class AutoAttack : MonoBehaviour, ISaveable
         
         m_Cts = new CancellationTokenSource();
         StartAttack();
-        
-        /* 코루틴 코드
-        StopAllCoroutines();
-        StartAttack();*/
     }
 
     private void OnDisable()
@@ -100,8 +65,6 @@ public class AutoAttack : MonoBehaviour, ISaveable
             m_Cts.Dispose();
             m_Cts = null;
         }
-        // 코루틴 코드
-        /*StopAllCoroutines();*/
     }
 
     public void StartAttack()
@@ -117,7 +80,7 @@ public class AutoAttack : MonoBehaviour, ISaveable
 
     public void AddWeapon(Weapon newWeapon)
     {
-        if (m_WeaponCount > 5)
+        if (m_WeaponCount >= 5)
         {
             Debug.Log("더 이상 무기를 추가할 수 없습니다.");
             return;
@@ -142,12 +105,10 @@ public class AutoAttack : MonoBehaviour, ISaveable
 
     private async UniTaskVoid Async_AutoAttack(Weapon weapon, CancellationToken token)
     {
-        //무한 루프
         while (!token.IsCancellationRequested)
         {
-            //딜레이 : TimeSpan 사용을 권장
-            //weapon.FinalStats.AttackDelay는 float (초 단위)
-            await UniTask.Delay(TimeSpan.FromSeconds(weapon.FinalStats.attackDelay), cancellationToken: token);
+            float delay = weapon.Model != null ? weapon.Model.FinalAttackDelay : 1.0f;
+            await UniTask.Delay(TimeSpan.FromSeconds(delay), cancellationToken: token);
 
             if (token.IsCancellationRequested)
             {
@@ -157,80 +118,68 @@ public class AutoAttack : MonoBehaviour, ISaveable
         }
     }
 
-    public List<WeaponAbility> GetWeaponGlobalAugments()
-    {
-        return m_GlobalAugments;
-    }
-    /*private IEnumerator co_AutoAttack(Weapon weapon)
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(weapon.FinalStats.attackDelay);
-            weapon.AttackLogic();
-        }
-    }*/
     public void SaveData()
     {
+        // 1. 글로벌 증강 ID 수집
         List<string> augmentsID = new List<string>();
-        foreach (var augment in m_GlobalAugments)
+        foreach (var augment in m_PureGlobalAugments)
         {
-            augmentsID.Add(augment.abilityID);
+            if (augment != null) augmentsID.Add(augment.ID);
         }
         
+        // 2. 무기 정보 수집
         List<WeaponSaveData> weaponList = new List<WeaponSaveData>();
-        foreach (var weaponData in weapon)
+        for (int i = 0; i < m_WeaponCount; i++)
         {
-            if (weaponData == null)
-            {
-                continue;
-            }
-            WeaponSaveData newWeaponSaveData = new WeaponSaveData(
-                weaponData.FinalStats.weaponID,
-                weaponData.GetWeaponLocalAugmentsID());
+            if (weapon[i] == null) continue;
             
+            // DLV: PureData ID 필수 사용
+            string weaponID = weapon[i].PureData.ID;
+            
+            WeaponSaveData newWeaponSaveData = new WeaponSaveData(weaponID, new List<string>());
             weaponList.Add(newWeaponSaveData);
         }
         
-        AutoAttackerSaveData saveData = new AutoAttackerSaveData(
-            augmentsID,
-            weaponList);
-        SaveManager.Instance.SetWeaponData(saveData);
-        Debug.Log("AutoAttackSaveDAta");
+        AutoAttackerSaveData saveData = new AutoAttackerSaveData(augmentsID, weaponList);
+        DataHub.Instance.SetWeaponData(saveData);
     }
 
     public void LoadData()
     {
-        m_GlobalAugments.Clear();
-        AutoAttackerSaveData saveData = SaveManager.Instance.LoadAutoAttackerSaveData();
+        // 기존 무기 및 증강 청소
+        m_PureGlobalAugments.Clear();
+        foreach (var w in weapon)
+        {
+            if (w != null) Destroy(w.gameObject);
+        }
+        System.Array.Clear(weapon, 0, weapon.Length);
+        m_WeaponCount = 0;
+
+        AutoAttackerSaveData saveData = DataHub.Instance.LoadAutoAttackerSaveData();
         
-        // 데이터가 아예 없거나, 저장된 무기가 하나도 없을 때 첫 무기 선택 실행
         if (saveData == null || saveData.weaponList == null || saveData.weaponList.Count == 0)
         {
-            if (ExpManager.Instance != null)
-            {
-                ExpManager.Instance.ChoiceFirstWeapon();
-            }
+            if (ExpManager.Instance != null) ExpManager.Instance.ChoiceFirstWeapon();
             return;
         }
 
-        m_GlobalAugments = SaveManager.Instance.GetWeaponAbilities(saveData.globalWeaponAugments);
-        
-        // WeaponDatabase에서 saveData.weaponList.Count만큼 id 검색해서 찾아와
-        // 그 과정에서 Prefab을 하위로 생성하고 weaponList의 WeaponSaveData를 읽어서 내부를 채워
-        for (int i = 0; i < saveData.weaponList.Count; i++)
+        // 1. 글로벌 증강 복구 (DataHub 경유)
+        foreach (var id in saveData.globalWeaponAugments)
         {
-            WeaponSaveData weaponSaveData = saveData.weaponList[i];
-            WeaponData loadWeaponData = SaveManager.Instance.GetWeaponData(weaponSaveData.weaponID);
-            GameObject createWeapon = Instantiate(loadWeaponData.weaponPrefab,transform);
-            Weapon weaponComponent = createWeapon.GetComponent<Weapon>();
-            AddWeapon(weaponComponent);
-
-            // TODO 스페셜 증강 가져오는 로직
-            for (int j = 0; j < weaponSaveData.localWeaponAugments.Count; j++)
+            var augment = DataHub.Instance.GetWeaponAbilityData(id);
+            if (augment != null) m_PureGlobalAugments.Add(augment);
+        }
+        
+        // 2. 무기 복구 (DataHub 경유)
+        foreach (var wSave in saveData.weaponList)
+        {
+            var pWeapon = DataHub.Instance.GetWeaponData(wSave.weaponID);
+            if (pWeapon != null && pWeapon.Prefab != null)
             {
-                
+                var wObj = Instantiate(pWeapon.Prefab, transform);
+                var wComp = wObj.GetComponent<Weapon>();
+                AddWeapon(wComp);
             }
         }
-        RecalculateGlobalAugemnt();
     }
 }

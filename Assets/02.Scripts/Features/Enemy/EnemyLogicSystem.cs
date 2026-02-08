@@ -114,5 +114,7 @@ namespace Features.Enemy
             
             visuals.SetActive(false);
         }
+
+        public override float CurrentMoveSpeed => model != null ? model.MoveSpeed : 0f;
     }
 }
