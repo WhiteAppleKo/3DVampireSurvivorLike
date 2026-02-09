@@ -138,7 +138,7 @@ public class PlayerController : Controller, ISaveable
         visuals.SetMoveVisual(finalMoveDir.magnitude);
     }
 
-    protected override void ApplyDamage(int amount)
+    public override void ApplyDamage(int amount)
     {
         model.TakeDamage(amount);
     }

@@ -87,6 +87,15 @@ public class MonsterImporter
             pureData.BaseTurnSpeed = 5.0f; 
             pureData.MinimumDistance = 0.01f;
 
+            // [추가] SerializedObject를 사용하여 TargetLayer를 확실하게 저장
+            SerializedObject pureDataSo = new SerializedObject(pureData);
+            SerializedProperty targetLayerProp = pureDataSo.FindProperty("TargetLayer");
+            if (targetLayerProp != null)
+            {
+                targetLayerProp.intValue = LayerMask.GetMask("Player");
+                pureDataSo.ApplyModifiedProperties();
+            }
+
             // 6. 프리팹 자동 연결 및 할당
             string prefabPath = m_MonsterPrefabPath + $"Monster_{id}.prefab"; 
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);

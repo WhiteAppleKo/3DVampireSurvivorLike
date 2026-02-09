@@ -184,7 +184,7 @@ namespace _02.Scripts.AutoAttack.Charge
             Controller controller = enemy.GetComponent<Controller>();
             int damage = Model.FinalDamage;
             m_DamageEvent = new BattleManager.DamageEventStruct(damage, this, m_Controller, controller);
-            BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
+            BattleManager.Instance.ProcessDamage(m_DamageEvent);
         }
 
         private GameObject FindTarget()

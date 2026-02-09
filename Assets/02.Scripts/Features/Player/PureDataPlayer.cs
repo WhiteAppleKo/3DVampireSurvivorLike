@@ -10,6 +10,9 @@ namespace Features.Player
         public float BaseMoveSpeed = 5.0f;
         public float BaseTurnSpeed = 10.0f;
 
+        [Header("Combat Settings")]
+        public LayerMask TargetLayer;
+
         [Header("Leveling")]
         public int BaseExpToLevelUp = 100;
         public int ExpIncreasePerLevel = 10;

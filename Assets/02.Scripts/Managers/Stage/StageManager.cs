@@ -15,6 +15,9 @@ namespace _02.Scripts.Managers.Stage
         [SerializeField] private PureDataBaseStage pureDataBase;
         public SpawnManager spawnManager;
 
+        public float ElapsedTime { get; private set; }
+        public System.Action<float> OnTimeChanged;
+
         private void Start()
         {
             Debug.Log($"[StageManager] 스테이지 시스템 시작. 현재 스테이지: {currentStage}, 제한 시간: {stageTimeLimit}초");
@@ -24,20 +27,36 @@ namespace _02.Scripts.Managers.Stage
             if (stageData != null)
             {
                 spawnManager.StartNewStage(stageData);
+                
+                // [추가] 게임 시작 시 첫 무기 선택 UI 팝업
+                if (currentStage == 1 && ExpManager.Instance != null)
+                {
+                    ExpManager.Instance.ChoiceFirstWeapon();
+                }
             }
+            
+            ResetTimer();
         }
 
         private void Update()
         {
+            ElapsedTime += Time.deltaTime;
+            OnTimeChanged?.Invoke(ElapsedTime);
             CheckStageTime();
         }
 
         private void CheckStageTime()
         {
-            if (IMTimer.Instance != null && IMTimer.Instance.ElapsedTime >= stageTimeLimit)
+            if (ElapsedTime >= stageTimeLimit)
             {
                 CompleteStage();
             }
+        }
+
+        public void ResetTimer()
+        {
+            ElapsedTime = 0;
+            OnTimeChanged?.Invoke(ElapsedTime);
         }
 
         private void CompleteStage()
@@ -52,7 +71,7 @@ namespace _02.Scripts.Managers.Stage
                 spawnManager.StartNewStage(nextStage);
             }
 
-            IMTimer.Instance.ResetTimer();
+            ResetTimer();
             Debug.Log("[StageManager] 타이머가 초기화되었습니다.");
 
             AutoSave();

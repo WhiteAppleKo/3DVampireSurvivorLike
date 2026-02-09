@@ -74,7 +74,18 @@ public class StageImporter
             }
 
             pureData.ID = id;
-            pureData.MonsterList = monsterList;
+            
+            // [DLV Refactoring] 기존 MonsterList를 기본 웨이브로 변환
+            var defaultWave = new WaveData
+            {
+                startTime = 0,
+                endTime = 9999,
+                monsters = monsterList,
+                spawnInterval = 1.0f, // 기본값
+                maxCount = 50 // 기본값
+            };
+            
+            pureData.Waves = new List<WaveData> { defaultWave };
             pureData.BossMonster = bossMonster;
             pureData.IsBossStage = isBossStage;
 

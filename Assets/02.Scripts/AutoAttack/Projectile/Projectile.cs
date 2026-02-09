@@ -119,7 +119,7 @@ public class Projectile : MonoBehaviour
                 };
                 
                 // 싱글톤 접근은 추후 매니저 리팩토링 시 수정 고려
-                BattleManager.Instance?.BroadcastDamageEvent(damageEvent);
+                BattleManager.Instance?.ProcessDamage(damageEvent);
             }
         }
     }

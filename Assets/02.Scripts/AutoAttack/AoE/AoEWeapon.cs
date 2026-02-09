@@ -75,7 +75,7 @@ namespace _02.Scripts.AutoAttack.AoE
                         // 증강이 적용된 최종 데미지(Model.FinalDamage)를 사용합니다.
                         int damage = Model.FinalDamage;
                         m_DamageEvent = new BattleManager.DamageEventStruct(damage, this, m_Controller, enemy);
-                        BattleManager.Instance.BroadcastDamageEvent(m_DamageEvent);
+                        BattleManager.Instance.ProcessDamage(m_DamageEvent);
                     }
                 }
             }

@@ -34,7 +34,7 @@ namespace _02.Scripts.AutoAttack
                 Debug.LogError($"[Weapon] {name}에 PureData가 할당되지 않았습니다! 기능이 작동하지 않습니다.");
             }
             
-            TargetLayer = GetComponentInParent<global::AutoAttack>().layer;
+            TargetLayer = GetComponentInParent<global::AutoAttack>().TargetLayer;
             
             // 글로벌 증강 초기화
             m_GlobalAugmentsModifier = new global::Features.Weapon.WeaponModifier(1, 1, 1);
@@ -52,29 +52,7 @@ namespace _02.Scripts.AutoAttack
         public void ApplyPureAugment(PureDataWeaponAbility ability)
         {
             if (model == null) return;
-
-            switch (ability.TargetStatType)
-            {
-                case WeaponAbility.e_WeaponStatType.AttackDelay:
-                    model.AddAttackDelayModifier(ability.ValueAmount);
-                    break;
-                case WeaponAbility.e_WeaponStatType.Damage:
-                    if (ability.ValueType == "Fixed")
-                    {
-                        model.AddDamageModifier((int)ability.ValueAmount, 0);
-                    }
-                    else if (ability.ValueType == "Percentage" || ability.ValueType == "Percent")
-                    {
-                        model.AddDamageModifier(0, ability.ValueAmount);
-                    }
-                    break;
-                case WeaponAbility.e_WeaponStatType.AoE:
-                    model.AddRangeModifier(ability.ValueAmount);
-                    break;
-                default:
-                    Debug.LogWarning($"[Weapon] 미지원 증강 타입: {ability.TargetStatType}");
-                    break;
-            }
+            model.ApplyPureAugment(ability);
         }
 
         protected virtual void RecalculateStats()

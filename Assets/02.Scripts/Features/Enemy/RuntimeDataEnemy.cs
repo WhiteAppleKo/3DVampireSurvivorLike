@@ -12,6 +12,7 @@ namespace Features.Enemy
         public float MoveSpeed { get; private set; }
         public float TurnSpeed { get; private set; }
         public int ExpAmount { get; private set; }
+        public LayerMask TargetLayer => PureData.TargetLayer;
 
         public event Action<int, int> OnHpChanged;
         public event Action OnDeath;

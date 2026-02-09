@@ -6,7 +6,8 @@ using UnityEngine;
 
 public class DataHub : SingletoneBase<DataHub>
 {
-    private string SaveFilePath => Path.Combine(Application.persistentDataPath, "GameSaveData.json");
+    private const string SAVE_FILE_NAME = "GameSaveData.json";
+    private ISaveSystem m_SaveSystem;
 
     public GameSaveData CurrentSaveData { get; private set; }
     public List<ISaveable> saveList = new List<ISaveable>();
@@ -21,6 +22,9 @@ public class DataHub : SingletoneBase<DataHub>
         base.Awake();
         dontDestroyOnLoad = true;
         
+        // [Logic] 저장 시스템 초기화 (Json 방식 사용)
+        m_SaveSystem = new JsonSaveSystem();
+        
         LoadGame();
     }
 
@@ -34,19 +38,14 @@ public class DataHub : SingletoneBase<DataHub>
     /// </summary>
     public void SaveGame()
     {
-        if (CurrentSaveData == null)
-        {
-            CurrentSaveData = new GameSaveData();
-        }
+        if (CurrentSaveData == null) CreateNewSaveData();
         
         UpdateSaveData();
         
-        string json = JsonUtility.ToJson(CurrentSaveData, true); 
-        
         try
         {
-            File.WriteAllText(SaveFilePath, json);
-            Debug.Log($"[DataHub] 게임 저장 완료: {SaveFilePath}");
+            m_SaveSystem.Save(SAVE_FILE_NAME, CurrentSaveData);
+            Debug.Log($"[DataHub] 게임 저장 완료.");
         }
         catch (System.Exception e)
         {
@@ -59,17 +58,16 @@ public class DataHub : SingletoneBase<DataHub>
     /// </summary>
     public void LoadGame()
     {
-        if (File.Exists(SaveFilePath))
+        if (m_SaveSystem.Exists(SAVE_FILE_NAME))
         {
             try
             {
-                string json = File.ReadAllText(SaveFilePath);
-                CurrentSaveData = JsonUtility.FromJson<GameSaveData>(json);
+                CurrentSaveData = m_SaveSystem.Load<GameSaveData>(SAVE_FILE_NAME);
                 Debug.Log("[DataHub] 데이터 로드 성공.");
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"[DataHub] 로드 실패 (파일 손상 가능성): {e.Message}");
+                Debug.LogError($"[DataHub] 로드 실패: {e.Message}");
                 CreateNewSaveData();
             }
         }
@@ -82,12 +80,9 @@ public class DataHub : SingletoneBase<DataHub>
 
     public void DeleteSaveData()
     {
-        if (File.Exists(SaveFilePath))
-        {
-            File.Delete(SaveFilePath);
-            Debug.Log("[DataHub] 저장 파일 삭제 완료.");
-        }
+        m_SaveSystem.Delete(SAVE_FILE_NAME);
         CreateNewSaveData();
+        Debug.Log("[DataHub] 저장 데이터 삭제 완료.");
     }
 
     private void CreateNewSaveData()

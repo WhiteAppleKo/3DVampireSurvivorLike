@@ -263,9 +263,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 264135746}
+      - m_Target: {fileID: 352061835}
         m_TargetAssemblyTypeName: _02.Scripts.Managers.Choice.ChoiceSystem, Assembly-CSharp
-        m_MethodName: RerollChoices
+        m_MethodName: GenerateAugmentChoices
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -663,9 +663,7 @@ GameObject:
   m_Component:
   - component: {fileID: 264135744}
   - component: {fileID: 264135743}
-  - component: {fileID: 264135746}
   - component: {fileID: 264135745}
-  - component: {fileID: 264135747}
   m_Layer: 0
   m_Name: ExpManager
   m_TagString: Untagged
@@ -686,8 +684,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ExpManager
   dontDestroyOnLoad: 0
-  playerController: {fileID: 1844755949}
-  expPrefab: {fileID: 1858271311470668380, guid: 7200383c0b8326c47b72b68530e50e6f, type: 3}
+  expSpawner: {fileID: 264135745}
 --- !u!4 &264135744
 Transform:
   m_ObjectHideFlags: 0
@@ -700,7 +697,8 @@ Transform:
   m_LocalPosition: {x: -45.20003, y: 1.64906, z: -0.48897}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 352061831}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &264135745
@@ -712,49 +710,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 264135742}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47effa627b14faa44ac9641be0aaa71b, type: 3}
+  m_Script: {fileID: 11500000, guid: b290f76991567a94f9536ce07a51901a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChoiceApplySystem
-  choicePanel: {fileID: 762029766}
-  player: {fileID: 1844755949}
-  playerAutoAttack: {fileID: 1680397847}
---- !u!114 &264135746
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 264135742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cb9fc0fd84fd684583ea6b5ac158780, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ChoiceManager
-  statAbilityDB: {fileID: 11400000, guid: 1f4f26a165ab717478902da81aa0a8de, type: 2}
-  weaponAbilityDB: {fileID: 11400000, guid: f5988d331d3a6f04a91fde335ed338e8, type: 2}
-  weaponDB: {fileID: 11400000, guid: 0f610e054899b0c45b7786b05c06b7c7, type: 2}
-  choicePanel: {fileID: 762029766}
-  bindImageText:
-  - {fileID: 600753177}
-  - {fileID: 1043508650}
-  - {fileID: 712460865}
---- !u!114 &264135747
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 264135742}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c704ca2b30591cf4597cd30c6d2e2afb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ScrollItemScaler
-  scrollContent: {fileID: 1945756234}
-  viewPort: {fileID: 1282866240}
-  minScale: 0.5
-  maxScale: 1.4
-  viewRange: 500
+  m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.Managers.Spawn.ExpSpawner
+  playerController: {fileID: 1844755949}
+  defaultExpPrefab: {fileID: 1858271311470668380, guid: 7200383c0b8326c47b72b68530e50e6f, type: 3}
 --- !u!1 &303716526
 GameObject:
   m_ObjectHideFlags: 0
@@ -1070,6 +1030,107 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Features.Camera.CameraLogicSystem
   pureData: {fileID: 11400000, guid: 577ada7290d68694d9491856ef3eb9e2, type: 2}
   player: {fileID: 1844755946}
+--- !u!1 &352061830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 352061831}
+  - component: {fileID: 352061835}
+  - component: {fileID: 352061834}
+  - component: {fileID: 352061833}
+  - component: {fileID: 352061832}
+  m_Layer: 0
+  m_Name: choice
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &352061831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352061830}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 264135744}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &352061832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352061830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c704ca2b30591cf4597cd30c6d2e2afb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScrollItemScaler
+  scrollContent: {fileID: 1945756234}
+  viewPort: {fileID: 1282866240}
+  minScale: 0.5
+  maxScale: 1.4
+  viewRange: 500
+--- !u!114 &352061833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352061830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e87a81a00b905c348b2d8d74d8a30cb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.ChoiceUIView
+  choiceSystem: {fileID: 352061835}
+  choicePanel: {fileID: 762029766}
+  bindImageText:
+  - {fileID: 600753177}
+  - {fileID: 1043508650}
+  - {fileID: 712460865}
+--- !u!114 &352061834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352061830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47effa627b14faa44ac9641be0aaa71b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceApplySystem
+  player: {fileID: 1844755949}
+  playerAutoAttack: {fileID: 1680397847}
+  choiceUIView: {fileID: 352061833}
+--- !u!114 &352061835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 352061830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cb9fc0fd84fd684583ea6b5ac158780, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ChoiceManager
+  statAugmentDB: {fileID: 0}
+  weaponAugmentDB: {fileID: 0}
+  weaponDB: {fileID: 11400000, guid: 0f610e054899b0c45b7786b05c06b7c7, type: 2}
+  player: {fileID: 1844755949}
 --- !u!1 &356902126
 GameObject:
   m_ObjectHideFlags: 0
@@ -2287,50 +2348,6 @@ MonoBehaviour:
   weaponDatabase: {fileID: 11400000, guid: 0f610e054899b0c45b7786b05c06b7c7, type: 2}
   weaponAbilityDatabase: {fileID: 11400000, guid: f5988d331d3a6f04a91fde335ed338e8, type: 2}
   statAbilityDatabase: {fileID: 11400000, guid: 1f4f26a165ab717478902da81aa0a8de, type: 2}
---- !u!1 &655450823
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 655450824}
-  - component: {fileID: 655450825}
-  m_Layer: 0
-  m_Name: PatternSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &655450824
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 655450823}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1982211536}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &655450825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 655450823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6825bf75ad56f63408b5ec3b2099a148, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PatternSpawner
 --- !u!1 &703719818
 GameObject:
   m_ObjectHideFlags: 0
@@ -3244,7 +3261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shapes.IMTimer
   color: {r: 0, g: 0, b: 0, a: 1}
-  timer: 20.01
+  timer: 00.81
   fontSize: 700
   fontAsset: {fileID: 11400000, guid: 65eb82dda5212f2448aff7de410823bd, type: 2}
 --- !u!222 &1031388903
@@ -3841,53 +3858,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282866239}
   m_CullTransparentMesh: 1
---- !u!1 &1328489225
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1328489226}
-  - component: {fileID: 1328489227}
-  m_Layer: 0
-  m_Name: RepeatSpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1328489226
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328489225}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1982211536}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1328489227
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328489225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bbc95160f5823fc4ab52708fb8770911, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::RepeatSpawner
-  spawnDelay: 1
-  poolSize: 10
-  player: {fileID: 1844755949}
 --- !u!1 &1382196434
 GameObject:
   m_ObjectHideFlags: 0
@@ -4212,10 +4182,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593e5c737ac93f84cbf0fa965e18b4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoAttack
-  weapon: []
-  layer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!1 &1755518113
 GameObject:
   m_ObjectHideFlags: 0
@@ -4360,9 +4326,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 264135745}
+      - m_Target: {fileID: 352061834}
         m_TargetAssemblyTypeName: ChoiceApplySystem, Assembly-CSharp
-        m_MethodName: ApplyAbility
+        m_MethodName: ApplySelectedAugment
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4679,6 +4645,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1982211536}
   - component: {fileID: 1982211535}
+  - component: {fileID: 1982211537}
+  - component: {fileID: 1982211538}
   m_Layer: 0
   m_Name: EnemySpawner
   m_TagString: Untagged
@@ -4698,6 +4666,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccede287c5c0e5438eb08bb91a4a1e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnManager
+  spawnSystem: {fileID: 1982211537}
 --- !u!4 &1982211536
 Transform:
   m_ObjectHideFlags: 0
@@ -4710,11 +4679,36 @@ Transform:
   m_LocalPosition: {x: -34.49714, y: 1.64906, z: 0.34480998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1328489226}
-  - {fileID: 655450824}
+  m_Children: []
   m_Father: {fileID: 907438533}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1982211537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982211534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67951d12b9c99bf499b5616a7e53418a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.Managers.Spawn.MonsterSpawnSystem
+  currentStage: {fileID: 11400000, guid: c07c3826546550a4396e9d8f993b8a0c, type: 2}
+  spawner: {fileID: 1982211538}
+--- !u!114 &1982211538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982211534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c104f84c77c67864e9cbaea3b323427b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.Managers.Spawn.MonsterSpawner
+  player: {fileID: 1844755949}
 --- !u!1 &2038175390
 GameObject:
   m_ObjectHideFlags: 0

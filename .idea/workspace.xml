@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2a2470a8-3ff7-4a2d-b7d7-fbbd4ffff440" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/Assets/00.Resources/Monsters/Monster_0300.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/00.Resources/Monsters/Monster_0300.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/00.Resources/Monsters/Monster_0301.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/00.Resources/Monsters/Monster_0301.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/00.Resources/Monsters/Monster_0302.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/00.Resources/Monsters/Monster_0302.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/01.Scenes/TestScene 1.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/01.Scenes/TestScene 1.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/AoE/AoEWeapon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/AoE/AoEWeapon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/AutoAttack.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/AutoAttack.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/BodyAttack/BodyAttack.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/BodyAttack/BodyAttack.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/Charge/ChargeDashWeapon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/Charge/ChargeDashWeapon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/Projectile/Projectile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/Projectile/Projectile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/Weapon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/AutoAttack/Weapon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Cotroller/Controller.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Cotroller/Controller.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Cotroller/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Cotroller/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Augment/PureDataStatAbility.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Augment/PureDataStatAbility.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Augment/PureDataWeaponAbility.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Augment/PureDataWeaponAbility.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Enemy/EnemyLogicSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Enemy/EnemyLogicSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Enemy/PureDataEnemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Enemy/PureDataEnemy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Enemy/RuntimeDataEnemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Enemy/RuntimeDataEnemy.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Player/PureDataPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Player/PureDataPlayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Player/RuntimeDataPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Player/RuntimeDataPlayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Stage/PureDataStage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Stage/PureDataStage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Weapon/PureDataWeapon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Weapon/PureDataWeapon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Features/Weapon/RuntimeDataWeapon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Features/Weapon/RuntimeDataWeapon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/BattleEvent/BattleManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/BattleEvent/BattleManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Choice/ChoiceApplySystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Choice/ChoiceApplySystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Choice/ChoiceSystem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Choice/ChoiceSystem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/ExpManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/ExpManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/BaseMonster.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/BaseMonster.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/Editor/MonsterImporter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/Editor/MonsterImporter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/MonsterData.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/MonsterData.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/MonsterDatabase.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/MonsterDatabase.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/PatternSpawner.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/PatternSpawner.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/RepeatSpawner.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/RepeatSpawner.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/SpawnManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/MonsterSpawn/SpawnManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Save/DataHub.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Save/DataHub.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Stage/Editor/StageImporter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Stage/Editor/StageImporter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Stage/StageManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/Managers/Stage/StageManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/ShapesWork/UI/IMEXPPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/ShapesWork/UI/IMEXPPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/ShapesWork/UI/IMTimer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/ShapesWork/UI/IMTimer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/02.Scripts/UI/BindImageText.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/02.Scripts/UI/BindImageText.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/MonsterData/PureData/PureDataEnemy_0300_원.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/MonsterData/PureData/PureDataEnemy_0300_원.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/MonsterData/PureData/PureDataEnemy_0301_삼각형.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/MonsterData/PureData/PureDataEnemy_0301_삼각형.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/MonsterData/PureData/PureDataEnemy_0302_네모.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/MonsterData/PureData/PureDataEnemy_0302_네모.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/StageData/PureData/PureDataStage_04000001.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/StageData/PureData/PureDataStage_04000001.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/StageData/PureData/PureDataStage_04000002.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/StageData/PureData/PureDataStage_04000002.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/StatAbility/PureData/PureDataStatAbility_01000001_체력 회복.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/StatAbility/PureData/PureDataStatAbility_01000001_체력 회복.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/StatAbility/PureData/PureDataStatAbility_01001101_최대 체력 증가.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/StatAbility/PureData/PureDataStatAbility_01001101_최대 체력 증가.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/WeaponAbility/PureData/PureDataWeaponAbility_02000101_공격 속도 증가.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/WeaponAbility/PureData/PureDataWeaponAbility_02000101_공격 속도 증가.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/WeaponAbility/PureData/PureDataWeaponAbility_02001001_데미지 증가.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/WeaponAbility/PureData/PureDataWeaponAbility_02001001_데미지 증가.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05000001_투사체 무기.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05000001_투사체 무기.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05010001_효과 범위 무기.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05010001_효과 범위 무기.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05020001_이동.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05020001_이동.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05030001_박치기.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/05.Datas/WeaponData/PureData/PureDataWeapon_05030001_박치기.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/99.MD/2026-02-08_일일작업일지.md" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/99.MD/2026-02-08_일일작업일지.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/99.MD/GEMINI/코딩 작업 가이드라인.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/99.MD/GEMINI/코딩 작업 가이드라인.md.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/EquipAbility.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/EquipAbility.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/New Stat.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/New Stat.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/PureDataPlayer.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/PureDataPlayer.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GEMINI.md" beforeDir="false" afterPath="$PROJECT_DIR$/GEMINI.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/kot77/Documents/3DVampireSurvivorLike" value="39QOHhYdGUfPvHfskqQOCzFjHUl" />
+    </persistenceIdMap>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Assets/02.Scripts/Features/Player/PureDataPlayer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/02.Scripts/Managers/ExpManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/02.Scripts/Managers/Stage/StageManager.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/02.Scripts/ShapesWork/UI/IMEXPPanel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/02.Scripts/ShapesWork/UI/IMTimer.cs" root0="SKIP_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="39QOHhYdGUfPvHfskqQOCzFjHUl" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "Develop",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="디폴트 작업">
+      <changelist id="2a2470a8-3ff7-4a2d-b7d7-fbbd4ffff440" name="변경" comment="" />
+      <created>1770624745475</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1770624745475</updated>
+      <workItem from="1770624745686" duration="891000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="UnityProjectDiscoverer">
+    <option name="unityProjectFolder" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>

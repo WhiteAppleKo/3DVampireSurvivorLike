@@ -13,6 +13,7 @@ namespace Features.Enemy
         [SerializeField] private Controller m_Target;
 
         private RuntimeDataEnemy model;
+        public RuntimeDataEnemy Model => model;
         private IEnemyVisualizer visuals;
 
         protected override void Awake()
@@ -92,7 +93,7 @@ namespace Features.Enemy
             }
         }
 
-        protected override void ApplyDamage(int amount)
+        public override void ApplyDamage(int amount)
         {
             // base.ApplyDamage(amount); // 기존 baseStats 대신 model 사용
             model.TakeDamage(amount);

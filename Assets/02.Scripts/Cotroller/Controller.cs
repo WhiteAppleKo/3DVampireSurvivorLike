@@ -20,30 +20,13 @@ namespace _02.Scripts.Cotroller
 
         protected virtual void OnEnable()
         {
-            if (BattleManager.Instance != null)
-            {
-                BattleManager.Instance.onDamageEvent += OnDamageReceived;
-            }
         }
 
         protected virtual void OnDisable()
         {
-            if (BattleManager.Instance != null)
-            {
-                BattleManager.Instance.onDamageEvent -= OnDamageReceived;
-            }
         }
 
-        protected virtual void OnDamageReceived(BattleManager.DamageEventStruct damageEvent)
-        {
-            if (damageEvent.receiver != this) return;
-            
-            // 로직: 데미지 계산 및 데이터 갱신
-            // 실제 구현에서는 각 클래스의 Model.TakeDamage()를 호출하도록 유도하는 것이 좋습니다.
-            ApplyDamage(damageEvent.damageAmount);
-        }
-
-        protected abstract void ApplyDamage(int amount);
+        public abstract void ApplyDamage(int amount);
 
         protected abstract void Die(int prev, int current);
 

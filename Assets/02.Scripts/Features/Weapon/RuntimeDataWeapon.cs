@@ -120,6 +120,37 @@ namespace Features.Weapon
             RecalculateStats();
         }
 
+        /// <summary>
+        /// [D] 모델 레벨에서 순수 증강 데이터를 적용합니다.
+        /// </summary>
+        public void ApplyPureAugment(Features.Augment.PureDataWeaponAbility ability)
+        {
+            if (ability == null) return;
+
+            switch (ability.TargetStatType)
+            {
+                case WeaponAbility.e_WeaponStatType.AttackDelay:
+                    AddAttackDelayModifier(ability.ValueAmount);
+                    break;
+                case WeaponAbility.e_WeaponStatType.Damage:
+                    if (ability.ValueType == "Fixed")
+                    {
+                        AddDamageModifier((int)ability.ValueAmount, 0);
+                    }
+                    else if (ability.ValueType == "Percentage" || ability.ValueType == "Percent")
+                    {
+                        AddDamageModifier(0, ability.ValueAmount);
+                    }
+                    break;
+                case WeaponAbility.e_WeaponStatType.AoE:
+                    AddRangeModifier(ability.ValueAmount);
+                    break;
+                default:
+                    Debug.LogWarning($"[WeaponModel] 미지원 증강 타입: {ability.TargetStatType}");
+                    break;
+            }
+        }
+
         private void RecalculateStats()
         {
             if (PureData == null) return;

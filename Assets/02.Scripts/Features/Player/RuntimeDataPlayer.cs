@@ -15,6 +15,7 @@ namespace Features.Player
         public int CurrentHp { get; private set; }
         public int MaxHp { get; private set; }
         public float MoveSpeed { get; private set; }
+        public LayerMask TargetLayer => PureData.TargetLayer;
 
         // 증강 누적치
         private int _maxHpAdded = 0;

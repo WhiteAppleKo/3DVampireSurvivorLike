@@ -159,10 +159,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593e5c737ac93f84cbf0fa965e18b4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoAttack
-  weapon: []
-  layer:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!1 &4139207552585006377
 GameObject:
   m_ObjectHideFlags: 0

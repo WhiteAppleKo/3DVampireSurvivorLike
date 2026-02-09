@@ -14,6 +14,7 @@ namespace Features.Enemy
         public float BaseMoveSpeed = 3.0f;
         public float BaseTurnSpeed = 5.0f;
         public int BaseExpAmount = 5;
+        public LayerMask TargetLayer;
 
         [Header("Movement")]
         public float MinimumDistance = 0.01f;
