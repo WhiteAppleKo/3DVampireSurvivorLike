@@ -1,4 +1,5 @@
 using System;
+using Features.Player;
 using Shapes;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -10,30 +11,38 @@ public class CircleEXP : MonoBehaviour
     
     private Disc m_ExpDisc;
     [SerializeField] private LayerMask m_TargetLayer;
+    private RuntimeDataPlayer m_Model;
 
     private void Awake()
     {
         m_ExpDisc = GetComponent<Disc>();
     }
-    private void OnEnable()
+
+    public void Bind(RuntimeDataPlayer model)
     {
-        SubscribeManager.Instance.onPlayerExpChangeEvent += ChangeExpValue;
-    }
-    private void OnDisable()
-    {
-        if (SubscribeManager.isApplicationQuitting)
+        if (m_Model != null)
         {
-            return;
+            m_Model.OnExpChanged -= ChangeExpValue;
         }
-        if (!SubscribeManager.HasInstance)
-        {
-            return;
-        }
-        SubscribeManager.Instance.onPlayerExpChangeEvent -= ChangeExpValue;
+
+        m_Model = model;
+        m_Model.OnExpChanged += ChangeExpValue;
+        
+        // 초기값 설정
+        ChangeExpValue(m_Model.CurrentExp, m_Model.MaxExp);
     }
 
-    private void ChangeExpValue(float ratio)
+    private void OnDisable()
     {
+        if (m_Model != null)
+        {
+            m_Model.OnExpChanged -= ChangeExpValue;
+        }
+    }
+
+    private void ChangeExpValue(int current, int max)
+    {
+        float ratio = (float)current / max;
         m_ExpDisc.AngRadiansEnd = ratio * Mathf.PI * 2f + m_ExpDisc.AngRadiansStart;
     }
 

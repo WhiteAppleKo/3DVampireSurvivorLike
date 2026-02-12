@@ -1,4 +1,5 @@
 using System;
+using Features.Player;
 using Shapes;
 using UnityEngine;
 
@@ -9,31 +10,38 @@ public class PlayerHPInLine : MonoBehaviour
     
     private Disc m_HpDisc;
     private float m_Hp;
+    private RuntimeDataPlayer m_Model;
+
     private void Awake()
     {
         m_HpDisc = GetComponentInChildren<Disc>();
     }
 
-    private void OnEnable()
+    public void Bind(RuntimeDataPlayer model)
     {
-        SubscribeManager.Instance.onPlayerHpChangeEvent += ChangeHpValue;
-    }
-    
-    private void OnDisable()
-    {
-        if (SubscribeManager.isApplicationQuitting)
+        if (m_Model != null)
         {
-            return;
+            m_Model.OnHpChanged -= ChangeHpValue;
         }
-        if (!SubscribeManager.HasInstance)
-        {
-            return;
-        }
-        SubscribeManager.Instance.onPlayerHpChangeEvent -= ChangeHpValue;
+
+        m_Model = model;
+        m_Model.OnHpChanged += ChangeHpValue;
+        
+        // 초기값 설정
+        ChangeHpValue(m_Model.CurrentHp, m_Model.MaxHp);
     }
 
-    public void ChangeHpValue(float ratio)
+    private void OnDisable()
     {
+        if (m_Model != null)
+        {
+            m_Model.OnHpChanged -= ChangeHpValue;
+        }
+    }
+
+    public void ChangeHpValue(int current, int max)
+    {
+        float ratio = (float)current / max;
         m_Hp = ratio;
         m_HpDisc.Radius = m_Hp;
         m_HpDisc.AngRadiansEnd = ratio * Mathf.PI * 2f;

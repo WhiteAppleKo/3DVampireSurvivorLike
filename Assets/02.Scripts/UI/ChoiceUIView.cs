@@ -17,11 +17,18 @@ namespace _02.Scripts.UI
         [SerializeField] private GameObject choicePanel;
         [SerializeField] private BindImageText[] bindImageText;
 
-        private void OnEnable()
+        public void Bind(ChoiceSystem system)
         {
             if (choiceSystem != null)
             {
+                choiceSystem.OnAugmentsGenerated -= RefreshUI;
+            }
+
+            choiceSystem = system;
+            if (choiceSystem != null)
+            {
                 choiceSystem.OnAugmentsGenerated += RefreshUI;
+                Debug.Log("[ChoiceUIView] ChoiceSystem 바인딩 완료");
             }
         }
 

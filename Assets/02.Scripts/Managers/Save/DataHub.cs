@@ -12,6 +12,11 @@ public class DataHub : SingletoneBase<DataHub>
     public GameSaveData CurrentSaveData { get; private set; }
     public List<ISaveable> saveList = new List<ISaveable>();
     
+    /// <summary>
+    /// 실제 저장된 파일이 있는지 여부를 반환합니다.
+    /// </summary>
+    public bool HasSaveFile => m_SaveSystem != null && m_SaveSystem.Exists(SAVE_FILE_NAME);
+
     [Header("DLV Databases")]
     public Features.Weapon.PureDataBaseWeapon weaponDatabase;
     public Features.Augment.PureDataBaseWeaponAbility weaponAbilityDatabase;

@@ -1127,8 +1127,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb9fc0fd84fd684583ea6b5ac158780, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChoiceManager
-  statAugmentDB: {fileID: 0}
-  weaponAugmentDB: {fileID: 0}
+  dontDestroyOnLoad: 0
+  statAugmentDB: {fileID: 11400000, guid: 1f4f26a165ab717478902da81aa0a8de, type: 2}
+  weaponAugmentDB: {fileID: 11400000, guid: f5988d331d3a6f04a91fde335ed338e8, type: 2}
   weaponDB: {fileID: 11400000, guid: 0f610e054899b0c45b7786b05c06b7c7, type: 2}
   player: {fileID: 1844755949}
 --- !u!1 &356902126
@@ -2300,54 +2301,6 @@ MonoBehaviour:
   chargeColor: {r: 0, g: 0.20847188, b: 1.0592737, a: 0.3764706}
   zTest: 4
   renderPassEvent: 400
---- !u!1 &640933339
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 640933342}
-  - component: {fileID: 640933343}
-  m_Layer: 0
-  m_Name: SaveManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &640933342
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 640933339}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.85218, y: 0.49551, z: 0.54135}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &640933343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 640933339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5209fd796f06843bd2544822a7314b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::DataHub
-  dontDestroyOnLoad: 0
-  weaponDatabase: {fileID: 11400000, guid: 0f610e054899b0c45b7786b05c06b7c7, type: 2}
-  weaponAbilityDatabase: {fileID: 11400000, guid: f5988d331d3a6f04a91fde335ed338e8, type: 2}
-  statAbilityDatabase: {fileID: 11400000, guid: 1f4f26a165ab717478902da81aa0a8de, type: 2}
 --- !u!1 &703719818
 GameObject:
   m_ObjectHideFlags: 0
@@ -3085,7 +3038,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StageManager
   dontDestroyOnLoad: 0
-  stageTimeLimit: 20
+  stageTimeLimit: 300
   currentStage: 1
   pureDataBase: {fileID: 11400000, guid: e5c8bc2acedf39e48b72fdeb550bcf8f, type: 2}
   spawnManager: {fileID: 1982211535}
@@ -3261,7 +3214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shapes.IMTimer
   color: {r: 0, g: 0, b: 0, a: 1}
-  timer: 00.81
+  timer: 12.44
   fontSize: 700
   fontAsset: {fileID: 11400000, guid: 65eb82dda5212f2448aff7de410823bd, type: 2}
 --- !u!222 &1031388903
@@ -3478,7 +3431,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   dontDestroyOnLoad: 0
   playerController: {fileID: 1844755949}
+  hpInLineUI: {fileID: 2038175396}
+  circleExpUI: {fileID: 531674850}
   expPanel: {fileID: 631343375}
+  choiceUIView: {fileID: 352061833}
 --- !u!4 &1049255518
 Transform:
   m_ObjectHideFlags: 0
@@ -5117,7 +5073,6 @@ SceneRoots:
   - {fileID: 762029771}
   - {fileID: 131550544}
   - {fileID: 1049255518}
-  - {fileID: 640933342}
   - {fileID: 120018682}
   - {fileID: 264135744}
   - {fileID: 907438533}

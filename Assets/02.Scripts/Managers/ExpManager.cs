@@ -9,12 +9,9 @@ public class ExpManager : SingletoneBase<ExpManager>
     [Header("Visual References")]
     [SerializeField] private _02.Scripts.Managers.Spawn.ExpSpawner expSpawner;
     
-    private ChoiceSystem m_ChoiceManager;
-
     protected override void Awake()
     {
         base.Awake();
-        m_ChoiceManager = GetComponentInChildren<ChoiceSystem>();
     }
 
     private void Start()
@@ -47,13 +44,13 @@ public class ExpManager : SingletoneBase<ExpManager>
     {
         Debug.Log("[ExpManager] ChoiceFirstWeapon 호출됨");
         // 최초 무기 선택이 필요한 경우 ChoiceSystem을 직접 호출할 수 있는 로직만 남깁니다.
-        if (m_ChoiceManager != null)
+        if (ChoiceSystem.HasInstance)
         {
-            m_ChoiceManager.SetWeaponChoiceMode();
+            ChoiceSystem.Instance.SetWeaponChoiceMode();
         }
         else
         {
-            Debug.LogError("[ExpManager] m_ChoiceManager가 Null입니다!");
+            Debug.LogError("[ExpManager] ChoiceSystem.Instance가 Null입니다!");
         }
     }
 }

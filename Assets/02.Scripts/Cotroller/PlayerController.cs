@@ -47,8 +47,12 @@ public class PlayerController : Controller, ISaveable
 
     private void Start()
     {
-        autoAttacker.GameStart();
+        // 1. 바인딩 먼저 (DLV UI Binding)
         SubscribeManager.Instance.GameStart();
+
+        // 2. 그 다음 로직 시작
+        autoAttacker.GameStart();
+        
         LoadData();
         autoAttacker.LoadData();
     }

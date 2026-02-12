@@ -1,3 +1,4 @@
+using Features.Player;
 using UnityEngine;
 
 namespace Shapes {
@@ -10,10 +11,25 @@ namespace Shapes {
 		public Gradient colorGradient;
 		public string title = "Title";
 		private float m_Percent;
+		private RuntimeDataPlayer m_Model;
 
 		public void GameStart()
 		{
-			SubscribeManager.Instance.onPlayerExpChangeEvent += ChangeExpValue;
+			// SubscribeManager에서 호출될 때 실제 바인딩은 별도의 Bind 메서드에서 수행되도록 함
+		}
+
+		public void Bind(RuntimeDataPlayer model)
+		{
+			if (m_Model != null)
+			{
+				m_Model.OnExpChanged -= ChangeExpValue;
+			}
+
+			m_Model = model;
+			m_Model.OnExpChanged += ChangeExpValue;
+			
+			// 초기값 설정
+			ChangeExpValue(m_Model.CurrentExp, m_Model.MaxExp);
 		}
 
 		public override void DrawPanelShapes( Rect rect, ImCanvasContext ctx ) {
@@ -52,23 +68,18 @@ namespace Shapes {
 			return new Rect(r.x, r.y, r.width * percent, r.height);
 		}
 		
-		private void ChangeExpValue(float ratio)
+		private void ChangeExpValue(int current, int max)
 		{
-			fillAmount = ratio;
+			fillAmount = (float)current / max;
 		}
 		
 		public override void OnDisable()
 		{
 			base.OnDisable();
-			if (SubscribeManager.isApplicationQuitting)
+			if (m_Model != null)
 			{
-				return;
+				m_Model.OnExpChanged -= ChangeExpValue;
 			}
-			if (!SubscribeManager.HasInstance)
-			{
-				return;
-			}
-			SubscribeManager.Instance.onPlayerExpChangeEvent -= ChangeExpValue;
 		}
 	}
 }

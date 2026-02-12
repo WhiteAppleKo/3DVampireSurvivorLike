@@ -90,12 +90,15 @@ public class ProjectileWeapon : Weapon
         // DLV Refactoring: Use Model directly
         int count = Model.FinalProjectileCount;
         
+        // 발사 기준점을 Controller의 위치로 설정
+        Vector3 spawnPos = m_Controller != null ? m_Controller.transform.position : transform.position;
+
         for (int i = 0; i < count; i++)
         {
             GameObject obj = GetProjectile();
             if (obj == null) continue;
 
-            obj.transform.position = transform.position;
+            obj.transform.position = spawnPos;
             obj.SetActive(true);
             
             var logic = obj.GetComponent<Projectile>();
@@ -110,13 +113,16 @@ public class ProjectileWeapon : Weapon
     {
         // 탐지 범위 (DLV Refactoring)
         float range = Model.FinalEffectRange;
-        int size = Physics.OverlapSphereNonAlloc(transform.position, range, m_FindTargetResults, TargetLayer);
+        
+        // 탐색 기준점을 Controller의 위치로 설정
+        Vector3 currentPosition = m_Controller != null ? m_Controller.transform.position : transform.position;
+
+        int size = Physics.OverlapSphereNonAlloc(currentPosition, range, m_FindTargetResults, TargetLayer);
 
         if (size == 0) return null;
 
         GameObject closestTarget = null;
         float closestDistanceSqr = Mathf.Infinity;
-        Vector3 currentPosition = transform.position;
 
         for (int i = 0; i < size; i++)
         {
