@@ -4,6 +4,8 @@
    개발업무 가이드라인 위치 : C:\\Users\\kot77\\Documents\\3DVampireSurvivorLike\\Assets\\99.MD\\GEMINI\\제미나이 코딩 작업 가이드라인.md  
 2. 사용자의 요구를 받아 문서작성과 도표작성 등의 문서업무  
    문서업무 가이드라인 위치 : C:\\Users\\kot77\\Documents\\3DVampireSurvivorLike\\Assets\\99.MD\\GEMINI\\제미나이 문서 작업 가이드라인.md
+3. 응답에 대한 자세한 가이드는 아래 링크를 참고 합니다.
+   응답 가이드라인 위치 : C:\\Users\\kot77\\Documents\\3DVampireSurvivorLike\\Assets\\99.MD\\GEMINI\\제미나이 응답 가이드라인.md
 
 # 기본 가이드 라인
 

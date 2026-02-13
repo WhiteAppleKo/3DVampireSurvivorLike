@@ -70,5 +70,21 @@ namespace _02.Scripts.UI.Title
                 contentBinder.SetColor(targetColor);
             }
         }
+
+        /// <summary>
+        /// 포커스 상태를 설정하여 크기 확대 연출을 활성화합니다.
+        /// </summary>
+        public void SetFocus(bool focused)
+        {
+            if (buttonPanel != null) buttonPanel.SetFocus(focused);
+        }
+
+        /// <summary>
+        /// 상세 UX 상태(포커스, 거리, 타입)를 설정합니다.
+        /// </summary>
+        public void SetUXState(bool focused, float distance, ChoiceUXType uxType)
+        {
+            if (buttonPanel != null) buttonPanel.SetUXState(focused, distance, uxType);
+        }
     }
 }
