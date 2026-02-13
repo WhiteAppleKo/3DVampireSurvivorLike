@@ -159,12 +159,12 @@ public class PlayerController : Controller, ISaveable
     #region 세이브 및 로드 (DLV 모델 연동)
     public void SaveData()
     {
-        // TODO: PureData 기반 증강 리스트 저장 로직 추가 필요
+        // 모델에서 획득한 증강 ID 목록을 가져와 저장합니다.
         PlayerSaveData saveData = new PlayerSaveData(
             model.CurrentLevel,
             model.CurrentExp,
             model.CurrentHp,
-            new List<string>()); // 레거시 ID 리스트 비움
+            model.AcquiredAugmentIDs); 
         
         DataHub.Instance.SetPlayerData(saveData);
         if (autoAttacker != null) autoAttacker.SaveData();
@@ -175,7 +175,8 @@ public class PlayerController : Controller, ISaveable
         PlayerSaveData saveData = DataHub.Instance.LoadPlayerSaveData();
         if (saveData == null) return;
 
-        // 런타임 모델 데이터 복구 (필요시 구현)
+        model.Load(saveData);
+        Debug.Log("[PlayerController] 데이터 로드 완료 (DLV 모델 복구)");
     }
     #endregion
 }

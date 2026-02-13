@@ -20,12 +20,14 @@ namespace _02.Scripts.UI.Title
         [ColorUsage(true, true)] public Color normalColor = Color.white;
         [ColorUsage(true, true)] public Color hoverColor = Color.cyan;
         [ColorUsage(true, true)] public Color pressedColor = Color.gray;
+        [ColorUsage(true, true)] public Color disabledColor = new Color(0.3f, 0.3f, 0.3f, 0.5f);
         [ColorUsage(true, true)] public Color backgroundColor = new Color(0, 0, 0, 0.5f);
 
         private Color m_TargetColor;
         private Color m_CurrentColor;
         private bool m_IsHovered;
         private bool m_IsPressed;
+        private bool m_IsInteractable = true;
 
         public override void OnEnable()
         {
@@ -34,12 +36,26 @@ namespace _02.Scripts.UI.Title
             m_TargetColor = normalColor;
         }
 
+        public void SetInteractable(bool state)
+        {
+            m_IsInteractable = state;
+            // 비활성화 시 즉시 색상 타겟을 변경
+            m_TargetColor = state ? normalColor : disabledColor;
+        }
+
         public override void DrawPanelShapes(Rect rect, ImCanvasContext ctx)
         {
             // 1. 상태에 따른 목표 색상 결정
-            if (m_IsPressed) m_TargetColor = pressedColor;
-            else if (m_IsHovered) m_TargetColor = hoverColor;
-            else m_TargetColor = normalColor;
+            if (!m_IsInteractable)
+            {
+                m_TargetColor = disabledColor;
+            }
+            else
+            {
+                if (m_IsPressed) m_TargetColor = pressedColor;
+                else if (m_IsHovered) m_TargetColor = hoverColor;
+                else m_TargetColor = normalColor;
+            }
 
             // 2. 부드러운 색상 전환 (애니메이션)
             m_CurrentColor = Color.Lerp(m_CurrentColor, m_TargetColor, Time.unscaledDeltaTime * 15f);

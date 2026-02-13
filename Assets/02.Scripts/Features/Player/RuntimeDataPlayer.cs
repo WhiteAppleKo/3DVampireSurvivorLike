@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using _02.Scripts.Managers.Save;
+using Features.Augment;
 using Features.Player;
 using UnityEngine;
 
@@ -17,9 +20,13 @@ namespace Features.Player
         public float MoveSpeed { get; private set; }
         public LayerMask TargetLayer => PureData.TargetLayer;
 
-        // 증강 누적치
+        // 증강 누적 데이터
         private int _maxHpAdded = 0;
         private float _moveSpeedMultiplier = 1.0f;
+        private List<string> _acquiredAugmentIDs = new List<string>();
+
+        // 외부에서 저장용으로 접근 가능하도록 공개
+        public List<string> AcquiredAugmentIDs => _acquiredAugmentIDs;
 
         // 이벤트
         public event Action<int, int> OnHpChanged; // (current, max)
@@ -40,6 +47,7 @@ namespace Features.Player
             
             _maxHpAdded = 0;
             _moveSpeedMultiplier = 1.0f;
+            _acquiredAugmentIDs.Clear();
             
             RecalculateStats();
             CurrentHp = MaxHp; // Reset 시 체력 풀 회복
@@ -47,18 +55,67 @@ namespace Features.Player
             NotifyAll();
         }
 
-        public void AddMaxHpModifier(int amount)
+        public void Load(PlayerSaveData saveData)
+        {
+            if (saveData == null) return;
+
+            CurrentLevel = saveData.playerLevel;
+            CurrentExp = saveData.currentExp;
+            
+            // 레벨에 따른 MaxExp 계산
+            MaxExp = PureData.BaseExpToLevelUp + (CurrentLevel - 1) * PureData.ExpIncreasePerLevel;
+            
+            _maxHpAdded = 0;
+            _moveSpeedMultiplier = 1.0f;
+            _acquiredAugmentIDs.Clear();
+
+            if (saveData.statAugments != null)
+            {
+                foreach (string id in saveData.statAugments)
+                {
+                    var augment = DataHub.Instance.GetStatAbilityData(id);
+                    if (augment != null)
+                    {
+                        // Load 시에는 리스트에만 추가하고 수치는 직접 적용 (Add...Modifier를 쓰면 중복 계산될 수 있음)
+                        _acquiredAugmentIDs.Add(id);
+                        ApplyStatAugment(augment);
+                    }
+                }
+            }
+
+            RecalculateStats();
+            CurrentHp = saveData.currentHp > 0 ? saveData.currentHp : MaxHp;
+
+            NotifyAll();
+        }
+
+        private void ApplyStatAugment(PureDataStatAbility augment)
+        {
+            if (augment.ID.Contains("Hp"))
+            {
+                _maxHpAdded += (int)augment.ValueAmount;
+            }
+            else if (augment.ID.Contains("Speed"))
+            {
+                _moveSpeedMultiplier += augment.ValueAmount;
+            }
+        }
+
+        public void AddMaxHpModifier(int amount, string augmentID = "")
         {
             _maxHpAdded += amount;
+            if (!string.IsNullOrEmpty(augmentID)) _acquiredAugmentIDs.Add(augmentID);
+            
             RecalculateStats();
-            // 최대 체력이 늘어난 만큼 현재 체력도 채워준다 (선택 사항)
             CurrentHp += amount; 
             OnHpChanged?.Invoke(CurrentHp, MaxHp);
         }
 
-        public void AddMoveSpeedModifier(float multiplierAdd)
+        public void AddMoveSpeedModifier(float multiplierAdd, string augmentID = "")
         {
             _moveSpeedMultiplier += multiplierAdd;
+            if (!string.IsNullOrEmpty(augmentID)) _acquiredAugmentIDs.Add(augmentID);
+            
             RecalculateStats();
         }
 
@@ -102,8 +159,6 @@ namespace Features.Player
         {
             MaxHp = PureData.BaseMaxHp + hpAdd;
             MoveSpeed = PureData.BaseMoveSpeed * speedMult;
-            
-            // HP 상한 증가 시 현재 HP도 비례해서 늘려줄지 등 정책 결정 필요
             OnHpChanged?.Invoke(CurrentHp, MaxHp);
         }
 

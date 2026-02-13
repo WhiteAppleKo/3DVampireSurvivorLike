@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using _02.Scripts.Managers.Save;
 
 namespace _02.Scripts.UI.Title
 {
@@ -42,6 +43,7 @@ namespace _02.Scripts.UI.Title
         private void StartNewGame()
         {
             Debug.Log("[TitleLogic] 새 게임 시작. 기존 데이터를 삭제합니다.");
+            // DataHub의 데이터를 초기화하고 저장 파일을 삭제합니다.
             DataHub.Instance.DeleteSaveData();
             SceneManager.LoadScene(inGameSceneName);
         }
@@ -49,13 +51,15 @@ namespace _02.Scripts.UI.Title
         private void LoadGame()
         {
             Debug.Log("[TitleLogic] 게임 불러오기 시도.");
-            // DataHub는 로드된 상태이므로 씬만 이동
+            // 파일에서 데이터를 최신화한 후 씬을 이동합니다.
+            DataHub.Instance.LoadGame();
             SceneManager.LoadScene(inGameSceneName);
         }
 
         private void OpenOptions()
         {
-            Debug.Log("[TitleLogic] 옵션 창 열기 (구현 예정)");
+            Debug.Log("[TitleLogic] 옵션 창 열기 (UI 미구현 - 추후 추가 예정)");
+            // TODO: 옵션 UI 패널을 활성화하는 로직 추가
         }
 
         private void ExitGame()

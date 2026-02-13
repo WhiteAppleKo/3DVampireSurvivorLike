@@ -1,11 +1,12 @@
 using UnityEngine;
+using _02.Scripts.UI;
 
 namespace Features.Augment
 {
     /// <summary>
     /// [D] 모든 증강(Augment) 데이터의 베이스 클래스
     /// </summary>
-    public abstract class PureDataAugment : ScriptableObject
+    public abstract class PureDataAugment : ScriptableObject, IBindableUIContent
     {
         [field: SerializeField] public string ID { get; set; }
         [field: SerializeField] public string Name { get; set; }

@@ -1,4 +1,4 @@
-# 목적
+# 작업 요구사항
 
 1. 사용자의 요구를 받아 코드작성과 리팩토링 등의 개발업무  
    개발업무 가이드라인 위치 : C:\\Users\\kot77\\Documents\\3DVampireSurvivorLike\\Assets\\99.MD\\GEMINI\\제미나이 코딩 작업 가이드라인.md  
