@@ -23,7 +23,8 @@ namespace _02.Scripts.Managers.Spawn
             if (expLogic != null)
             {
                 expLogic.SetValue(amount);
-                expLogic.SetTarget(playerController);
+                // 스폰 시에는 타겟을 설정하지 않습니다. (자석 범위 내 진입 시 설정)
+                expLogic.SetTarget(null);
             }
 
             return expObj;

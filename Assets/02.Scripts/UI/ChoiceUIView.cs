@@ -1,77 +1,85 @@
 using System.Collections.Generic;
 using _02.Scripts.Managers.Choice;
-using _02.Scripts.UI;
 using Features.Augment;
-using Features.Weapon;
 using UnityEngine;
 
 namespace _02.Scripts.UI
 {
-    // [V] UI View Layer for Choice System
-    public class ChoiceUIView : MonoBehaviour
+    /// <summary>
+    /// [V] 인게임 증강 선택창 관리자입니다.
+    /// ChoiceSystem의 명령을 받아 화면을 구성하고 활성화합니다.
+    /// </summary>
+    public class ChoiceUIView : BaseHybridScrollUIView
     {
-        [Header("Logic Reference")]
-        [SerializeField] private ChoiceSystem choiceSystem;
-
-        [Header("UI Components")]
-        [SerializeField] private GameObject choicePanel;
-        [SerializeField] private BindImageText[] bindImageText;
-
-        public void Bind(ChoiceSystem system)
+        protected override void Start()
         {
-            if (choiceSystem != null)
-            {
-                choiceSystem.OnAugmentsGenerated -= RefreshUI;
-            }
-
-            choiceSystem = system;
-            if (choiceSystem != null)
-            {
-                choiceSystem.OnAugmentsGenerated += RefreshUI;
-                Debug.Log("[ChoiceUIView] ChoiceSystem 바인딩 완료");
-            }
+            base.Start();
         }
 
-        private void OnDisable()
+        /// <summary>
+        /// ChoiceSystem에서 호출하는 외부 주입 메서드
+        /// </summary>
+        public void ShowChoices(List<PureDataAugment> choices)
         {
-            if (choiceSystem != null)
-            {
-                choiceSystem.OnAugmentsGenerated -= RefreshUI;
-            }
-        }
+            Debug.Log($"[ChoiceUIView] ShowChoices 수신. 선택지 수: {choices.Count}");
 
-        private void RefreshUI(List<PureDataAugment> choices)
-        {
-            Debug.Log($"[ChoiceUIView] RefreshUI 호출됨. 선택지 수: {choices.Count}");
-            // 1. 패널 활성화 및 시간 정지
-            TimeScaleManager.Instance.SetTimeScale(0);
-            choicePanel.SetActive(true);
-
-            // 2. 데이터 바인딩
-            for (int i = 0; i < bindImageText.Length; i++)
+            // 1. 데이터 바인딩
+            for (int i = 0; i < buttons.Count; i++)
             {
                 if (i < choices.Count)
                 {
-                    bindImageText[i].gameObject.SetActive(true);
-                    BindData(bindImageText[i], choices[i]);
+                    buttons[i].gameObject.SetActive(true);
+                    buttons[i].Bind(choices[i]);
+                    buttons[i].SetInteractable(true);
                 }
                 else
                 {
-                    bindImageText[i].gameObject.SetActive(false);
+                    buttons[i].gameObject.SetActive(false);
                 }
             }
+
+            // [추가] 런타임에 버튼 이벤트 재연결
+            InitializeButtons();
+
+            // 2. 초기 스크롤 위치 설정 (중앙)
+            m_TargetScrollPos = (choices.Count - 1) * 0.5f;
+            m_CurrentScrollPos = m_TargetScrollPos;
+
+            // 3. 시간 정지 및 UI 활성화
+            TimeScaleManager.Instance.SetTimeScale(0);
+            OpenUI();
         }
 
-        private void BindData(BindImageText bit, PureDataAugment augment)
+        public override void OpenUI()
         {
-            // [V] 신규 통합 바인딩 메서드 사용
-            bit.Bind(augment);
+            base.OpenUI();
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
 
-        public void CloseUI()
+        public override void CloseUI()
         {
+            base.CloseUI();
             TimeScaleManager.Instance.SetTimeScale(1);
-            choicePanel.SetActive(false);
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+
+        public override void ConfirmSelection()
+        {
+            int finalIndex = Mathf.RoundToInt(m_TargetScrollPos);
+            if (finalIndex >= 0 && finalIndex < buttons.Count)
+            {
+                var selectedButton = buttons[finalIndex];
+                if (selectedButton != null && selectedButton.gameObject.activeSelf)
+                {
+                    // 데이터 주도 Apply 실행 (증강 적용)
+                    base.ConfirmSelection();
+                    
+                    // 선택 완료 후 UI 닫기
+                    CloseUI();
+                }
+            }
         }
     }
 }

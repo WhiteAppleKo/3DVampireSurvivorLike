@@ -47,21 +47,11 @@ public class SubscribeManager : SingletoneBase<SubscribeManager>
         if (circleExpUI != null) circleExpUI.Bind(model);
         if (expPanel != null) expPanel.Bind(model);
         
-        // ChoiceSystem 바인딩 (싱글톤 호출로 인스턴스 강제 확보)
+        // ChoiceSystem 바인딩 (플레이어 모델 연결)
         var choiceSystem = ChoiceSystem.Instance;
         if (choiceSystem != null)
         {
             choiceSystem.Bind(model);
-            
-            // ChoiceUIView 바인딩 (선택지 UI)
-            if (choiceUIView != null)
-            {
-                choiceUIView.Bind(choiceSystem);
-            }
-            else
-            {
-                Debug.LogWarning("[SubscribeManager] choiceUIView가 할당되지 않았습니다!");
-            }
         }
 
         // 로직 시스템 관련 이벤트 구독

@@ -29,8 +29,14 @@ public class ExpManager : SingletoneBase<ExpManager>
 
     public void SetTarget(ExpCristal exp)
     {
-        // [DLV Refactoring] 이제 Spawner에서 생성 시 자동으로 Target을 설정하므로,
-        // 이 함수는 레거시 호환을 위해 비워두거나 필요 시 보강합니다.
+        if (exp == null) return;
+
+        // 플레이어 컨트롤러를 타겟으로 설정 (SubscribeManager의 싱글톤 인스턴스 활용)
+        var player = SubscribeManager.Instance.playerController;
+        if (player != null)
+        {
+            exp.SetTarget(player);
+        }
     }
 
     public void PlayerLevelUp()

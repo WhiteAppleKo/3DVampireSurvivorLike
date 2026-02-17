@@ -15,45 +15,29 @@ public class ChoiceApplySystem : MonoBehaviour
     
     [Header("UI References")]
     [SerializeField] private ChoiceUIView choiceUIView;
-    private ScrollItemScaler m_ScrollItemScaler;
 
-    private void Start()
+    /// <summary>
+    /// 외부(ChoiceUIView)에서 선택된 데이터를 직접 전달받아 게임에 적용합니다.
+    /// </summary>
+    public void ApplyAugmentDirectly(PureDataAugment augment)
     {
-        m_ScrollItemScaler = GetComponent<ScrollItemScaler>();
-    }
+        if (augment == null) return;
 
-    public void ApplySelectedAugment()
-    {
-        if (m_ScrollItemScaler == null || m_ScrollItemScaler.SelectedItem == null) return;
-
-        var bit = m_ScrollItemScaler.SelectedItem.GetComponent<BindImageText>();
-        if (bit == null) return;
-
-        // [Logic] 제네릭 기반 데이터 추출 및 적용
-        var pureWeapon = bit.GetData<PureDataWeapon>();
-        if (pureWeapon != null)
+        // [Logic] 데이터 타입에 따른 분기 처리
+        if (augment is PureDataWeapon pureWeapon)
         {
             AddNewWeapon(pureWeapon);
         }
-        else
+        else if (augment is PureDataStatAbility pureStat)
         {
-            var pureStat = bit.GetData<PureDataStatAbility>();
-            if (pureStat != null)
-            {
-                ApplyStatAugment(pureStat);
-            }
-            else
-            {
-                var pureWeaponAbility = bit.GetData<PureDataWeaponAbility>();
-                if (pureWeaponAbility != null)
-                {
-                    ApplyWeaponAugment(pureWeaponAbility);
-                }
-            }
+            ApplyStatAugment(pureStat);
+        }
+        else if (augment is PureDataWeaponAbility pureWeaponAbility)
+        {
+            ApplyWeaponAugment(pureWeaponAbility);
         }
 
-        // UI 닫기
-        if (choiceUIView != null) choiceUIView.CloseUI();
+        Debug.Log($"[ChoiceApply] 증강 적용 완료: {augment.ID}");
     }
 
     private void AddNewWeapon(PureDataWeapon pureWeapon)

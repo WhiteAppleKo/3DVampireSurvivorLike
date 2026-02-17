@@ -43,6 +43,10 @@ namespace _02.Scripts.UI
         /// </summary>
         public void Bind(IBindableUIContent data)
         {
+            // Awake 순서 문제 해결을 위한 지연 할당
+            if (m_Image == null) m_Image = GetComponentInChildren<Image>();
+            if (m_TMPro == null) m_TMPro = GetComponentInChildren<TextMeshProUGUI>();
+
             m_CurrentContent = data;
             
             // 데이터가 없는 경우 초기화
@@ -53,10 +57,10 @@ namespace _02.Scripts.UI
                 return;
             }
 
-            // 텍스트 설정 (있을 때만)
+            // 텍스트 설정
             SetText(data.Name);
 
-            // 이미지 설정 (데이터에 아이콘이 있고, UI에 이미지 컴포넌트가 있을 때만)
+            // 이미지 설정
             if (data.Icon != null)
             {
                 SetImage(data.Icon);
@@ -64,7 +68,6 @@ namespace _02.Scripts.UI
             }
             else
             {
-                // 아이콘 데이터가 없으면 이미지 컴포넌트를 끄거나 투명하게 처리
                 if (m_Image != null) m_Image.enabled = false;
             }
         }
