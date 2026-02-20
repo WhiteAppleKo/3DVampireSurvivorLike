@@ -21,6 +21,16 @@ public class AutoAttack : MonoBehaviour, ISaveable
     private Dictionary<RuntimeDataWeapon, Weapon> m_WeaponInstances = new Dictionary<RuntimeDataWeapon, Weapon>();
     private CancellationTokenSource m_Cts;
 
+    private void Awake()
+    {
+        // [Bug Fix] 오직 플레이어의 AutoAttack만 세이브 시스템에 등록합니다.
+        // 적(Enemy)의 AutoAttack은 저장할 필요가 없으며, 등록 시 플레이어 데이터를 덮어씌우는 문제가 발생합니다.
+        if (GetComponentInParent<PlayerController>() != null)
+        {
+            ((ISaveable)this).RegistSaveAble();
+        }
+    }
+
     public void GameStart()
     {
         m_Inventory = new RuntimeDataInventory();
@@ -143,13 +153,44 @@ public class AutoAttack : MonoBehaviour, ISaveable
         
         // 2. 무기 정보 수집
         List<WeaponSaveData> weaponList = new List<WeaponSaveData>();
-        foreach (var weapon in m_WeaponInstances.Values)
+        Weapon[] activeWeapons = GetComponentsInChildren<Weapon>(true);
+        
+        Debug.Log($"[AutoAttack] === 세이브 시작 (무기 {activeWeapons.Length}개 발견) ===");
+
+        foreach (var weapon in activeWeapons)
         {
-            weaponList.Add(new WeaponSaveData(weapon.PureData.ID, new List<string>()));
+            if (weapon == null) continue;
+            
+            string weaponName = weapon.gameObject.name;
+            string pureDataID = (weapon.PureData != null) ? weapon.PureData.ID : "NULL";
+
+            // [정밀 로그] 어떤 무기 스크립트가 어떤 ID를 뱉고 있는지 확인
+            Debug.Log($"[AutoAttack] 발견된 무기: {weaponName} | 스크립트: {weapon.GetType().Name} | ID: {pureDataID}");
+
+            if (weapon.PureData != null)
+            {
+                // 중복 방지
+                bool isDuplicate = false;
+                foreach(var wData in weaponList)
+                {
+                    if(wData.weaponID == pureDataID)
+                    {
+                        isDuplicate = true;
+                        break;
+                    }
+                }
+                
+                if(!isDuplicate)
+                {
+                    weaponList.Add(new WeaponSaveData(pureDataID, new List<string>()));
+                    Debug.Log($"[AutoAttack] -> 저장 리스트에 추가됨: {pureDataID}");
+                }
+            }
         }
         
         AutoAttackerSaveData saveData = new AutoAttackerSaveData(augmentsID, weaponList);
         DataHub.Instance.SetWeaponData(saveData);
+        Debug.Log($"[AutoAttack] === 세이브 종료 (최종 {weaponList.Count}개 무기 저장됨) ===");
     }
 
     public void LoadData()

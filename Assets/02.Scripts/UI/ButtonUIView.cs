@@ -34,6 +34,7 @@ namespace _02.Scripts.UI
             if (targetButton == null) targetButton = GetComponent<Button>();
             if (contentBinder == null) contentBinder = GetComponent<BindImageText>();
             if (buttonPanel == null) buttonPanel = GetComponent<Title.ButtonPanel>();
+            if(contentBinder != null) contentBinder.ButtonAwake();
 
             // 클릭 이벤트 연결
             if (targetButton != null)

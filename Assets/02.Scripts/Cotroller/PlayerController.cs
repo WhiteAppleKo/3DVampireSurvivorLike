@@ -52,9 +52,6 @@ public class PlayerController : Controller, ISaveable
 
         // 2. 그 다음 로직 시작
         autoAttacker.GameStart();
-        
-        LoadData();
-        autoAttacker.LoadData();
     }
 
     protected override void OnEnable()

@@ -11,10 +11,17 @@ namespace _02.Scripts.UI.Title
     [ExecuteAlways]
     public class ButtonPanel : ImmediateModePanel, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
     {
+        public enum SizeMode { Fill, Fixed, AspectRatio }
+
         [Header("외형 설정")]
         public float cornerRadius = 12f;
         public float thickness = 4f;
         public float padding = 4f;
+
+        [Header("크기 및 비율 설정")]
+        public SizeMode sizeMode = SizeMode.Fill;
+        public Vector2 fixedSize = new Vector2(200, 60);
+        public float aspectRatio = 1.0f; // AspectRatio 모드에서 사용 (가로/세로)
 
         [Header("색상 설정")]
         [ColorUsage(true, true)] public Color normalColor = Color.white;
@@ -118,14 +125,26 @@ namespace _02.Scripts.UI.Title
             m_CurrentColor = Color.Lerp(m_CurrentColor, m_TargetColor, Time.unscaledDeltaTime * lerpSpeed);
             m_CurrentScale = Vector3.Lerp(m_CurrentScale, m_TargetScale, Time.unscaledDeltaTime * lerpSpeed);
 
-            // 3. 크기 변형 적용
-            // Shapes의 Draw는 현재 Matrix의 영향을 받으므로 크기 조절을 위해 영역을 계산합니다.
+            // 3. 크기 및 위치 계산
             Rect drawRect = Inset(rect, padding);
+            Vector2 finalSize = drawRect.size;
+
+            if (sizeMode == SizeMode.Fixed)
+            {
+                finalSize = fixedSize;
+            }
+            else if (sizeMode == SizeMode.AspectRatio)
+            {
+                // Rect의 가로를 기준으로 세로 비율을 맞춤
+                finalSize.y = finalSize.x / aspectRatio;
+            }
+
+            // 스케일 애니메이션 적용
+            finalSize *= m_CurrentScale.x;
             
-            // 중앙 기준 스케일 적용을 위해 Rect 위치 조정
+            // 중앙 기준 Rect 생성
             Vector2 center = drawRect.center;
-            Vector2 size = drawRect.size * m_CurrentScale.x;
-            Rect scaledRect = new Rect(center.x - size.x * 0.5f, center.y - size.y * 0.5f, size.x, size.y);
+            Rect scaledRect = new Rect(center.x - finalSize.x * 0.5f, center.y - finalSize.y * 0.5f, finalSize.x, finalSize.y);
 
             // 4. 그리기
             Draw.Rectangle(scaledRect, cornerRadius * m_CurrentScale.x, backgroundColor);

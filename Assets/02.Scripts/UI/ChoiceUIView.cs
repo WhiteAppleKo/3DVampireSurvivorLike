@@ -11,9 +11,30 @@ namespace _02.Scripts.UI
     /// </summary>
     public class ChoiceUIView : BaseHybridScrollUIView
     {
+        [Header("Choice Specific UI")]
+        [SerializeField] private DescriptionUIView descriptionView;
+
         protected override void Start()
         {
             base.Start();
+
+            // 포커스 변경 이벤트 구독
+            OnFocusChanged += UpdateDescription;
+            if(gameObject.activeSelf) gameObject.SetActive(false);
+        }
+
+        private void UpdateDescription(int index)
+        {
+            if (descriptionView == null) return;
+
+            if (index >= 0 && index < buttons.Count)
+            {
+                var selectedButton = buttons[index];
+                if (selectedButton != null && selectedButton.gameObject.activeSelf)
+                {
+                    descriptionView.Bind(selectedButton.CurrentContent);
+                }
+            }
         }
 
         /// <summary>
@@ -44,6 +65,9 @@ namespace _02.Scripts.UI
             // 2. 초기 스크롤 위치 설정 (중앙)
             m_TargetScrollPos = (choices.Count - 1) * 0.5f;
             m_CurrentScrollPos = m_TargetScrollPos;
+
+            // 초기 설명 갱신
+            UpdateDescription(Mathf.RoundToInt(m_CurrentScrollPos));
 
             // 3. 시간 정지 및 UI 활성화
             TimeScaleManager.Instance.SetTimeScale(0);

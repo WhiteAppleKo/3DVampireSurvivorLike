@@ -173,6 +173,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.Title.TitleButtonUIView
   defaultData: {fileID: 11400000, guid: 04826c693393c5b44b7ee695309f1704, type: 2}
+  applyOnClicked: 1
   contentBinder: {fileID: 0}
   targetButton: {fileID: 0}
   buttonPanel: {fileID: 0}
@@ -191,6 +192,9 @@ MonoBehaviour:
   cornerRadius: 6.8
   thickness: 4
   padding: 0
+  sizeMode: 0
+  fixedSize: {x: 200, y: 60}
+  aspectRatio: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0, g: 1, b: 1, a: 1}
   pressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -262,6 +266,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c52f65dce730c8448cc9ed8964f40dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.BindImageText
+  m_Image: {fileID: 0}
+  m_TitleText: {fileID: 0}
+  m_DescriptionText: {fileID: 0}
 --- !u!1 &66458503
 GameObject:
   m_ObjectHideFlags: 0
@@ -997,6 +1004,9 @@ MonoBehaviour:
   cornerRadius: 6.8
   thickness: 4
   padding: 0
+  sizeMode: 0
+  fixedSize: {x: 200, y: 60}
+  aspectRatio: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0, g: 1, b: 1, a: 1}
   pressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -1069,6 +1079,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.Title.TitleButtonUIView
   defaultData: {fileID: 11400000, guid: 33665bc83efa422488012b71d59925cf, type: 2}
+  applyOnClicked: 1
   contentBinder: {fileID: 0}
   targetButton: {fileID: 0}
   buttonPanel: {fileID: 0}
@@ -1084,6 +1095,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c52f65dce730c8448cc9ed8964f40dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.BindImageText
+  m_Image: {fileID: 0}
+  m_TitleText: {fileID: 122274615}
+  m_DescriptionText: {fileID: 0}
 --- !u!1 &555100052
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,7 +1118,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &555100053
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1137,6 +1151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c52f65dce730c8448cc9ed8964f40dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.BindImageText
+  m_Image: {fileID: 0}
+  m_TitleText: {fileID: 0}
+  m_DescriptionText: {fileID: 0}
 --- !u!114 &555100055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1150,6 +1167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.Title.TitleButtonUIView
   defaultData: {fileID: 11400000, guid: bd835744820773f4cbd30562c5221fcd, type: 2}
+  applyOnClicked: 1
   contentBinder: {fileID: 0}
   targetButton: {fileID: 0}
   buttonPanel: {fileID: 0}
@@ -1168,6 +1186,9 @@ MonoBehaviour:
   cornerRadius: 6.8
   thickness: 4
   padding: 0
+  sizeMode: 0
+  fixedSize: {x: 200, y: 60}
+  aspectRatio: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0, g: 1, b: 1, a: 1}
   pressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -1392,6 +1413,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.Title.TitleButtonUIView
   defaultData: {fileID: 11400000, guid: 14c2172b64f221d4a96186e3a8c3c0aa, type: 2}
+  applyOnClicked: 1
   contentBinder: {fileID: 0}
   targetButton: {fileID: 0}
   buttonPanel: {fileID: 0}
@@ -1410,6 +1432,9 @@ MonoBehaviour:
   cornerRadius: 6.8
   thickness: 4
   padding: 0
+  sizeMode: 0
+  fixedSize: {x: 200, y: 60}
+  aspectRatio: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0, g: 1, b: 1, a: 1}
   pressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -1481,6 +1506,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c52f65dce730c8448cc9ed8964f40dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.BindImageText
+  m_Image: {fileID: 0}
+  m_TitleText: {fileID: 0}
+  m_DescriptionText: {fileID: 0}
 --- !u!1 &844687713
 GameObject:
   m_ObjectHideFlags: 0
@@ -2015,6 +2043,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.Title.TitleButtonUIView
   defaultData: {fileID: 11400000, guid: e7dd257e205be4b4b964cf9bf03e8db5, type: 2}
+  applyOnClicked: 1
   contentBinder: {fileID: 0}
   targetButton: {fileID: 0}
   buttonPanel: {fileID: 0}
@@ -2033,6 +2062,9 @@ MonoBehaviour:
   cornerRadius: 6.8
   thickness: 4
   padding: 0
+  sizeMode: 0
+  fixedSize: {x: 200, y: 60}
+  aspectRatio: 1
   normalColor: {r: 1, g: 1, b: 1, a: 1}
   hoverColor: {r: 0, g: 1, b: 1, a: 1}
   pressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -2104,6 +2136,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c52f65dce730c8448cc9ed8964f40dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.UI.BindImageText
+  m_Image: {fileID: 0}
+  m_TitleText: {fileID: 0}
+  m_DescriptionText: {fileID: 0}
 --- !u!1 &2100761361
 GameObject:
   m_ObjectHideFlags: 0

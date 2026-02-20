@@ -1,11 +1,12 @@
 using _02.Scripts.Managers.Spawn;
+using _02.Scripts.Managers.Save; // ISaveable 참조 추가
 using Features.Stage;
 using Shapes;
 using UnityEngine;
 
 namespace _02.Scripts.Managers.Stage
 {
-    public class StageManager : SingletoneBase<StageManager>
+    public class StageManager : SingletoneBase<StageManager>, ISaveable
     {
         [Header("Stage Settings")]
         public float stageTimeLimit = 300f; // 5분
@@ -18,23 +19,16 @@ namespace _02.Scripts.Managers.Stage
         public float ElapsedTime { get; private set; }
         public System.Action<float> OnTimeChanged;
 
+        protected override void Awake()
+        {
+            base.Awake();
+            ((ISaveable)this).RegistSaveAble();
+        }
+
         private void Start()
         {
-            Debug.Log($"[StageManager] 스테이지 시스템 시작. 현재 스테이지: {currentStage}, 제한 시간: {stageTimeLimit}초");
-            currentStage = DataHub.Instance.GetCurrentStageData();
-            
-            var stageData = GetStageInformation(currentStage);
-            if (stageData != null)
-            {
-                spawnManager.StartNewStage(stageData);
-                
-                // [추가] 게임 시작 시 첫 무기 선택 UI 팝업
-                if (currentStage == 1 && ExpManager.Instance != null)
-                {
-                    ExpManager.Instance.ChoiceFirstWeapon();
-                }
-            }
-            
+            // [Timing Fix] Start에서 즉시 시작하지 않고, LoadData()가 완료될 때까지 기다립니다.
+            // DataHub가 한 프레임 뒤에 RestoreAll()을 호출해줄 것입니다.
             ResetTimer();
         }
 
@@ -59,9 +53,23 @@ namespace _02.Scripts.Managers.Stage
             OnTimeChanged?.Invoke(ElapsedTime);
         }
 
+        private void StartCurrentStage()
+        {
+            Debug.Log($"[StageManager] === 실제 스테이지 시작 시도: {currentStage} ===");
+            var stageData = GetStageInformation(currentStage);
+            if (stageData != null)
+            {
+                spawnManager.StartNewStage(stageData);
+            }
+            else
+            {
+                Debug.LogError($"[StageManager] 스테이지 {currentStage} 정보를 데이터베이스에서 찾을 수 없습니다!");
+            }
+        }
+
         private void CompleteStage()
         {
-            Debug.Log($"[StageManager] 스테이지 {currentStage} 완료!");
+            Debug.Log($"[StageManager] 스테이지 {currentStage} 완료! 다음 스테이지로 넘어갑니다.");
 
             currentStage++;
             var nextStage = GetStageInformation(currentStage);
@@ -72,7 +80,7 @@ namespace _02.Scripts.Managers.Stage
             }
 
             ResetTimer();
-            Debug.Log("[StageManager] 타이머가 초기화되었습니다.");
+            Debug.Log("[StageManager] 타이머 초기화 완료.");
 
             AutoSave();
 
@@ -81,8 +89,8 @@ namespace _02.Scripts.Managers.Stage
 
         private void AutoSave()
         {
+            Debug.Log($"[StageManager] 자동 저장 프로세스 개시. 현재 스테이지: {currentStage}");
             DataHub.Instance.SaveGame();
-            Debug.Log($"[StageManager] 스테이지 {currentStage} 데이터 자동 저장 완료.");
         }
 
         private void ShowAugmentSelection()
@@ -111,7 +119,7 @@ namespace _02.Scripts.Managers.Stage
 
             if (stageData != null)
             {
-                Debug.Log($"[StageManager] 스테이지({stageIndex}) 정보 로드 완료: {stageData.name}");
+                Debug.Log($"[StageManager] 스테이지({stageIndex}) 정보 조회 완료: {stageData.name}");
                 return stageData;
             }
             else
@@ -120,5 +128,37 @@ namespace _02.Scripts.Managers.Stage
                 return null;
             }
         }
+
+        #region 세이브 및 로드 (ISaveable 구현)
+        public void SaveData()
+        {
+            // DataHub의 CurrentSaveData 필드를 직접 갱신합니다.
+            if (DataHub.Instance.CurrentSaveData != null)
+            {
+                DataHub.Instance.CurrentSaveData.currentStage = currentStage;
+                Debug.Log($"[StageManager] SaveData 성공: DataHub.currentStage를 {currentStage}로 갱신함.");
+            }
+            else
+            {
+                Debug.LogError("[StageManager] SaveData 실패: DataHub.CurrentSaveData가 Null입니다!");
+            }
+        }
+
+        public void LoadData()
+        {
+            int loadedStage = DataHub.Instance.GetCurrentStageData();
+            Debug.Log($"[StageManager] LoadData 호출: DataHub로부터 {loadedStage} 받아옴. (현재값: {currentStage})");
+            currentStage = loadedStage;
+        }
+
+        /// <summary>
+        /// FlowManager에 의해 호출되는 게임 시작 지점입니다.
+        /// </summary>
+        public void StartStageByFlow()
+        {
+            Debug.Log($"[StageManager] FlowManager 시작 신호 수신. 최종 스테이지: {currentStage}");
+            StartCurrentStage();
+        }
+        #endregion
     }
 }

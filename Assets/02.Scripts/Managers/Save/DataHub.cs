@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using _02.Scripts.AutoAttack;
@@ -33,6 +34,42 @@ public class DataHub : SingletoneBase<DataHub>
         LoadGame();
     }
 
+    private void OnEnable()
+    {
+        // FlowManager에서 호출할 것이므로 씬 로드 이벤트 구독 제거
+    }
+
+    private void OnDisable()
+    {
+        // FlowManager에서 호출할 것이므로 씬 로드 이벤트 구독 제거
+    }
+
+    // [Refactor] FlowManager에서 명시적으로 호출합니다.
+    public void RestoreAll()
+    {
+        Debug.Log($"[DataHub] 데이터 복구 프로세스 시작 (등록된 객체: {saveList.Count}개)");
+        CleanupSaveList();
+        
+        for (int i = 0; i < saveList.Count; i++)
+        {
+            if (saveList[i] != null && (!(saveList[i] is Object obj) || obj != null))
+            {
+                saveList[i].LoadData();
+            }
+        }
+    }
+
+    private void CleanupSaveList()
+    {
+        for (int i = saveList.Count - 1; i >= 0; i--)
+        {
+            if (saveList[i] == null || (saveList[i] is Object obj && obj == null))
+            {
+                saveList.RemoveAt(i);
+            }
+        }
+    }
+
     // --- 데이터 조회 헬퍼 메서드 ---
     public Features.Weapon.PureDataWeapon GetWeaponData(string id) => weaponDatabase?.GetData(id);
     public Features.Augment.PureDataWeaponAbility GetWeaponAbilityData(string id) => weaponAbilityDatabase?.GetData(id);
@@ -50,7 +87,7 @@ public class DataHub : SingletoneBase<DataHub>
         try
         {
             m_SaveSystem.Save(SAVE_FILE_NAME, CurrentSaveData);
-            Debug.Log($"[DataHub] 게임 저장 완료.");
+            Debug.Log($"[DataHub] 게임 저장 완료. (저장된 스테이지: {CurrentSaveData.currentStage})");
         }
         catch (System.Exception e)
         {
@@ -68,7 +105,7 @@ public class DataHub : SingletoneBase<DataHub>
             try
             {
                 CurrentSaveData = m_SaveSystem.Load<GameSaveData>(SAVE_FILE_NAME);
-                Debug.Log("[DataHub] 데이터 로드 성공.");
+                Debug.Log($"[DataHub] 데이터 로드 성공. (불러온 스테이지: {CurrentSaveData.currentStage})");
             }
             catch (System.Exception e)
             {
@@ -104,7 +141,11 @@ public class DataHub : SingletoneBase<DataHub>
     }
     public void RegistSaveData(ISaveable saveableData)
     {
-        saveList.Add(saveableData);
+        // 중복 등록 방지
+        if (!saveList.Contains(saveableData))
+        {
+            saveList.Add(saveableData);
+        }
     }
 
     public void SetPlayerData(PlayerSaveData saveData)

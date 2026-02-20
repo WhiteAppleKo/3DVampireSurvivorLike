@@ -20,19 +20,27 @@ namespace _02.Scripts.UI
 
         protected float m_TargetScrollPos = 0f;
         protected float m_CurrentScrollPos = 0f;
+        protected int m_LastFocusedIndex = -1; 
         protected Vector2 m_LastMousePos;
         protected bool m_IsDragging = false;
         protected bool m_IsActive = true; 
+
+        public System.Action<int> OnFocusChanged;
 
         protected virtual void Start()
         {
             InitializeButtons();
 
+            m_LastFocusedIndex = Mathf.RoundToInt(m_CurrentScrollPos);
+
+            // [수정] 여기서 직접 리스너를 달면 ButtonUIView의 applyOnClicked 설정을 무시하고 무조건 실행됩니다.
+            // 따라서 이 중복 리스너를 제거합니다. 버튼 클릭 로직은 각 ButtonUIView에서 관리합니다.
+            /*
             if (confirmButton != null)
             {
-                confirmButton.onClick.RemoveAllListeners();
                 confirmButton.onClick.AddListener(ConfirmSelection);
             }
+            */
 
             if (mainPanel != null)
             {
@@ -119,12 +127,16 @@ namespace _02.Scripts.UI
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                // [수정 핵심] 드래그 중이었을 때만 목표 지점을 현재 위치로 스냅합니다.
-                // 버튼 클릭에 의한 TargetScrollPos 변경을 보호합니다.
+                // [수정] 실제로 드래그 이동이 발생했을 때만 스냅합니다.
+                // 단순 클릭 시에는 HandleButtonClick에서 설정한 TargetScrollPos를 유지해야 합니다.
                 if (m_IsDragging)
                 {
                     m_IsDragging = false;
-                    m_TargetScrollPos = Mathf.RoundToInt(m_CurrentScrollPos);
+                    // 드래그 거리가 거의 없다면 스냅하지 않음 (클릭 보호)
+                    if (Mathf.Abs(m_CurrentScrollPos - m_TargetScrollPos) > 0.05f)
+                    {
+                        m_TargetScrollPos = Mathf.RoundToInt(m_CurrentScrollPos);
+                    }
                 }
             }
 
@@ -140,6 +152,17 @@ namespace _02.Scripts.UI
             if (buttons == null) return;
             
             bool isMoving = m_IsDragging || Mathf.Abs(m_CurrentScrollPos - m_TargetScrollPos) > 0.01f;
+            int currentFocusedIndex = Mathf.RoundToInt(m_CurrentScrollPos);
+
+            // [추가] 포커스된 인덱스가 변경되면 이벤트 알림
+            if (currentFocusedIndex != m_LastFocusedIndex)
+            {
+                m_LastFocusedIndex = currentFocusedIndex;
+                if (currentFocusedIndex >= 0 && currentFocusedIndex < buttons.Count)
+                {
+                    OnFocusChanged?.Invoke(currentFocusedIndex);
+                }
+            }
 
             for (int i = 0; i < buttons.Count; i++)
             {
