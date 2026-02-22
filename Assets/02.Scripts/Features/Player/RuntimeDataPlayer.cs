@@ -19,6 +19,7 @@ namespace Features.Player
         public int MaxHp { get; private set; }
         public float MoveSpeed { get; private set; }
         public LayerMask TargetLayer => PureData.TargetLayer;
+        public bool IsDead => CurrentHp <= 0;
 
         // 증강 누적 데이터
         private int _maxHpAdded = 0;
@@ -32,6 +33,7 @@ namespace Features.Player
         public event Action<int, int> OnHpChanged; // (current, max)
         public event Action<int, int> OnExpChanged; // (current, max)
         public event Action<int> OnLevelUp;
+        public event Action OnDead;
 
         public RuntimeDataPlayer(PureDataPlayer pureData)
         {
@@ -145,8 +147,15 @@ namespace Features.Player
 
         public void TakeDamage(int damage)
         {
+            if (IsDead) return;
+
             CurrentHp = Math.Max(0, CurrentHp - damage);
             OnHpChanged?.Invoke(CurrentHp, MaxHp);
+
+            if (IsDead)
+            {
+                OnDead?.Invoke();
+            }
         }
 
         public void Heal(int amount)

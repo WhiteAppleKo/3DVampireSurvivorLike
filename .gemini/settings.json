@@ -1,6 +1,5 @@
 {
   "general": {
-    "disableAutoUpdate": true,
     "previewFeatures": true,
     "enableAutoUpdate": false
   }

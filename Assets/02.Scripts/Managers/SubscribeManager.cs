@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using _02.Scripts.Cotroller;
+using _02.Scripts.Managers;
 using _02.Scripts.Managers.Choice;
 using _02.Scripts.UI;
 using Shapes;
@@ -52,6 +53,12 @@ public class SubscribeManager : SingletoneBase<SubscribeManager>
         if (choiceSystem != null)
         {
             choiceSystem.Bind(model);
+        }
+
+        // [New] ResultUIManager 바인딩
+        if (ResultUIManager.Instance != null)
+        {
+            ResultUIManager.Instance.Bind(model);
         }
 
         // 로직 시스템 관련 이벤트 구독

@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 namespace _02.Scripts.UI.Title
 {
     [CreateAssetMenu(fileName = "Button_NewGame", menuName = "PureData/Buttons/NewGame")]
-    public class TitleButton_NewGame : PureDataButton
+    public class TitleButton_LoadScene : PureDataButton
     {
         [Header("Scene Settings")]
         [SerializeField] private string targetScene = "TestScene";
