@@ -108,7 +108,17 @@ namespace _02.Scripts.Managers.Choice
         private PureDataAugment GetRandomWeapon()
         {
             if (weaponDB == null || weaponDB.WeaponList.Count == 0) return null;
-            return weaponDB.WeaponList[UnityEngine.Random.Range(0, weaponDB.WeaponList.Count)] as PureDataAugment;
+            
+            // IsPlayerSkill이 true인 무기들만 필터링
+            var playerSkills = weaponDB.WeaponList.FindAll(w => w.IsPlayerSkill);
+            
+            if (playerSkills.Count == 0)
+            {
+                Debug.LogWarning("[ChoiceSystem] 플레이어용 무기(IsPlayerSkill=true)를 찾을 수 없습니다.");
+                return null;
+            }
+
+            return playerSkills[UnityEngine.Random.Range(0, playerSkills.Count)] as PureDataAugment;
         }
     }
 }

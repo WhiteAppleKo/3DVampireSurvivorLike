@@ -611,8 +611,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a3e592f10ca4f94cae148e12b865c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_02.Scripts.AutoAttack.Charge.ChargeDashWeapon
-  pureData: {fileID: 11400000, guid: 907b390cb0e50b34fa1b84b1a0efb54f, type: 2}
-  audioSource: {fileID: 0}
+  pureData: {fileID: 11400000, guid: ced642189b54e004f96f7b4d8d7ee9c7, type: 2}
   triangle: {fileID: 8239930257364702836}
   dashDuration: 2
   hitRadius: 1
@@ -770,3 +769,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593e5c737ac93f84cbf0fa965e18b4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoAttack
+  m_VisualTheme:
+    themeColor: {r: 0, g: 0, b: 0, a: 0}
+    effectColor: {r: 0, g: 0, b: 0, a: 0}

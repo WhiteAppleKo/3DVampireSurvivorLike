@@ -63,6 +63,7 @@ public class SubscribeManager : SingletoneBase<SubscribeManager>
 
         // 로직 시스템 관련 이벤트 구독
         model.OnLevelUp += OnLevelUp;
+        model.OnDead += OnPlayerDead;
     }
     
     private void UnSubScribe()
@@ -70,10 +71,26 @@ public class SubscribeManager : SingletoneBase<SubscribeManager>
         if (playerController == null || playerController.Model == null) return;
 
         playerController.Model.OnLevelUp -= OnLevelUp;
+        playerController.Model.OnDead -= OnPlayerDead;
     }
     
     private void OnLevelUp(int newLevel)
     {
         ExpManager.Instance?.PlayerLevelUp();
+        
+        // 레벨업 사운드 재생 (2D)
+        if (playerController.Model.PureData.LevelUpSound != null)
+        {
+            AudioManager.Instance?.Play2D(playerController.Model.PureData.LevelUpSound);
+        }
+    }
+
+    private void OnPlayerDead()
+    {
+        // 사망 사운드 재생 (2D)
+        if (playerController.Model.PureData.DeathSound != null)
+        {
+            AudioManager.Instance?.Play2D(playerController.Model.PureData.DeathSound);
+        }
     }
 }

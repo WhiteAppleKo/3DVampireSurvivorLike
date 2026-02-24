@@ -37,7 +37,7 @@ namespace _02.Scripts.AutoAttack.Editor
                 if (string.IsNullOrWhiteSpace(lines[i])) continue;
 
                 string[] data = lines[i].Split(',');
-                if (data.Length < 9) continue;
+                if (data.Length < 10) continue;
 
                 string id = data[0].Trim();
                 if (string.IsNullOrEmpty(id)) continue;
@@ -50,6 +50,10 @@ namespace _02.Scripts.AutoAttack.Editor
                 int projCount = int.Parse(data[6].Trim());
                 int iconNum = int.Parse(data[7].Trim());
                 string desc = data[8].Trim();
+                
+                // IsPlayerSkill 파싱 (TRUE, 1, YES 등을 true로 간주)
+                string playerSkillStr = data[9].Trim().ToUpper();
+                bool isPlayerSkill = playerSkillStr == "TRUE" || playerSkillStr == "1" || playerSkillStr == "YES";
 
                 string assetPath = $"{m_PureDataPath}/PureDataWeapon_{id}_{weaponName}.asset";
                 PureDataWeapon pureData = AssetDatabase.LoadAssetAtPath<PureDataWeapon>(assetPath);
@@ -68,6 +72,7 @@ namespace _02.Scripts.AutoAttack.Editor
                 pureData.ProjectileCount = projCount;
                 pureData.IconNumber = iconNum;
                 pureData.Description = desc;
+                pureData.IsPlayerSkill = isPlayerSkill;
 
                 string prefabPath = m_WeaponPrefabPath + $"Weapon_{id}.prefab";
                 GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);

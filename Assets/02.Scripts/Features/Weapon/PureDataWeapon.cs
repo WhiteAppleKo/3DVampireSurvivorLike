@@ -12,6 +12,7 @@ namespace Features.Weapon
         [field: SerializeField] public int ProjectileCount { get; set; }
         [field: SerializeField] public GameObject Prefab { get; set; }
         [field: SerializeField] public AudioClip AttackSound { get; set; }
+        [field: SerializeField] public bool IsPlayerSkill { get; set; }
 
         public override void Apply()
         {

@@ -55,6 +55,9 @@ namespace _02.Scripts.Managers
 
         private void OnDamageProcessed(BattleManager.DamageEventStruct damageEvent)
         {
+            // 플레이어가 가한 대미지만 기록
+            if (damageEvent.sender == null || damageEvent.sender != BattleManager.Instance.player) return;
+
             // 무기가 가한 대미지만 기록 (플레이어 본체 몸박 등도 포함 가능)
             if (damageEvent.senderWeapon == null) return;
 

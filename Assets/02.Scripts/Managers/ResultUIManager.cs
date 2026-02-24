@@ -25,13 +25,33 @@ namespace _02.Scripts.Managers
         [SerializeField] private Button restartButton;
         [SerializeField] private Button mainMenuButton;
 
+        [Header("Audio")]
+        [SerializeField] private AudioClip buttonClickSound;
+
+        private RuntimeDataPlayer _playerModel;
+        private long _runEarnedPoints = 0;
+
         protected override void Awake()
         {
             base.Awake();
             if (resultCanvas != null) resultCanvas.SetActive(false);
 
-            if (restartButton != null) restartButton.onClick.AddListener(RestartGame);
-            if (mainMenuButton != null) mainMenuButton.onClick.AddListener(GoToMainMenu);
+            if (restartButton != null) restartButton.onClick.AddListener(() => {
+                PlayClickSound();
+                RestartGame();
+            });
+            if (mainMenuButton != null) mainMenuButton.onClick.AddListener(() => {
+                PlayClickSound();
+                GoToMainMenu();
+            });
+        }
+
+        private void PlayClickSound()
+        {
+            if (buttonClickSound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.Play2D(buttonClickSound);
+            }
         }
 
         /// <summary>
@@ -40,6 +60,7 @@ namespace _02.Scripts.Managers
         public void Bind(RuntimeDataPlayer model)
         {
             if (model == null) return;
+            _playerModel = model;
             model.OnDead += ShowResult;
         }
 
@@ -51,26 +72,32 @@ namespace _02.Scripts.Managers
                 return;
             }
 
-            // 1. 게임 일시정지
+            // 1. 포인트 정산 (계정 데이터 업데이트)
+            if (_playerModel != null && AccountManager.Instance != null)
+            {
+                _runEarnedPoints = AccountManager.Instance.AddPointsFromRun(_playerModel.CurrentLevel);
+            }
+
+            // 2. 게임 일시정지
             TimeScaleManager.Instance.SetTimeScale(0);
             
-            // 2. 데이터 채우기
+            // 3. 데이터 채우기
             PopulateStats();
 
-            // 3. UI 활성화
+            // 4. UI 활성화
             resultCanvas.SetActive(true);
             
-            // 4. 마우스 커서 활성화
+            // 5. 마우스 커서 활성화
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
 
         private void PopulateStats()
         {
-            // 포인트 표시 (기본값 0)
-            if (totalPointsText != null)
+            // 포인트 표시
+            if (totalPointsText != null && AccountManager.Instance != null)
             {
-                totalPointsText.text = $"Total Points: {BattleStatisticsManager.Instance.TotalPoints}";
+                totalPointsText.text = $"Run Points: {_runEarnedPoints:N0}\nTotal Account Points: {AccountManager.Instance.TotalPoints:N0}";
             }
 
             // 기존 리스트 아이템 제거

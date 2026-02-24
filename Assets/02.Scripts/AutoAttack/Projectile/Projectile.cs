@@ -3,6 +3,7 @@ using System.Collections;
 using _02.Scripts.AutoAttack;
 using _02.Scripts.Cotroller;
 using Features.Projectile;
+using Shapes;
 using UnityEngine;
 
 // [L] Logic System for Projectile
@@ -48,11 +49,25 @@ public class Projectile : MonoBehaviour
         if (visualizer != null) visualizer.OnTriggerEnterEvent -= HandleCollision;
     }
 
-    public void ProjectileSetting(Controller controller, Weapon weapon, LayerMask layer)
+    public void ProjectileSetting(Controller controller, Weapon weapon, LayerMask layer, Color themeColor)
     {
         ownerController = controller;
         ownerWeapon = weapon;
         targetLayer = layer;
+
+        SetThemeColor(themeColor);
+    }
+
+    /// <summary>
+    /// 런타임 중 테마 색상을 동적으로 업데이트합니다.
+    /// </summary>
+    public void SetThemeColor(Color themeColor)
+    {
+        var rects = GetComponentsInChildren<Rectangle>();
+        foreach (var rect in rects)
+        {
+            rect.Color = themeColor;
+        }
     }
 
     public void SetTarget(GameObject target)

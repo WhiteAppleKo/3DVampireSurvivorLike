@@ -57,6 +57,10 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
     public CompareFunction zTest = CompareFunction.LessEqual; // 깊이 테스트 설정
     public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingTransparents; // 렌더링 타이밍
 
+    [Header("시각 효과 강도")]
+    [Range(0f, 1f)]
+    public float explosionFlashIntensity = 0.2f; // 폭발 중앙 플래시의 투명도 계수
+
     // --- 차징(기 모으기) 로직 관련 데이터 구조 ---
     private class ChargeInstance
     {
@@ -65,16 +69,29 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
         public float duration; // 총 차징 시간
         public float timer; // 현재 경과 시간
         public LayerMask layer; // 완료 후 감지할 레이어
+        public Color color; // 차징 효과 색상
         public System.Action<List<Collider>> onComplete; // 완료 시 실행할 콜백 함수
+    }
+
+    // --- 폭발 시각 효과 관련 데이터 구조 ---
+    private class ExplosionInstance
+    {
+        public Vector3 center;
+        public int range; // 그리드 칸 수 기반 범위
+        public float duration;
+        public float timer;
+        public Color color;
     }
 
     // 현재 진행 중인 모든 차징 효과 리스트
     private List<ChargeInstance> activeCharges = new List<ChargeInstance>();
+    // 현재 진행 중인 모든 폭발 효과 리스트
+    private List<ExplosionInstance> activeExplosions = new List<ExplosionInstance>();
 
     /// <summary>
     /// 특정 범위에 차징 효과를 시작하고, 시간이 다 되면 적을 감지하여 콜백을 호출합니다.
     /// </summary>
-    public void StartCharge(Vector3 center, int range, float duration, LayerMask layer, System.Action<List<Collider>> onComplete)
+    public void StartCharge(Vector3 center, int range, float duration, LayerMask layer, System.Action<List<Collider>> onComplete, Color? color = null)
     {
         activeCharges.Add(new ChargeInstance 
         { 
@@ -83,7 +100,23 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
             duration = duration, 
             timer = 0f, 
             layer = layer,
+            color = color ?? chargeColor, // 전달된 색상이 없으면 기본 전역 설정값 사용
             onComplete = onComplete 
+        });
+    }
+
+    /// <summary>
+    /// Shapes를 사용한 시각적 폭발 효과를 시작합니다. (그리드 칸 수 기반)
+    /// </summary>
+    public void StartExplosion(Vector3 center, int range, Color color, float duration = 0.5f)
+    {
+        activeExplosions.Add(new ExplosionInstance
+        {
+            center = center,
+            range = range,
+            duration = duration,
+            timer = 0f,
+            color = color
         });
     }
 
@@ -92,20 +125,27 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
         // 에디터 모드가 아닌 실제 게임 실행 중에만 타이머 작동
         //if (!Application.isPlaying) return;
 
+        // 차징 타이머 업데이트
         for (int i = activeCharges.Count - 1; i >= 0; i--)
         {
             var charge = activeCharges[i];
             charge.timer += Time.deltaTime;
 
-            // 차징 시간이 완료되었을 때
             if (charge.timer >= charge.duration)
             {
-                // 설정된 범위 내의 타겟들을 스캔
                 var targets = ScanTargets(charge.center, charge.range, charge.layer);
-                // 등록된 함수 실행 (예: 데미지 입히기)
                 charge.onComplete?.Invoke(targets);
-                // 리스트에서 제거
                 activeCharges.RemoveAt(i);
+            }
+        }
+
+        // 폭발 타이머 업데이트
+        for (int i = activeExplosions.Count - 1; i >= 0; i--)
+        {
+            activeExplosions[i].timer += Time.deltaTime;
+            if (activeExplosions[i].timer >= activeExplosions[i].duration)
+            {
+                activeExplosions.RemoveAt(i);
             }
         }
     }
@@ -270,7 +310,7 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
                     float progress = Mathf.Clamp01(charge.timer / charge.duration);
                     
                     // 진행도에 따라 색상이 진해짐
-                    Color cColor = chargeColor; 
+                    Color cColor = charge.color; 
                     cColor.a = 0.5f + (progress * 0.5f);
 
                     // 테두리 두께가 0에서 반지름까지 커지며 중앙을 메움
@@ -304,6 +344,59 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
 
                             // 차징 진행 효과 (점점 두꺼워지는 테두리)
                             Draw.RegularPolygonBorder(pPos, hexRot, 6, adjustRadius, currentThickness, cColor);
+                        }
+                    }
+                }
+            }
+
+            // --- 3. 폭발 시각 효과 그리기 ---
+            if (activeExplosions.Count > 0)
+            {
+                Draw.ZTest = CompareFunction.Always;
+
+                foreach (var exp in activeExplosions)
+                {
+                    float progress = Mathf.Clamp01(exp.timer / exp.duration);
+                    float easedProgress = 1f - Mathf.Pow(1f - progress, 3); // Ease Out Cubic
+                    float fade = 1f - progress;
+
+                    Color expColor = exp.color;
+                    expColor.a *= fade;
+                    
+                    Color flashColor = exp.color;
+                    flashColor.a *= (fade * 0.5f);
+
+                    Vector3Int cCube = WorldToCube(exp.center);
+                    int N = exp.range;
+
+                    // 범위 내의 모든 육각형 타일을 순회하며 개별 효과 출력
+                    for (int q = -N; q <= N; q++)
+                    {
+                        int r1 = Mathf.Max(-N, -q - N);
+                        int r2 = Mathf.Min(N, -q + N);
+                        for (int r = r1; r <= r2; r++)
+                        {
+                            Vector3Int currentCube = cCube + new Vector3Int(q, -q - r, r);
+                            
+                            // 타일 위치 계산
+                            Vector2Int offset = CubeToOffset(currentCube);
+                            int col = offset.x;
+                            int row = offset.y;
+                            
+                            float rowOffset = (row % 2 != 0) ? width * 0.5f : 0f;
+                            float pX = col * width + rowOffset;
+                            float pZ = row * height;
+                            
+                            // 그리드보다 살짝 높은 위치 (0.03f)
+                            Vector3 pPos = new Vector3(pX, yOffset + 0.03f, pZ);
+
+                            // 1. 각 타일별 퍼져나가는 육각형 링 (Shockwave)
+                            float currentRadius = hexRadius * easedProgress;
+                            float ringThickness = (hexRadius * 0.2f) * fade;
+                            Draw.RegularPolygonBorder(pPos, hexRot, 6, currentRadius, ringThickness, expColor);
+
+                            // 2. 각 타일별 중심부 플래시 (Flash)
+                            Draw.RegularPolygon(pPos, hexRot, 6, hexRadius * (1f - progress * 0.5f), flashColor);
                         }
                     }
                 }

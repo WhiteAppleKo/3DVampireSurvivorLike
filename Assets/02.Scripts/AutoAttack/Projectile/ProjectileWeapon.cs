@@ -34,6 +34,24 @@ public class ProjectileWeapon : Weapon
         }
     }
 
+    /// <summary>
+    /// 런타임 중 테마가 변경되었을 때 호출됩니다.
+    /// </summary>
+    public override void OnThemeChanged()
+    {
+        if (m_PooledProjectiles == null) return;
+
+        foreach (var obj in m_PooledProjectiles)
+        {
+            if (obj == null) continue;
+            var proj = obj.GetComponent<Projectile>();
+            if (proj != null)
+            {
+                proj.SetThemeColor(VisualTheme.themeColor);
+            }
+        }
+    }
+
     private GameObject CreateProjectile()
     {
         if (projectilePrefab == null)
@@ -47,7 +65,8 @@ public class ProjectileWeapon : Weapon
         var projectileLogic = obj.GetComponent<Projectile>();
         if (projectileLogic != null)
         {
-            projectileLogic.ProjectileSetting(m_Controller, this, TargetLayer);
+            // EffectColor 대신 ThemeColor 사용
+            projectileLogic.ProjectileSetting(m_Controller, this, TargetLayer, VisualTheme.themeColor);
         }
         else
         {

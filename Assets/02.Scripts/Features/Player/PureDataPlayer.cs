@@ -16,5 +16,9 @@ namespace Features.Player
         [Header("Leveling")]
         public int BaseExpToLevelUp = 100;
         public int ExpIncreasePerLevel = 10;
+
+        [Header("Sounds")]
+        public AudioClip LevelUpSound;
+        public AudioClip DeathSound;
     }
 }

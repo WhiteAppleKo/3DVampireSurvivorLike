@@ -1,16 +1,14 @@
+using _02.Scripts.Managers;
 using UnityEngine;
 
 namespace Features.Weapon
 {
-    [RequireComponent(typeof(AudioSource))]
     public class WeaponVisualizer : MonoBehaviour, IWeaponVisualizer
     {
-        private AudioSource _audioSource;
         private Animator _animator;
 
         private void Awake()
         {
-            _audioSource = GetComponent<AudioSource>();
             _animator = GetComponentInChildren<Animator>();
         }
 
@@ -24,9 +22,10 @@ namespace Features.Weapon
 
         public void PlayAttackSound(AudioClip clip)
         {
-            if (clip != null && _audioSource != null)
+            if (clip != null && AudioManager.Instance != null)
             {
-                _audioSource.PlayOneShot(clip);
+                // AudioManager의 풀링 시스템을 사용하여 사운드 재생
+                AudioManager.Instance.PlaySFX(clip, transform.position);
             }
         }
 

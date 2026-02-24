@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d94dc7e2dd6576348be4169d34db1bf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AoEWeapon
-  pureData: {fileID: 11400000, guid: c2c282a5b4282a844acd6fc02402e57f, type: 2}
+  pureData: {fileID: 11400000, guid: 94c5d9782bb5f13489c5948e1f1bb6d2, type: 2}
   audioSource: {fileID: 0}
 --- !u!135 &5877786903061236895
 SphereCollider:

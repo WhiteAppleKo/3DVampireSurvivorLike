@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using _02.Scripts.UI.Title;
+using _02.Scripts.Managers;
 
 namespace _02.Scripts.UI
 {
@@ -20,6 +21,9 @@ namespace _02.Scripts.UI
         [SerializeField] private BindImageText contentBinder;
         [SerializeField] private Button targetButton;
         [SerializeField] private Title.ButtonPanel buttonPanel;
+
+        [Header("Audio")]
+        [SerializeField] private AudioClip clickSound;
 
         // 클릭 이벤트 (위치 이동용)
         public System.Action OnClicked;
@@ -41,6 +45,12 @@ namespace _02.Scripts.UI
             {
                 targetButton.onClick.AddListener(() => 
                 {
+                    // 0. 클릭 사운드 재생
+                    if (clickSound != null && AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.Play2D(clickSound);
+                    }
+
                     // 1. 위치 이동 이벤트 발생
                     OnClicked?.Invoke();
 

@@ -374,6 +374,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593e5c737ac93f84cbf0fa965e18b4a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AutoAttack
+  m_VisualTheme:
+    themeColor: {r: 0, g: 0, b: 0, a: 0}
+    effectColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &3247559102442334220
 GameObject:
   m_ObjectHideFlags: 0

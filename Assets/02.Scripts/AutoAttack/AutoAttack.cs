@@ -9,8 +9,19 @@ using Features.Weapon;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
+[System.Serializable]
+public struct WeaponVisualTheme
+{
+    [ColorUsage(true, true)] public Color themeColor;
+    [ColorUsage(true, true)] public Color effectColor;
+}
+
 public class AutoAttack : MonoBehaviour, ISaveable
 {
+    [Header("Visual Settings")]
+    [SerializeField] private WeaponVisualTheme m_VisualTheme;
+    public WeaponVisualTheme VisualTheme => m_VisualTheme;
+
     private RuntimeDataInventory m_Inventory;
     public RuntimeDataInventory Inventory => m_Inventory;
 
@@ -28,6 +39,37 @@ public class AutoAttack : MonoBehaviour, ISaveable
         if (GetComponentInParent<PlayerController>() != null)
         {
             ((ISaveable)this).RegistSaveAble();
+        }
+    }
+
+    /// <summary>
+    /// 에디터 인스펙터에서 값을 바꿀 때 즉시 모든 무기에 반영합니다.
+    /// </summary>
+    private void OnValidate()
+    {
+        if (Application.isPlaying && m_WeaponInstances != null)
+        {
+            UpdateAllWeaponsTheme();
+        }
+    }
+
+    /// <summary>
+    /// 런타임 중 테마를 동적으로 변경하고 모든 무기에 적용합니다.
+    /// </summary>
+    public void SetVisualTheme(WeaponVisualTheme newTheme)
+    {
+        m_VisualTheme = newTheme;
+        UpdateAllWeaponsTheme();
+    }
+
+    private void UpdateAllWeaponsTheme()
+    {
+        foreach (var weapon in m_WeaponInstances.Values)
+        {
+            if (weapon != null)
+            {
+                weapon.UpdateTheme(m_VisualTheme);
+            }
         }
     }
 

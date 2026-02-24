@@ -6,7 +6,7 @@ namespace _02.Scripts.Managers.Save
     [Serializable]
     public class GameSaveData
     {
-        // === 게임 시스템 정보 ===
+        // === 게임 시스템 정보 (인게임 전용, 초기화 대상) ===
         public int currentStage = 1;
         public int augmentationLevel = 1;
 
@@ -21,6 +21,22 @@ namespace _02.Scripts.Managers.Save
 
         public GameSaveData()
         {
+        }
+    }
+
+    /// <summary>
+    /// 영구적인 계정 정보를 담는 데이터 클래스 (별도 파일로 관리)
+    /// </summary>
+    [Serializable]
+    public class AccountData
+    {
+        public long totalPoints = 0;
+        public List<string> unlockedFeatureIDs = new List<string>();
+
+        public AccountData()
+        {
+            totalPoints = 0;
+            unlockedFeatureIDs = new List<string>();
         }
     }
 

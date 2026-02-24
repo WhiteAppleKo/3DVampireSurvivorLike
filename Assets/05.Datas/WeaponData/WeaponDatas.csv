@@ -1,15 +1,16 @@
-Weapon ID 작성 규칙,,,,,,,,
-0,5,0,0,0,0,0,0,
-시트 번호,시트 번호,타입,타입,획득 경로,획득 경로,번호,번호,
-,,,0: 투사체,,0: 기본 무기,,,
-,,,1: 효과 범위,,1: 해금 무기,,,
-,,,2:이동,,,,,
-,,,3:박치기,,,,,
-,,,,,,,,
-,,,,,,,,
-,,,,,,,,
-WeaponID,WeaponName,WeaponType,AttakDelay,Damage,FindRange,ProjectileCount,IconNumber,WeaponDescription
-05000001,투사체 무기,Projectile,5,10,10,1,0501,aaa
-05010001,효과 범위 무기,AoE,1,2,1,0,0502,bbb
-05020001,이동,ChargeAttack,3,6,5,0,0503,ccc
-05030001,박치기,BodyAttack,0.5,1,0,0,0504,cccddd
+Weapon ID 작성 규칙,,,,,,,,,
+0,5,0,0,0,0,0,0,,
+시트 번호,시트 번호,타입,타입,획득 경로,획득 경로,번호,번호,,
+,,,0: 투사체,,0: 기본 무기,,,,
+,,,1: 효과 범위,,1: 해금 무기,,,,
+,,,2:이동,,,,,,
+,,,3:박치기,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+,,,,,,,,,
+WeaponID,WeaponName,WeaponType,AttakDelay,Damage,FindRange,ProjectileCount,IconNumber,WeaponDescription,IsPlayerSkill
+05000001,Gun,Projectile,5,10,10,1,0501,aaa,TRUE
+05010001,Emitter,AoE,0.5,1,1,0,0502,bbb,TRUE
+05020001,Dash,ChargeAttack,3,6,5,0,0503,ccc,FALSE
+05030001,BodyAttack,BodyAttack,0.5,1,0,0,0504,cccddd,TRUE
+05010002,Explosive,AoE,1,2,2,0,0505,bbb,TRUE

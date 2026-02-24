@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using _02.Scripts.Managers;
 
 namespace _02.Scripts.UI
 {
@@ -18,6 +19,10 @@ namespace _02.Scripts.UI
         [SerializeField] protected float scrollSensitivity = 0.01f;
         [SerializeField] protected float lerpSpeed = 12f;
 
+        [Header("Audio Settings")]
+        [SerializeField] protected AudioClip scrollSound;
+        [SerializeField] protected AudioClip confirmSound;
+
         protected float m_TargetScrollPos = 0f;
         protected float m_CurrentScrollPos = 0f;
         protected int m_LastFocusedIndex = -1; 
@@ -32,15 +37,6 @@ namespace _02.Scripts.UI
             InitializeButtons();
 
             m_LastFocusedIndex = Mathf.RoundToInt(m_CurrentScrollPos);
-
-            // [수정] 여기서 직접 리스너를 달면 ButtonUIView의 applyOnClicked 설정을 무시하고 무조건 실행됩니다.
-            // 따라서 이 중복 리스너를 제거합니다. 버튼 클릭 로직은 각 ButtonUIView에서 관리합니다.
-            /*
-            if (confirmButton != null)
-            {
-                confirmButton.onClick.AddListener(ConfirmSelection);
-            }
-            */
 
             if (mainPanel != null)
             {
@@ -108,8 +104,6 @@ namespace _02.Scripts.UI
             if (Input.GetMouseButtonDown(0))
             {
                 m_LastMousePos = Input.mousePosition;
-                // 바로 드래그를 켜지 않고, 이동이 감지될 때 켜는 것이 안전하지만
-                // 여기서는 기존 로직을 유지하되 종료 시점을 정교화합니다.
                 m_IsDragging = true;
             }
             else if (Input.GetMouseButton(0) && m_IsDragging)
@@ -127,12 +121,9 @@ namespace _02.Scripts.UI
             }
             else if (Input.GetMouseButtonUp(0))
             {
-                // [수정] 실제로 드래그 이동이 발생했을 때만 스냅합니다.
-                // 단순 클릭 시에는 HandleButtonClick에서 설정한 TargetScrollPos를 유지해야 합니다.
                 if (m_IsDragging)
                 {
                     m_IsDragging = false;
-                    // 드래그 거리가 거의 없다면 스냅하지 않음 (클릭 보호)
                     if (Mathf.Abs(m_CurrentScrollPos - m_TargetScrollPos) > 0.05f)
                     {
                         m_TargetScrollPos = Mathf.RoundToInt(m_CurrentScrollPos);
@@ -154,13 +145,19 @@ namespace _02.Scripts.UI
             bool isMoving = m_IsDragging || Mathf.Abs(m_CurrentScrollPos - m_TargetScrollPos) > 0.01f;
             int currentFocusedIndex = Mathf.RoundToInt(m_CurrentScrollPos);
 
-            // [추가] 포커스된 인덱스가 변경되면 이벤트 알림
+            // [추가] 포커스된 인덱스가 변경되면 이벤트 알림 및 사운드 재생
             if (currentFocusedIndex != m_LastFocusedIndex)
             {
                 m_LastFocusedIndex = currentFocusedIndex;
                 if (currentFocusedIndex >= 0 && currentFocusedIndex < buttons.Count)
                 {
                     OnFocusChanged?.Invoke(currentFocusedIndex);
+                    
+                    // 스크롤 사운드 재생
+                    if (scrollSound != null && AudioManager.Instance != null && m_IsActive)
+                    {
+                        AudioManager.Instance.Play2D(scrollSound);
+                    }
                 }
             }
 
@@ -186,6 +183,12 @@ namespace _02.Scripts.UI
                 var selectedButton = buttons[finalIndex];
                 if (selectedButton != null && selectedButton.CurrentContent != null)
                 {
+                    // 확인 사운드 재생
+                    if (confirmSound != null && AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.Play2D(confirmSound);
+                    }
+
                     selectedButton.CurrentContent.Apply();
                 }
             }

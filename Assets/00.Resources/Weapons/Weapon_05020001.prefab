@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a3e592f10ca4f94cae148e12b865c27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChargeDash
-  pureData: {fileID: 11400000, guid: 907b390cb0e50b34fa1b84b1a0efb54f, type: 2}
+  pureData: {fileID: 11400000, guid: ced642189b54e004f96f7b4d8d7ee9c7, type: 2}
   audioSource: {fileID: 0}
   triangle: {fileID: 0}
   dashDuration: 0
