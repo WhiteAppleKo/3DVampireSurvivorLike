@@ -156,14 +156,11 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
     public List<Collider> ScanTargets(Vector3 centerPos, int range, LayerMask targetLayer)
     {
         List<Collider> validTargets = new List<Collider>();
-
         // 1단계: 성능을 위해 먼저 구체(Sphere) 범위로 넓게 물리 검색
         float hexWidth = Mathf.Sqrt(3) * hexRadius;
         float searchRadius = (hexWidth * range) + hexWidth; 
-
         Collider[] hits = Physics.OverlapSphere(centerPos, searchRadius, targetLayer);
         Vector3Int centerCube = WorldToCube(centerPos);
-
         // 2단계: 감지된 대상들이 "진짜 육각형 칸 거리" 안에 있는지 정밀 검사
         foreach (var hit in hits)
         {
@@ -173,7 +170,6 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
                 validTargets.Add(hit);
             }
         }
-
         return validTargets;
     }
 
@@ -202,7 +198,9 @@ public class HexGridRenderer : ImmediateModeShapeDrawer
         float width = Mathf.Sqrt(3) * hexRadius;
         float height = 2f * hexRadius * 0.75f;
 
+        // RoundToInt로 연속 좌표를 가장 가까운 타일 인덱스로 처리합니다.
         int row = Mathf.RoundToInt(worldPos.z / height);
+        // row % 2 != 0 조건으로 홀수 행의 x축 절반 오프셋을 자동 처리합니다.
         float xOffset = (row % 2 != 0) ? width * 0.5f : 0f;
         int col = Mathf.RoundToInt((worldPos.x - xOffset) / width);
 

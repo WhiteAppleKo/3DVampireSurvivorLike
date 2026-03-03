@@ -1591,7 +1591,7 @@ MonoBehaviour:
   useCullingMasks: 0
   gridMode: 0
   target: {fileID: 1844755946}
-  viewDistance: 12
+  viewDistance: 1
   hexRadius: 1
   thickness: 0.01
   color: {r: 0, g: 0.16301486, b: 0.16301486, a: 3}
@@ -2373,7 +2373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Shapes.IMTimer
   color: {r: 0, g: 0, b: 0, a: 1}
-  timer: 2069.37
+  timer: 02.18
   fontSize: 700
   fontAsset: {fileID: 11400000, guid: 65eb82dda5212f2448aff7de410823bd, type: 2}
 --- !u!222 &1031388903
@@ -4503,6 +4503,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1220507260862138099, guid: 205204ae55a85424d8369dac06b9c73a, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220507260862138099, guid: 205204ae55a85424d8369dac06b9c73a, type: 3}
       propertyPath: m_VisualTheme.themeColor.a
       value: 1
       objectReference: {fileID: 0}
@@ -4820,6 +4824,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2093722563876941378}
   m_CullTransparentMesh: 1
+--- !u!1001 &3350886744732911333
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3589555357192689848, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_Name
+      value: Monster_0300
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -23.331999
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.0000011585548
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -17.5866
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545063180185234280, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ac40641aa2931949a8c28635cc6310f, type: 3}
 --- !u!1 &3719274735753598488
 GameObject:
   m_ObjectHideFlags: 0
@@ -5038,3 +5099,4 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
+  - {fileID: 3350886744732911333}
